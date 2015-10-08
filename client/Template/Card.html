@@ -3,5 +3,15 @@
         <nav>
             {{>navigate}}
         </nav>
+
+    {{#each cards}}
+        <div class="card">
+            {{name}}
+            {{@index}}
+            <div class="card-content">
+                {{{description}}}
+            </div>
+        </div>
+    {{/each}}
     </div>
 </template>

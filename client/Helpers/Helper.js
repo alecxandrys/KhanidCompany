@@ -19,8 +19,14 @@ Template.main.helpers({
     }
 }
 });
-Template.PrivateOffice.helpers(
-{
-
-
+Template.Card.helpers({
+    cards:function(){
+        return SpaceMarineForce;
+    }
+});
+Template.Card.events({
+    "click .card":function(event) {
+        var x=event.currentTarget;
+        alert("i can catch");
+    }
 });

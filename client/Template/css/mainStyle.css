@@ -1,0 +1,31 @@
+body {
+    font-family: sans-serif;
+    background: #315481 url(/SiteResource/mainfon.jpg) no-repeat fixed;
+    background-size:100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    min-height: 100%;
+    background: white;
+}
+.card {
+    max-width: 50%;
+    background: navy;
+    margin: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+
+}
+.card-content {
+
+}

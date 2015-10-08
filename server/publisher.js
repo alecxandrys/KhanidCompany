@@ -9,9 +9,10 @@ Meteor.publish("tasks", function () {
 });
 Meteor.publish("userData", function () {
     if (this.userId) {
-        x=Meteor.users.find({_id: this.userId},{fields: {createdAt:1,rait:1}});
+        var x=Meteor.users.find({_id: this.userId},{fields: {createdAt:1,rait:1}});
         if (x.rait===undefined) {
-            Meteor.users.update({_id: this.userId}, {$set: {rait: 100}});
+            Meteor.users.update({_id: this.userId}, {$set: {rate: 100}});
+            Meteor.users.update({_id: this.userId}, {$set: {admin: false}})
         }
         return Meteor.users.find({_id: this.userId},{fields: {createdAt:1,rait:1}});
     } else {
