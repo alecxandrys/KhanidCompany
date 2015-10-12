@@ -3,15 +3,21 @@
         <nav>
             {{>navigate}}
         </nav>
-
+<div class="left-hand">
     {{#each cards}}
         <div class="card">
             {{name}}
-            {{@index}}
+            <a class="id">{{@index}}</a>
             <div class="card-content">
                 {{{description}}}
             </div>
         </div>
     {{/each}}
+</div>
+
+        <div class="right-hand">
+
+
+        </div>
     </div>
 </template>

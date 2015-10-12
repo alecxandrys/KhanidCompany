@@ -19,8 +19,8 @@ body {
     background: white;
 }
 .card {
-    max-width: 50%;
-    background: navy;
+    max-width: 40%;
+    background:saddlebrown;
     margin: 5px;
     padding-bottom: 5px;
     padding-left: 5px;
@@ -28,4 +28,13 @@ body {
 }
 .card-content {
 
+}
+a.id{
+    display:none;
+}
+
+header {
+    background: #d2edf4 linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+    padding: 20px 15px 15px 15px;
+    position: relative;
 }

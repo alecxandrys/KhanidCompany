@@ -26,7 +26,16 @@ Template.Card.helpers({
 });
 Template.Card.events({
     "click .card":function(event) {
-        var x=event.currentTarget;
-        alert("i can catch");
+       var id=parseInt($(event.currentTarget).children('a').text());
+        //this is id in array of unit, which was cliked just right now
+    },
+    "dbclick .card":function(event) {
+        var id=parseInt($(event.currentTarget).children('a').text());
+        //this is id in array of unit, which was cliked just right now
     }
+
+});
+Accounts.ui.config({
+
+    passwordSignupFields:  'USERNAME_ONLY'
 });
