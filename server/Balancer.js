@@ -4,6 +4,11 @@
  But all check happen on server
  */
 Meteor.methods({
+ addPlayerInQueue:function() {
 
+    },
+ checkQueue:function() {
+
+ }
 
 });

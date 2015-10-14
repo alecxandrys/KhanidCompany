@@ -18,6 +18,7 @@ Deck={
 
             this._unit.push(Unit);
             this._unitDepend.changed();
+
         },
     erase: function() {
 
@@ -61,7 +62,6 @@ Template.Card.events({
     },
     "dblclick .card":function(event) {
         event.preventDefault();
-        var x=userData();
         var id=parseInt($(event.currentTarget).children('a').text());
         Deck.setUnit(SpaceMarineForce[id]);
 
@@ -69,6 +69,16 @@ Template.Card.events({
     },
     "click .clear":function() {
         Deck.erase();
+    },
+    "click .ready":function() {
+        if (Deck._unit.length===0)
+        {
+            alert("Deck is empty, you cannot join in battle");
+        }
+        else
+        {
+            Meteor.call("addPlayerInQueue");
+        }
     }
 
 });
