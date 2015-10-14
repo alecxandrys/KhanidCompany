@@ -19,3 +19,16 @@ Meteor.publish("userData", function () {
     }
 });
 
+/*
+Accounts.onCreateUser(function() {
+
+console.log('and this is new');
+});
+*/
+
+
+//to check possible double in
+Accounts.onLogin(function() {
+console.log('this is me');
+});
+

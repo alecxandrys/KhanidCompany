@@ -3,21 +3,33 @@
         <nav>
             {{>navigate}}
         </nav>
-<div class="left-hand">
+
+            <div class="left-hand">
     {{#each cards}}
         <div class="card">
             {{name}}
             <a class="id">{{@index}}</a>
             <div class="card-content">
-                {{{description}}}
+                {{description}}
             </div>
         </div>
     {{/each}}
-</div>
+            </div>
+
 
         <div class="right-hand">
-
-
+            <button class="clear">Clear deck</button>
+            <button class="ready">Battle</button>
+        {{#each deck}}
+            <div class="added-card">
+                {{name}}
+                <a class="id">{{@index}}</a>
+                <div class="card-content">
+                    {{description}}
+                </div>
+            </div>
+        {{/each}}
         </div>
+
     </div>
 </template>

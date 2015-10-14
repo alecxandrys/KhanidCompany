@@ -1,5 +1,5 @@
 body {
-    font-family: sans-serif;
+    font-family: serif;
     background: #315481 url(/SiteResource/mainfon.jpg) no-repeat fixed;
     background-size:100%;
     position: absolute;
@@ -18,8 +18,18 @@ body {
     min-height: 100%;
     background: white;
 }
+
+header {
+    background: #d2edf4 linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+    padding: 20px 15px 15px 15px;
+    position: relative;
+}
+
+a.id{
+     display:none;
+ }
+
 .card {
-    max-width: 40%;
     background:saddlebrown;
     margin: 5px;
     padding-bottom: 5px;
@@ -29,12 +39,20 @@ body {
 .card-content {
 
 }
-a.id{
-    display:none;
+
+.left-hand {
+    max-width: 45%;
+    float:left;
 }
 
-header {
-    background: #d2edf4 linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
-    padding: 20px 15px 15px 15px;
-    position: relative;
+.right-hand {
+    max-width: 45%;
+    float:left;
+
+}
+.added-card {
+    background: darkred ;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    margin: 5px;
 }

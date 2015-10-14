@@ -2,6 +2,29 @@
  * Created by Alecxandrys on 07.10.2015.
  */
 Meteor.subscribe("userData");
+
+Deck={
+    _unit:[],
+    _unitDepend: new Tracker.Dependency(),
+
+    getUnit: function() {
+        this._unitDepend.depend();
+        return this._unit;
+    },
+
+    setUnit: function(Unit) {
+
+            this._unit.push(Unit);
+            this._unitDepend.changed();
+        },
+    erase: function() {
+
+        this._unit=[];
+        this._unitDepend.changed();
+    }
+
+};
+
 Template.main.helpers({
     /**
      * @return {string}
@@ -22,20 +45,37 @@ Template.main.helpers({
 Template.Card.helpers({
     cards:function(){
         return SpaceMarineForce;
+    },
+    deck:function(){
+        return Deck.getUnit();
     }
 });
+
 Template.Card.events({
     "click .card":function(event) {
+       event.preventDefault();
        var id=parseInt($(event.currentTarget).children('a').text());
         //this is id in array of unit, which was cliked just right now
     },
-    "dbclick .card":function(event) {
+    "dblclick .card":function(event) {
+        event.preventDefault();
         var id=parseInt($(event.currentTarget).children('a').text());
-        //this is id in array of unit, which was cliked just right now
+        Deck.setUnit(SpaceMarineForce[id]);
+        //this is id in array of unit, which was dbcliked just right now
+    },
+    "click .clear":function() {
+        Deck.erase();
     }
 
 });
 Accounts.ui.config({
+    passwordSignupFields: 'USERNAME_ONLY'
+});
 
-    passwordSignupFields:  'USERNAME_ONLY'
+//to reset in-token
+Meteor.logout(function() {
+console.log('and this is leaver');
+});
+Meteor.logoutOtherClients(function() {
+    console.log('Another is leaver');
 });
