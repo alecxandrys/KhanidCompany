@@ -3,6 +3,8 @@
  */
 Meteor.subscribe("userData");
 
+Meteor.user();
+
 Deck={
     _unit:[],
     _unitDepend: new Tracker.Dependency(),
@@ -59,8 +61,10 @@ Template.Card.events({
     },
     "dblclick .card":function(event) {
         event.preventDefault();
+        var x=userData();
         var id=parseInt($(event.currentTarget).children('a').text());
         Deck.setUnit(SpaceMarineForce[id]);
+
         //this is id in array of unit, which was dbcliked just right now
     },
     "click .clear":function() {
@@ -79,3 +83,6 @@ Meteor.logout();
 //logout other, who login by our data
 Meteor.logoutOtherClients();
 */
+Accounts.onLogin(function() {
+    Meteor.logoutOtherClients();
+});

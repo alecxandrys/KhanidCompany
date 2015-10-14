@@ -4,6 +4,14 @@
             {{>navigate}}
         </nav>
 
+    <div class="info">
+
+
+    </div>
+
+        <button class="clear">Clear deck</button>
+        <button class="ready">Battle</button>
+
             <div class="left-hand">
     {{#each cards}}
         <div class="card">
@@ -18,8 +26,7 @@
 
 
         <div class="right-hand">
-            <button class="clear">Clear deck</button>
-            <button class="ready">Battle</button>
+
         {{#each deck}}
             <div class="added-card">
                 {{name}}

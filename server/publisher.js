@@ -9,7 +9,7 @@ Meteor.publish("tasks", function () {
 });
 Meteor.publish("userData", function () {
     if (this.userId) {
-        return Meteor.users.find({_id: this.userId},{fields: {createdAt:1,raitELO:1,raitCombine:1}});
+        return Meteor.users.find({_id: this.userId},{fields: {createdAt:1,rateELO:1,rateCombine:1}});
     } else {
         this.ready();
     }
