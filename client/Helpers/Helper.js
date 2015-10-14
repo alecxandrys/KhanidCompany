@@ -72,10 +72,10 @@ Accounts.ui.config({
     passwordSignupFields: 'USERNAME_ONLY'
 });
 
-//to reset in-token
-Meteor.logout(function() {
-console.log('and this is leaver');
-});
-Meteor.logoutOtherClients(function() {
-    console.log('Another is leaver');
-});
+/*
+//logout us
+Meteor.logout();
+
+//logout other, who login by our data
+Meteor.logoutOtherClients();
+*/
