@@ -19,13 +19,25 @@ Meteor.startup(function(){
     //this is correct timer work with guaranteed Interval
     var tickTime=5000;
     var timerId = Meteor.setTimeout(function tick() {
-        var x=readyPlayers.find();
+        var i=Random.id();
+        var x=readyPlayers.find({},{sort:{rate:1}});
         if (x.count()>1) {
+            //balancer itself
+            var count=0;
+            var path=Random.id();;
+            x.forEach(function(user) {
+                if (count%2===1)
+                {
+                    path=Random.id();
 
+
+                }
+
+            })
 
 
         }
-        console.log( "Tick is "+tickTime );
+        console.log( "Tick is "+tickTime+" "+i );
         timerId = Meteor.setTimeout(tick, tickTime);
     }, tickTime);
 
