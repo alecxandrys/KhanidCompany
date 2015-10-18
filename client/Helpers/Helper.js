@@ -1,11 +1,8 @@
-/**
- * Created by Alecxandrys on 07.10.2015.
- */
 Meteor.subscribe("userData");
 
 Meteor.user();
 
-Deck={
+var Deck={
     _unit:[],
     _unitDepend: new Tracker.Dependency(),
 

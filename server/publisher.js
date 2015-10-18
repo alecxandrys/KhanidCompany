@@ -7,12 +7,13 @@ Meteor.publish("userData", function () {
     }
 });
 
+
 Meteor.publish('readyPlayers', function () {
-   return readyPlayers.find();
+    return readyPlayers.find({},{fields:{userId:1,username:1,rate:1, path:1}});
 
 });
 
- Accounts.onCreateUser(function(options, user) {
+Accounts.onCreateUser(function(options, user) {
  if(!options || !user) {
      console.log('error creating user');
      return;
@@ -25,6 +26,7 @@ Meteor.publish('readyPlayers', function () {
  }
  return user;
  });
+
 
 /*
 //to check possible double in
