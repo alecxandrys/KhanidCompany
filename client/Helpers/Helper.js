@@ -84,12 +84,13 @@ Accounts.ui.config({
     passwordSignupFields: 'USERNAME_ONLY'
 });
 
-/*
-//logout us
-Meteor.logout();
-
-//logout other, who login by our data
-Meteor.logoutOtherClients();
+/**
+*Logout us:
+*Meteor.logout(); Client only
+*
+*logout other, who login by our data:
+*Meteor.logoutOtherClients(); Client only
+ *Logout other, who use this login/pass
 */
 Accounts.onLogin(function() {
     Meteor.logoutOtherClients();
