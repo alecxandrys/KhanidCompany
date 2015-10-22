@@ -3,17 +3,22 @@
  task actually appears on the screen before the result comes back from the server
  But all check happen on server
  */
-
-
 Meteor.methods({
  addPlayerInQueue:function() {
      var x=Meteor.user();
-     readyPlayers.insert({userId:Meteor.userId(),username:x.username,rate: x.rateELO, path:0})
+     readyPlayers.insert({userId: x.userId,username:x.username,rate: x.rateELO, path:0,enemyName:""})
     }
 
 });
 
-
+/**
+ * Start balance worker after start a server
+ * a very specific magic:
+ * 1)save each first user
+ * 2)generate unic ID for each second user
+ * 3)push both to battles.
+ * 4) after each remove they from cursor
+ */
 Meteor.startup(function(){
 
     //this is correct timer work with guaranteed Interval
@@ -30,11 +35,19 @@ Meteor.startup(function(){
                 {
                     path=Random.id();
 
+                    user.path=path;
+                    user.enemyName=prevuser.username;
 
+                    prevuser.path=path;
+                    prevuser.enemyName=user.username;
 
-
+                    battles.insert({ID1:prevuser.userId,name1:prevuser.username,ID2:user.userId,name2:user.username,battleID:path});
                 }
-
+                else
+                {
+                    prevuser=user;
+                }
+                user.remove();
             })
 
 
