@@ -1,3 +1,7 @@
+/**
+ * Main for 'main','Card','News','PrivateOffice'
+ */
+
 Meteor.subscribe("userData");
 
 Meteor.user();
@@ -25,7 +29,7 @@ var Deck={
 
 };
 
-Template.main.helpers({
+Template.Main.helpers({
     /**
      * @return {string}
      */

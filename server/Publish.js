@@ -12,9 +12,9 @@ Meteor.publish("userData", function () {
 });
 
 
-Meteor.publish('readyPlayers', function () {
-    return readyPlayers.find({},{fields:{userId:1,username:1,rate:1, path:1}});
-
+Meteor.publish('readyPlayers', function ()
+{
+    return readyPlayers.find({},{fields:{userId:1,username:1,rate:1}});
 });
 
 /**

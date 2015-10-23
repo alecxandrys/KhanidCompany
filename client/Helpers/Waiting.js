@@ -12,6 +12,7 @@ Template.wait.helpers({
 
     battleID:function() {
         var x = battles.find();
+        var y= x.count();
         if (x.count() === 1) {
             var paramstring= "name1="+x.name1+"&name2="+ x.name2+"&battleID="+ x.battleID;
             Router.go('battlefield', {}, {query: paramstring});
