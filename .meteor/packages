@@ -6,7 +6,6 @@
 
 accounts-password
 iron:router
-matb33:collection-hooks
 standard-minifiers
 meteor-base
 mobile-experience

@@ -1,7 +1,7 @@
 Meteor.methods({
  addPlayerInQueue:function() {
      var x=Meteor.user();
-     readyPlayers.insert({userId: x.userId,username:x.username,rate: x.rateELO})
+     readyPlayers.insert({userId: x._id,username:x.username,rate: x.rateELO})
     }
 
 });
@@ -26,12 +26,13 @@ Meteor.startup(function(){
             var count=0;
             var path;
             var prevuser;
+            console.log("Enter the block "+ x.count());
             x.forEach(function(user) {
                 if (count%2===1)
                 {
                     path=Random.id();
 
-                    console.log(user+" "+prevuser+" "+path);
+                    console.log(path+" "+" ===1 "+" "+count);
 
                     battles.insert({ID1:prevuser.userId,name1:prevuser.username,ID2:user.userId,name2:user.username,battleID:path});
                     readyPlayers.remove({userId:user.userId});

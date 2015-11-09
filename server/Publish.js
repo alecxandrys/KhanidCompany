@@ -14,7 +14,7 @@ Meteor.publish("userData", function () {
 
 Meteor.publish('readyPlayers', function ()
 {
-    return readyPlayers.find({},{fields:{userId:1,username:1,rate:1}});
+    return readyPlayers.find({},{fields:{username:1,rate:1}});
 });
 
 /**
@@ -22,7 +22,8 @@ Meteor.publish('readyPlayers', function ()
  */
 Meteor.publish('battles', function ()
 {
-    return battles.find({ $or: [ { name1: this.user().username }, { name2: this.user().username } ] },{fields:{name1:1,name2:1,battleID:1}})
+    var x=this.user().username;
+    return battles.find({ $or: [ { name1: x}, { name2: x} ] },{fields:{name1:1,name2:1,battleID:1}})
 });
 
 
