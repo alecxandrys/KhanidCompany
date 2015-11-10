@@ -92,8 +92,13 @@ Accounts.ui.config({
 *Logout us:
 *Meteor.logout(); Client only
 *
-*logout other, who login by our data:
+*Logout other, who login with our data:
 *Meteor.logoutOtherClients(); Client only
+ *
+ * Callback every time on login:
+ * onLogin, anywhere, when success
+ * onLoginFailure, anywhere, when fail
+ *
  *Logout other, who use this login/pass
 */
 Accounts.onLogin(function() {

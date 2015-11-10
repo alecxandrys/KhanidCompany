@@ -14,14 +14,15 @@ Template.wait.helpers({
      * redirection
      * be careful!
      * very dangerous paramstring
+     * it's only success way to take param.
      * @returns {string}
      */
     battleID:function() {
         var x = battles.find({});
+        var y = battles.findOne({});
         if (x.count() === 1) {
-            var paramstring= "name1="+x.name1+"&name2="+ x.name2+"&battleID="+ x.battleID;
-            return (x.name1+ x.name2+ x.battleID);
-            //Router.go('battlefield', {}, {query: paramstring});
+            var paramstring= "name1="+y.name1+"&name2="+ y.name2+"&battleID="+y.battleID;
+            Router.go('battlefield', {}, {query: paramstring});
         }
         else if (x.count() !== 1) {
             console.log('Error:Balancer twice push player. Please, wait');

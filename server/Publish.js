@@ -42,13 +42,3 @@ Accounts.onCreateUser(function(options, user) {
     }
     return user;
 });
-
-
-/*
- //to check possible double in
- Accounts.onLogin(function() {
- console.log('this is me');
- });
- */
-
-
