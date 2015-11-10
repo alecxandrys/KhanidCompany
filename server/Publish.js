@@ -19,11 +19,12 @@ Meteor.publish('readyPlayers', function ()
 
 /**
  * Check name1 equal or name2 equal to update date and check ready status of field and battle controller
+ * Just need to use x.username, not a x
  */
 Meteor.publish('battles', function ()
 {
-    var x=this.user().username;
-    return battles.find({ $or: [ { name1: x}, { name2: x} ] },{fields:{name1:1,name2:1,battleID:1}})
+    var x = Meteor.users.findOne({_id: this.userId});
+    return battles.find({ $or: [ { name1: x.username}, { name2: x.username} ] },{fields:{name1:1,name2:1,battleID:1}});
 });
 
 
