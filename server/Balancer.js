@@ -17,32 +17,41 @@ Meteor.methods({
 Meteor.startup(function(){
 
     //this is correct timer work with guaranteed Interval
-    var tickTime=5000;
+    var tickTime=3000;
     var timerId = Meteor.setTimeout(function tick() {
         var x=readyPlayers.find({},{sort:{rate:1}});
 
         if (x.count()>1) {
             //balancer itself
-            var count=0;
-            var path;
             var prevuser;
             console.log("Enter the block "+ x.count());
-            x.forEach(function(user) {
-                if (count%2===1)
-                {
-                    path=Random.id();
+            x.forEach(function(user,index) {
+                if(index % 2 === 1)
+                    {
+                        var path = Random.id();
 
-                    console.log(path+" "+" ===1 "+" "+count);
+        //                var BC=new BattleController(path);
+        //                var BS=new BattleState(path,20,12);
 
-                    battles.insert({ID1:prevuser.userId,name1:prevuser.username,ID2:user.userId,name2:user.username,battleID:path});
-                    readyPlayers.remove({userId:user.userId});
-                    readyPlayers.remove({userId:prevuser.userId});
-                }
+                        console.log(path + " " + " ===1 " + " " + index);
+                        battles.insert({
+                            ID1     : prevuser.userId,
+                            name1   : prevuser.username,
+                            ID2     : user.userId,
+                            name2   : user.username,
+       //                     BC      : BC,
+         //                   BS      : BS,
+                            battleID: path
+                        });
+
+
+                        readyPlayers.remove({userId: user.userId});
+                        readyPlayers.remove({userId: prevuser.userId});
+                    }
                 else
-                {
-                    prevuser=user;
-                }
-                count++;
+                    {
+                        prevuser = user;
+                    }
             })
         }
 
