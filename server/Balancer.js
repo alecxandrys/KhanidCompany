@@ -30,8 +30,10 @@ Meteor.startup(function(){
                     {
                         var path = Random.id();
 
-        //                var BC=new BattleController(path);
-        //                var BS=new BattleState(path,20,12);
+
+                        //need to translate object
+                        var BC=new BattleController(path);
+                        var BS=new BattleState(path,20,12);
 
                         console.log(path + " " + " ===1 " + " " + index);
                         battles.insert({
@@ -39,8 +41,6 @@ Meteor.startup(function(){
                             name1   : prevuser.username,
                             ID2     : user.userId,
                             name2   : user.username,
-       //                     BC      : BC,
-         //                   BS      : BS,
                             battleID: path
                         });
 
