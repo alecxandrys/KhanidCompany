@@ -26,7 +26,7 @@ Template.wait.helpers({
         }
         else if (x.count() !== 1) {
             console.log('Error:Balancer twice push player. Please, wait');
-            return ("Waiting "+ x.count());
+            return ("Waiting "+ x.count()+" "+readyPlayers.find().count());
         }
     }
 });

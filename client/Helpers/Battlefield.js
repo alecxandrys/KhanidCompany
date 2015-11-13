@@ -21,5 +21,5 @@ Template.Battlefield.onRendered(function(){
 
 });
 Template.Battlefield.onCreated(function(){
-    game = new Phaser.Game(800, 600, Phaser.AUTO, 'field', { preload: preload, create: create, update: update });
+    game = new Phaser.Game(80, 60, Phaser.AUTO, 'field', { preload: preload, create: create, update: update });
 });
