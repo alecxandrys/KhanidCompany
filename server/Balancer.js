@@ -32,7 +32,8 @@ Meteor.startup(function(){
 
 
                         //need to translate object
-                        var BC=new BattleController(path);
+                        //need async call for this shit
+                        //Will keep in waitingCollection
                         var BS=new BattleState(path,20,12);
 
                         console.log(path + " " + " ===1 " + " " + index);
@@ -41,6 +42,7 @@ Meteor.startup(function(){
                             name1   : prevuser.username,
                             ID2     : user.userId,
                             name2   : user.username,
+                            BS      : BS,
                             battleID: path
                         });
 

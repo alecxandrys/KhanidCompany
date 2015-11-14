@@ -2,12 +2,17 @@
  * Created by Alecxandrys on 13.11.2015.
  */
 /**
- * Style of declare is package-scope
- * Not necessary, because only need a control, not a object;
- * @param ID
- * @constructor
+ * control the correct and ability for turn
+ * must return a boolean, or some result of dice
  */
-BattleController=function (ID)
-    {
-        this.ID=ID;
+Meteor.methods({
+    canReach:function(){
+
+    },
+    canShoot: function () {
+
+    },
+    canSetup:function() {
+
     }
+});
