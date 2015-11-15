@@ -24,7 +24,7 @@ Meteor.publish('readyPlayers', function ()
 Meteor.publish('battles', function ()
 {
     var x = Meteor.users.findOne({_id: this.userId});
-    return battles.find({ $or: [ { name1: x.username}, { name2: x.username} ] },{fields:{name1:1,name2:1,battleID:1,BS:1,BC:1}});
+    return battles.find({ $or: [ { name1: x.username}, { name2: x.username} ] },{fields:{name1:1,name2:1,battleID:1,BS:1}});
 });
 
 
