@@ -9,9 +9,15 @@ BS={};
 var h;
 var w;
 
-function update() {
 
+function preload() {
+    game.load.image('Grass', 'BattleResource/Grass.png');
+    game.load.image('Cover', 'BattleResource/Cover.png');
+    game.load.image('Danger', 'BattleResource/Danger.png');
+    game.load.image('Diff', 'BattleResource/Diff.png');
+    game.load.image('Unreach', 'BattleResource/Unreach.png');
 }
+
 /**
  * need to remove hardcode of cell's count here
  * i=y
@@ -19,8 +25,6 @@ function update() {
 
 function create() {
 
-        var i=0;
-        var j=0;
 
         while (i<y)
             {
@@ -41,51 +45,56 @@ function create() {
 }
 */
 
-function create()
+function create() {
+    var x = 20;
+    var y = 12;
+
+    var xStep = Math.floor(w / x);
+    var yStep = Math.floor(h / y);
+
+    var tiles = game.add.group();
+
+
+    for(var i=0;i<y;i++)
     {
-        var x=20;
-        var y=12;
+        for(var j=0;j<x;j++) {
+            var tmp=BS.map[i][j].ground;
+            var cell;
 
-        var xStep=Math.floor(w/x);
-        var yStep=Math.floor(h/y);
-
-        field=game.add.group();
-
-        field.create(0,0,'Grass');
-        field.create(xStep*(1+1),yStep*(1+1),'Grass');
-
+            if(tmp==1){cell=tiles.create(xStep*(j),yStep*(i),'Grass');}
+            else if(tmp==2){cell=tiles.create(xStep*(j),yStep*(i),'Cover');}
+            else if(tmp==3){cell=tiles.create(xStep*(j),yStep*(i),'Danger');}
+            else if(tmp==4){cell=tiles.create(xStep*(j),yStep*(i),'Diff');}
+            else if(tmp==5){cell=tiles.create(xStep*(j),yStep*(i),'Unreach');}
+        }
     }
+}
+
+
+function update() {
+
+}
+
+
 Template.Battlefield.onRendered(function(){
 
+    game = new Phaser.Game(w, h, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
-});
+   });
+
+
 /**
  * A very bad calculate a window param
- * need adaptive rebild
+ * need adaptive rebuild
  */
-
-
 Template.Battlefield.onCreated(function(){
 
 
     h=$(window).height()-40;
     w=$(window).width()-40;
 
-    console.log(w+" "+h);
-
     BS=battles.findOne({}).BS;
-
-    game = new Phaser.Game(w, h, Phaser.AUTO, 'field', { preload: preload, create: create, update: update });
-
-    function preload() {
-        game.load.image('Grass', 'BattleResource/Grass.png');
-        game.load.image('Cover', 'BattleResource/Cover.png');
-        game.load.image('Danger', 'BattleResource/Danger.png');
-        game.load.image('Diff', 'BattleResource/Diff.png');
-        game.load.image('Unreach', 'BattleResource/Unreach.png');
-    }
-
-});
+    });
 
 Template.Battlefield.helpers({
 
