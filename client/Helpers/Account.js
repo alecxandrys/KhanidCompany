@@ -4,7 +4,6 @@
 Accounts.ui.config({
     passwordSignupFields: 'USERNAME_ONLY'
 });
-
 /**
  *Logout us:
  *Meteor.logout(); Client only
@@ -18,6 +17,7 @@ Accounts.ui.config({
  *
  *Logout other, who use this login/pass
  */
-Accounts.onLogin(function() {
+Accounts.onLogin(function()
+{
     Meteor.logoutOtherClients();
 });

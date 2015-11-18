@@ -3,22 +3,22 @@
  * We need phaser.io here!!!
  */
 Meteor.subscribe('battles');
-
 var game;
-BS={};
+BS = {};
 var h;
 var w;
 /**
  * Basic image height=80
  * Basic image width=60
  */
-function preload() {
-    game.load.image('Grass', 'BattleResource/Grass.png');
-    game.load.image('Cover', 'BattleResource/Cover.png');
-    game.load.image('Danger', 'BattleResource/Danger.png');
-    game.load.image('Diff', 'BattleResource/Diff.png');
-    game.load.image('Unreached', 'BattleResource/Unreached.png');
-}
+function preload()
+    {
+        game.load.image('Grass', 'BattleResource/Grass.png');
+        game.load.image('Cover', 'BattleResource/Cover.png');
+        game.load.image('Danger', 'BattleResource/Danger.png');
+        game.load.image('Diff', 'BattleResource/Diff.png');
+        game.load.image('Unreached', 'BattleResource/Unreached.png');
+    }
 /**
  * Scale cell here
  * it's a multiple point, can be float.
@@ -31,15 +31,11 @@ function create()
     {
         var x = 20;
         var y = 12;
-
         var xStep = Math.floor(w / (x + 0.5));
         var yStep = Math.floor(h / (y + 0.5));
-
         var tiles = game.add.group();
-
-        var xScale=h/1230;
-        var yScale=w/960;
-
+        var xScale = w / 1230;
+        var yScale = h / 960;
         for(var i = 0; i < y; i++)
             {
                 var shift = i % 2;
@@ -67,40 +63,29 @@ function create()
                             {
                                 cell = tiles.create(Math.floor(xStep * (j + 0.5 * shift)), yStep * (i), 'Unreached');
                             }
-
                         //scale itself
-                        cell.scale.setTo(xScale,yScale);
+                        cell.scale.setTo(xScale, yScale);
                     }
             }
     }
-
-
-function update() {
-
-}
-
-
-Template.Battlefield.onRendered(function(){
-
-    game = new Phaser.Game(w, h, Phaser.AUTO, 'field', { preload: preload, create: create, update: update });
-    });
-
-
+function update()
+    {
+    }
+Template.Battlefield.onRendered(function()
+{
+    game = new Phaser.Game(w, h, Phaser.AUTO, 'field', {preload: preload, create: create, update: update});
+});
 /**
  * A very bad calculate a window param
  * need adaptive rebuild
  */
-Template.Battlefield.onCreated(function(){
-
-
-    h=$(window).height()-40;
-    w=$(window).width()-40;
-
-    BS=battles.findOne({}).BS;
-    });
-
+Template.Battlefield.onCreated(function()
+{
+    h = $(window).height() - 40;
+    w = $(window).width() - 40;
+    BS = battles.findOne({}).BS;
+});
 Template.Battlefield.helpers({
-
     name1: function()
         {
             return battles.findOne().name1;

@@ -1,17 +1,16 @@
 <template name="wait">
-<div class="container">
-    <a class="'id">{{battleID}}</a>
-    {{#each players}}
-        <div class="waiter">
-            <a>
-                {{username}}
-            </a>
-            <a>
-                {{rate}}
-            </a>
-        </div>
+    <div class="container">
+        <a class="'id">{{battleID}}</a>
+        {{#each players}}
+            <div class="waiter">
+                <a>
+                    {{username}}
+                </a>
+                <a>
+                    {{rate}}
+                </a>
+            </div>
         {{/each}}
 
-
     </div>
-    </template>
+</template>
