@@ -9,11 +9,15 @@
  * @param sizeX
  * @param sizeY
  * @constructor
+ * @param deck1
+ * @param deck2
  */
-BattleState = function(ID, sizeX, sizeY)
+BattleState = function(ID, sizeX, sizeY,deck1,deck2)
     {
         var mapHash = setMapHash(sizeX, sizeY);
         this.map = createMap(mapHash, sizeX, sizeY);
+        this.deck1=deck1;
+        this.deck2=deck2;
     };
 /**
  *generate a massive (in object) of object, that consist state all of cells

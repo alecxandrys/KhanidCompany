@@ -75,7 +75,7 @@ Template.Card.events({
                 }
             else
                 {
-                    Meteor.call("addPlayerInQueue");
+                    Meteor.call("addPlayerInQueue",Deck);
                     Router.go('/wait');
                 }
         }

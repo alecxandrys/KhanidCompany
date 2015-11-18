@@ -1,8 +1,8 @@
 Meteor.methods({
-    addPlayerInQueue: function()
+    addPlayerInQueue: function(Deck)
         {
             var x = Meteor.user();
-            readyPlayers.insert({userId: x._id, username: x.username, rate: x.rateELO})
+            readyPlayers.insert({userId: x._id, username: x.username, rate: x.rateELO, deck:Deck});
         }
 });
 /**
@@ -34,7 +34,7 @@ Meteor.startup(function()
                             //need to translate object
                             //need async call for this shit
                             //Will keep in waitingCollection
-                            var BS = new BattleState(path, 20, 12);
+                            var BS = new BattleState(path, 20, 12,prevuser.deck,user.deck);
                             console.log(path + " " + " ===1 " + " " + index);
                             battles.insert({
                                 ID1     : prevuser.userId,
