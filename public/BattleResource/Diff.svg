@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6"
-     inkscape:cx="9.6492732"
+     inkscape:cx="-16.95787"
      inkscape:cy="44.479965"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -45,7 +45,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -71,7 +71,7 @@
        d="m 45.17857,1019.1479 -52.4088709,10.7749 -35.5357131,-40.00002 16.873159,-50.77483 52.408871,-10.77483 35.535713,40 z" />
     <path
        sodipodi:type="star"
-       style="opacity:1;fill:#ff5e00;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.72498891;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:1;stroke-linecap:butt"
+       style="opacity:1;fill:#ff5e00;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.72498894;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:1"
        id="path4192"
        sodipodi:sides="6"
        sodipodi:cx="26.249998"
@@ -84,6 +84,6 @@
        inkscape:rounded="0"
        inkscape:randomized="0"
        d="m 39.464285,1018.0765 -26.402011,0.015 -13.21428714,-22.8571 13.18772414,-22.87248 26.402012,-0.0153 13.214286,22.85714 z"
-       transform="matrix(1.1185412,0,0,1.7216182,0.63829619,-701.02742)" />
+       transform="matrix(0,1.4995941,-1.2912072,0,1315.1814,973.04565)" />
   </g>
 </svg>
