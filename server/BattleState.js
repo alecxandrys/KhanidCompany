@@ -5,6 +5,10 @@
  * Create a Object, which consist a data to display to player
  * Style of declare is package-scope, so without var.
  * See Main&Card to make reactive;
+ *
+ * Status:
+ * 0-allocation;
+ * 1-active game;
  * @param ID
  * @param sizeX
  * @param sizeY
@@ -12,12 +16,13 @@
  * @param deck1
  * @param deck2
  */
-BattleState = function(ID, sizeX, sizeY,deck1,deck2)
+BattleState = function(ID, sizeX, sizeY, deck1, deck2)
     {
         var mapHash = setMapHash(sizeX, sizeY);
         this.map = createMap(mapHash, sizeX, sizeY);
-        this.deck1=deck1;
-        this.deck2=deck2;
+        this.deck1 = deck1;
+        this.deck2 = deck2;
+        this.status = 0;
     };
 /**
  *generate a massive (in object) of object, that consist state all of cells
