@@ -18,7 +18,7 @@ function preload() {
     game.load.image('Cover', 'BattleResource/Cover.svg');
     game.load.image('Danger', 'BattleResource/Danger.svg');
     game.load.image('Diff', 'BattleResource/Diff.svg');
-    game.load.image('Unreach', 'BattleResource/Unreach.svg');
+    game.load.image('Unreached', 'BattleResource/Unreached.svg');
 }
 
 
