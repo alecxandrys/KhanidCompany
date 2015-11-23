@@ -11,11 +11,11 @@ var w;
 
 
 function preload() {
-    game.load.image('Grass', 'BattleResource/Grass.png');
-    game.load.image('Cover', 'BattleResource/Cover.png');
-    game.load.image('Danger', 'BattleResource/Danger.png');
-    game.load.image('Diff', 'BattleResource/Diff.png');
-    game.load.image('Unreach', 'BattleResource/Unreach.png');
+    game.load.image('Grass', 'BattleResource/Grass.svg');
+    game.load.image('Cover', 'BattleResource/Cover.svg');
+    game.load.image('Danger', 'BattleResource/Danger.svg');
+    game.load.image('Diff', 'BattleResource/Diff.svg');
+    game.load.image('Unreach', 'BattleResource/Unreach.svg');
 }
 
 /**
