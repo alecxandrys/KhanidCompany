@@ -4,35 +4,36 @@
             {{>navigate}}
         </nav>
 
-    <div class="info">
-    </div>
+        <div class="info">
+        </div>
         <button class="clear">Clear deck</button>
         <button class="ready">Battle</button>
-        
-            <div class="left-hand">
-    {{#each cards}}
-        <div class="card">
-            {{name}}
-            <a class="id">{{@index}}</a>
-            <div class="card-content">
-                {{description}}
-            </div>
-        </div>
-    {{/each}}
-            </div>
 
+        <div class="left-hand">
+            {{#each cards}}
+                <div class="card">
+                    {{name}}
+                    <a class="id">{{@index}}</a>
+
+                    <div class="card-content">
+                        {{description}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
 
         <div class="right-hand">
 
-        {{#each deck}}
-            <div class="added-card">
-                {{name}}
-                <a class="id">{{@index}}</a>
-                <div class="card-content">
-                    {{description}}
+            {{#each deck}}
+                <div class="added-card">
+                    {{name}}
+                    <a class="id">{{@index}}</a>
+
+                    <div class="card-content">
+                        {{description}}
+                    </div>
                 </div>
-            </div>
-        {{/each}}
+            {{/each}}
         </div>
 
     </div>

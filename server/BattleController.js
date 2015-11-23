@@ -6,13 +6,13 @@
  * must return a boolean, or some result of dice
  */
 Meteor.methods({
-    canReach:function(){
-
-    },
-    canShoot: function () {
-
-    },
-    canSetup:function() {
-
-    }
+    canReach: function()
+        {
+        },
+    canShoot: function()
+        {
+        },
+    canSetup: function()
+        {
+        }
 });

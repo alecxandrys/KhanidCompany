@@ -1,64 +1,72 @@
-.siteBody {
-    font-family: serif;
-    background: #315481 url(/SiteResource/mainfon.jpg) no-repeat fixed;
-    background-size:100%;
-    font-size: 14px;
-
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 0;
-    margin: 0;
+.siteBody
+{
+    font-family     : serif;
+    background      : #315481 url(/SiteResource/mainfon.jpg) no-repeat fixed;
+    background-size : cover;
+    font-size       : 14px;
+    position        : absolute;
+    top             : 0;
+    bottom          : 0;
+    left            : 0;
+    right           : 0;
+    padding         : 0;
+    margin          : 0;
 }
 
-.container {
-    max-width: 500px;
-    margin: 0 auto;
-    min-height: 100%;
-    background: white;
+.container
+{
+    max-width  : 500px;
+    margin     : 0 auto;
+    min-height : 100%;
+    background : white;
 }
 
-header {
-    background: #d2edf4 linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
-    padding: 20px 15px 15px 15px;
-    position: relative;
+header
+{
+    background : #d2edf4 linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
+    padding    : 20px 15px 15px 15px;
+    position   : relative;
 }
 
-a.id{
-     display:none;
- }
-
-.card {
-    background:saddlebrown;
-    margin: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-
-}
-.card-content {
-
+a.id
+{
+    display : none;
 }
 
-.left-hand {
-    max-width: 45%;
-    float:left;
+.card
+{
+    background     : saddlebrown;
+    margin         : 5px;
+    padding-bottom : 5px;
+    padding-left   : 5px;
 }
 
-.right-hand {
-    max-width: 45%;
-    float:left;
-    overflow-y: auto;
-    max-height: 500px;
-
+.card-content
+{
 }
-.added-card {
-    background: darkred ;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    margin: 5px;
-}
-.ready {
 
+.left-hand
+{
+    max-width : 45%;
+    float     : left;
+}
+
+.right-hand
+{
+    max-width  : 45%;
+    float      : left;
+    overflow-y : auto;
+    max-height : 500px;
+}
+
+.added-card
+{
+    background     : darkred;
+    padding-bottom : 5px;
+    padding-left   : 5px;
+    margin         : 5px;
+}
+
+.ready
+{
 }
