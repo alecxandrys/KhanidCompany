@@ -107,8 +107,20 @@ Template.Battlefield.helpers({
     name1       : function()
         {
             return battles.findOne().name1;
-        }, name2: function()
+        },
+    name2       : function()
         {
             return battles.findOne().name2;
         }
 });
+/**
+ * Must rerun every time,when BS update
+ */
+Template.Battlefield.autorun(function(){
+    BS = battles.findOne({}).BS;
+
+});
+
+
+
+
