@@ -6,7 +6,6 @@
 
 accounts-password
 iron:router
-standard-minifiers
 meteor-base
 mobile-experience
 mongo
@@ -22,3 +21,5 @@ spacebars
 check
 accounts-ui
 gnomathibus:meteor-phaser
+standard-minifier-css
+standard-minifier-js

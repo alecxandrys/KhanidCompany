@@ -49,6 +49,20 @@ preloadState.prototype = {
 
     create:function ()
     {
+        this.state.start ('main');
+    },
+
+    fileComplete: function(progress) {
+        this.text.text='Loading '+ progress + '%';
+    }
+};
+
+var mainState =function (t) {
+};
+mainState.prototype = {
+    preload:function() {
+    },
+    create:function () {
         var tiles = this.add.group();
         for(var i = 0; i < 12; i++)
             {
@@ -56,8 +70,8 @@ preloadState.prototype = {
                     {
                         var cell;
                         var tmp = BS.map[i][j].ground;
-                        var xCoordinate=60*i+(j%2)*30;//and a half shifting in each second row
-                        var yCoordinate=60*j;//60 is R(vertical side) + vertical shift ((80-R)/2)
+                        var xCoordinate=60*j+(i%2)*30;//and a half shifting in each second row
+                        var yCoordinate=60*i;//60 is R(vertical side) + vertical shift ((80-R)/2)
                         if(tmp == 1)
                             {
                                 cell = tiles.create(xCoordinate, yCoordinate, 'Grass');
@@ -84,20 +98,6 @@ preloadState.prototype = {
                         //scale itself
                     }
             }
-        this.state.start ('main');
-    },
-
-    fileComplete: function(progress) {
-        this.text.text='Loading '+ progress + '%';
-    }
-};
-
-var mainState =function (t) {
-};
-mainState.prototype = {
-    preload:function() {
-    },
-    create:function () {
     }
 };
 
@@ -113,7 +113,7 @@ finalState.prototype = {
 Template.Battlefield.onRendered(function()
 {
 
-    game = new Phaser.Game( 1920 , 1080 , Phaser.AUTO, 'field');//1280*720 basic
+    game = new Phaser.Game( 1230 , 740 , Phaser.AUTO, 'field');//1280(60*20.5)*740(80*9.25) basic
     game.global = {},
         game.state.add('boot',bootState),
         game.state.add('preload',preloadState),
@@ -138,9 +138,5 @@ Template.Battlefield.helpers({
         }
 });
 /**
- * Must rerun every time,when BS update
+ * Must rerun every time,when BS update. This variant unable
  */
-Template.Battlefield.autorun(function(){
-    BS = battles.findOne({}).BS;
-
-});
