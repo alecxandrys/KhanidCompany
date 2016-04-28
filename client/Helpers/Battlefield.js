@@ -1,61 +1,63 @@
 /**
  * Created by Alecxandrys on 10.11.2015.
- * We need phaser.io here!!!
  */
 Meteor.subscribe('battles');
 var game;
-//local scope for work
-//var BS={};
-//global scope for debug
 var BS = {};
-var h;
-var w;
 /**
  * Basic image height=80
  * Basic image width=60
  */
 
-function preload()
-    {
-        game.load.image('Grass', 'BattleResource/Grass.svg');
-        game.load.image('Cover', 'BattleResource/Cover.svg');
-        game.load.image('Danger', 'BattleResource/Danger.svg');
-        game.load.image('Diff', 'BattleResource/Diff.svg');
-        game.load.image('Unreached', 'BattleResource/Unreached.svg');
+var bootState = function (t) {
+
+};
+bootState.prototype = {
+    preload:function() {
+
+    },
+    /**
+     * Scale cell here
+     */
+    create:function () {
+        var field=$('field');
+        this.scale.maxWidth = field.width;
+        this.scale.maxHeight = field.height;
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.scale.pageAlignHorizontally = true;
+        this.state.start ('preload');
     }
-/**
- * Scale cell here
- * it's a multiple point, can be float.
- * Ideal width is 60*20.5=1230;
- *
- * Epic bug: 9R-height;
- * Not 12, because we need vertical xShift;
- * D=2R
- *Ideal height is 80*9D=720;
- *
- * h/1230=x scale factor;
- * w/1440=y scale factor;
- */
-function create()
+};
+
+var preloadState =function (t) {
+
+};
+preloadState.prototype = {
+
+    preload:function ()
     {
-        var x = 20;
-        var y = 12;
-        var xStep = Math.floor(w / (x + 0.5));//add step for xShift
-        var yStep = Math.floor(h / (y*2));
-        var tiles = game.add.group();
-        var xScale = w / 1230;
-        var yScale = h / 720;
-        //hardcode 12, because y now consist a R-size
-        for(var i = 0; i < y; i++)
+        this.text = this.add.text(this.game.width / 2, this.game.height / 2, 'загрузка', {fill: '#ffffff'});
+        this.text.anchor.set(0.5, 0.5);
+        this.load.onFileComplete.add(this.fileComplete, this);
+
+        this.load.image('Grass', 'BattleResource/Grass.svg');
+        this.load.image('Cover', 'BattleResource/Cover.svg');
+        this.load.image('Danger', 'BattleResource/Danger.svg');
+        this.load.image('Diff', 'BattleResource/Diff.svg');
+        this.load.image('Unreached', 'BattleResource/Unreached.svg');
+    },
+
+    create:function ()
+    {
+        var tiles = this.add.group();
+        for(var i = 0; i < 12; i++)
             {
-                var xShift = i % 2;
-                for(var j = 0; j < x; j++)
+                for(var j = 0; j < 20; j++)
                     {
                         var cell;
                         var tmp = BS.map[i][j].ground;
-                        //2-margin from left
-                        var xCoordinate = xStep * (j + 0.5 * xShift) + 2;
-                        var yCoordinate = yStep * (i * 2);
+                        var xCoordinate=60*i+(j%2)*30;//and a half shifting in each second row
+                        var yCoordinate=60*j;//60 is R(vertical side) + vertical shift ((80-R)/2)
                         if(tmp == 1)
                             {
                                 cell = tiles.create(xCoordinate, yCoordinate, 'Grass');
@@ -80,29 +82,51 @@ function create()
                         BS.map[i][j].x = xCoordinate;
                         BS.map[i][j].y = yCoordinate;
                         //scale itself
-                        cell.scale.setTo(xScale, yScale);
                     }
             }
+        this.state.start ('main');
+    },
+
+    fileComplete: function(progress) {
+        this.text.text='Loading '+ progress + '%';
     }
-function update()
-    {
+};
+
+var mainState =function (t) {
+};
+mainState.prototype = {
+    preload:function() {
+    },
+    create:function () {
     }
+};
+
+var finalState =function (t) {
+};
+finalState.prototype = {
+    preload:function() {
+    },
+    create:function () {
+    }
+};
+
 Template.Battlefield.onRendered(function()
 {
-    var field = $("#field");
-    h = field.height();
-    w = field.width();
-    //this 8 fix a round error, so they need;
-    game = new Phaser.Game(w, h + 8, Phaser.AUTO, 'field', {preload: preload, create: create, update: update});
+
+    game = new Phaser.Game( 1920 , 1080 , Phaser.AUTO, 'field');//1280*720 basic
+    game.global = {},
+        game.state.add('boot',bootState),
+        game.state.add('preload',preloadState),
+        game.state.add('main',mainState),
+        game.state.add('final',finalState);
+    game.state.start('boot')
 });
-/**
- * A very bad calculate a window param
- * need adaptive rebuild
- */
+
 Template.Battlefield.onCreated(function()
 {
     BS = battles.findOne({}).BS;
 });
+
 Template.Battlefield.helpers({
     name1       : function()
         {
@@ -120,7 +144,3 @@ Template.Battlefield.autorun(function(){
     BS = battles.findOne({}).BS;
 
 });
-
-
-
-
