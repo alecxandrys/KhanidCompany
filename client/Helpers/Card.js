@@ -1,9 +1,10 @@
 /**
- * Main for 'main','Card','News','PrivateOffice'
+ * Created by Alecxandrys on 29.04.2016.
  */
-
+/**
+ * Card template
+ */
 Meteor.subscribe("userData");
-Meteor.user();
 var Deck = {
     _unit      : [],
     _unitDepend: new Tracker.Dependency(),
@@ -23,22 +24,6 @@ var Deck = {
             this._unitDepend.changed();
         }
 };
-Template.Main.helpers({
-    /**
-     * @return {string}
-     */
-    Message: function()
-        {
-            if(!Meteor.userId() && Router.current().route.getName() !== undefined)
-                {
-                    return "You are not auth to visit this page";
-                }
-            else
-                {
-                    return "Welcome to WCG40k Khanid Company";
-                }
-        }
-});
 Template.Card.helpers({
     cards: function()
         {

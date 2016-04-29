@@ -2,21 +2,18 @@
  * Created by Alecxandrys on 23.10.2015.
  */
 
-// Only publish tasks that are public or belong to the current user
+    // Only publish tasks that are public or belong to the current user
 Meteor.publish("userData", function()
 {
     if(this.userId)
         {
             return Meteor.users.find({_id: this.userId}, {
                 fields: {
-                    createdAt  : 1,
-                    rateELO    : 1,
-                    rateCombine: 1,
-                    battleCount: 1,
-                    winPercent : 1
+                    createdAt: 1, rateELO: 1, rateCombine: 1, battleCount: 1, winPercent: 1
                 }
             });
-        } else
+        }
+    else
         {
             this.ready();
         }
@@ -31,15 +28,15 @@ Meteor.publish('readyPlayers', function()
  */
 Meteor.publish('battles', function()
 {
-    var x = Meteor.users.findOne({});
-    return battles.find({$or: [{name1: x.username}, {name2: x.username}]}, {
-        fields: {
-            name1   : 1,
-            name2   : 1,
-            battleID: 1,
-            BS      : 1
+    if(this.userId)
+        {
+            var x = Meteor.users.findOne({});
+            return battles.find({$or: [{name1: x.username}, {name2: x.username}]}, {
+                fields: {
+                    name1: 1, name2: 1, battleID: 1, BS: 1
+                }
+            });
         }
-    });
 });
 Accounts.onCreateUser(function(options, user)
 {
@@ -47,7 +44,8 @@ Accounts.onCreateUser(function(options, user)
         {
             console.log('error creating user');
             return;
-        } else
+        }
+    else
         {
             if(options.profile)
                 {
