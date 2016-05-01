@@ -15,7 +15,7 @@
 
 .container
 {
-    max-width  : 500px;
+    max-width  : 50%;
     margin     : 0 auto;
     min-height : 100%;
     background : white;
@@ -53,10 +53,10 @@ a.id
 
 .right-hand
 {
-    max-width  : 45%;
-    float      : left;
+    max-width  : 50%;
     overflow-y : auto;
     max-height : 500px;
+
 }
 
 .added-card

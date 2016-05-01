@@ -52,11 +52,16 @@ Template.Card.events({
         {
             Deck.erase();
         },
+    //TODO:finish work, add price of squad
     "click .ready"  : function()
         {
             if(Deck._unit.length === 0)
                 {
                     alert("Deck is empty, you cannot join in battle");
+                }
+            else if (Deck._unit.length>20)
+                {
+                    alert("deck is too large, erase some squad");
                 }
             else
                 {
