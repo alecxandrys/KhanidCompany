@@ -20,7 +20,10 @@ Meteor.publish("userData", function()
 });
 Meteor.publish('readyPlayers', function()
 {
-    return readyPlayers.find({}, {fields: {username: 1, rate: 1}});
+    if(this.userId)
+        {
+            return readyPlayers.find({}, {fields: {username: 1, rate: 1}});
+        }
 });
 /**
  * Check name1 equal or name2 equal to update date and check ready status of field and battle controller

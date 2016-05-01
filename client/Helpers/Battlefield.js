@@ -1,9 +1,10 @@
 /**
  * Created by Alecxandrys on 10.11.2015.
+ * Remember, that game and BS in debug mod only without var
  */
 Meteor.subscribe('battles');
-var game;
-var BS = {};
+game = {};
+BS = {};
 /**
  * Basic image height=80
  * Basic image width=60
@@ -49,7 +50,7 @@ preloadState.prototype = {
 
     create:function ()
     {
-        this.state.start ('main');
+        this.state.start ('reconnaissance');
     },
 
     fileComplete: function(progress) {
@@ -57,13 +58,73 @@ preloadState.prototype = {
     }
 };
 
-var mainState =function (t) {
+var reconnaissanceState =function (t) {
 };
-mainState.prototype = {
+reconnaissanceState.prototype = {
     preload:function() {
     },
     create:function () {
-        var tiles = this.add.group();
+        RenderField();
+
+
+    }
+};
+
+var battleState =function (t) {
+};
+battleState.prototype = {
+    preload:function() {
+    },
+    create:function () {
+    }
+};
+
+var finalState =function (t) {
+};
+finalState.prototype = {
+    preload:function() {
+    },
+    create:function () {
+    }
+};
+
+Template.Battlefield.onRendered(function()
+{
+
+    game = new Phaser.Game( 1230 , 740 , Phaser.AUTO, 'field');//1280(60*20.5)*740(80*9.25) basic
+    game.global = {},
+        game.state.add('boot',bootState),
+        game.state.add('preload',preloadState),
+        game.state.add('reconnaissance',reconnaissanceState),
+        game.state.add('battle',battleState);
+        game.state.add('final',finalState);
+    game.state.start('boot')
+});
+
+Template.Battlefield.onCreated(function()
+{
+    BS = battles.findOne({}).BS;
+});
+
+Template.Battlefield.helpers({
+    name1       : function()
+        {
+            return battles.findOne().name1;
+        },
+    name2       : function()
+        {
+            return battles.findOne().name2;
+        }
+});
+/**
+ * render field
+ * if in reconnaissance that render only ground
+ * else (battle) add render deck
+ * @constructor
+ */
+function RenderField()
+    {
+        var tiles = game.add.group();
         for(var i = 0; i < 12; i++)
             {
                 for(var j = 0; j < 20; j++)
@@ -98,45 +159,10 @@ mainState.prototype = {
                         //scale itself
                     }
             }
+        if (game.state.current=='reconnaissance')
+            {
+
+            }
+
     }
-};
 
-var finalState =function (t) {
-};
-finalState.prototype = {
-    preload:function() {
-    },
-    create:function () {
-    }
-};
-
-Template.Battlefield.onRendered(function()
-{
-
-    game = new Phaser.Game( 1230 , 740 , Phaser.AUTO, 'field');//1280(60*20.5)*740(80*9.25) basic
-    game.global = {},
-        game.state.add('boot',bootState),
-        game.state.add('preload',preloadState),
-        game.state.add('main',mainState),
-        game.state.add('final',finalState);
-    game.state.start('boot')
-});
-
-Template.Battlefield.onCreated(function()
-{
-    BS = battles.findOne({}).BS;
-});
-
-Template.Battlefield.helpers({
-    name1       : function()
-        {
-            return battles.findOne().name1;
-        },
-    name2       : function()
-        {
-            return battles.findOne().name2;
-        }
-});
-/**
- * Must rerun every time,when BS update. This variant unable
- */
