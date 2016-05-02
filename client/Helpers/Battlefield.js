@@ -64,66 +64,11 @@ reconnaissanceState.prototype = {
     preload:function() {
     },
     create:function () {
-        RenderField();
+        this.RenderField();
 
 
-    }
-};
-
-var battleState =function (t) {
-};
-battleState.prototype = {
-    preload:function() {
     },
-    create:function () {
-    }
-};
-
-var finalState =function (t) {
-};
-finalState.prototype = {
-    preload:function() {
-    },
-    create:function () {
-    }
-};
-
-Template.Battlefield.onRendered(function()
-{
-
-    game = new Phaser.Game( 1230 , 740 , Phaser.AUTO, 'field');//1280(60*20.5)*740(80*9.25) basic
-    game.global = {},
-        game.state.add('boot',bootState),
-        game.state.add('preload',preloadState),
-        game.state.add('reconnaissance',reconnaissanceState),
-        game.state.add('battle',battleState);
-        game.state.add('final',finalState);
-    game.state.start('boot')
-});
-
-Template.Battlefield.onCreated(function()
-{
-    BS = battles.findOne({}).BS;
-});
-
-Template.Battlefield.helpers({
-    name1       : function()
-        {
-            return battles.findOne().name1;
-        },
-    name2       : function()
-        {
-            return battles.findOne().name2;
-        }
-});
-/**
- * render field
- * if in reconnaissance that render only ground
- * else (battle) add render deck
- * @constructor
- */
-function RenderField()
-    {
+    RenderField:function() {
         var tiles = game.add.group();
         for(var i = 0; i < 12; i++)
             {
@@ -153,16 +98,103 @@ function RenderField()
                             {
                                 cell = tiles.create(xCoordinate, yCoordinate, 'Unreached');
                             }
-                        //Save coordinate
-                        BS.map[i][j].x = xCoordinate;
-                        BS.map[i][j].y = yCoordinate;
-                        //scale itself
+                        //Save coordinate.Maybe it's unnecessary?
+                        BS.map[i][j].xCoordinate = xCoordinate;
+                        BS.map[i][j].yCoordinate = yCoordinate;
+
+                        //Remember the coordinate to cell
+                        cell.xCoordinate=xCoordinate;
+                        cell.yCoordinate=yCoordinate;
+
+                        //remember index of cell
+                        cell.row=i;
+                        cell.collomn=j;
+
+                        cell.inputEnabled=true;
+                        cell.events.onInputDown.add(this.addSquad,this)
                     }
             }
-        if (game.state.current=='reconnaissance')
-            {
+    },
+    /**
+     * This wor
+     * @param cell current cell with saved param< like index and coordinate.
+     */
+    addSquad:function(cell)
+        {
+            //console.log("cell event"+cell.xCoordinate+" "+cell.yCoordinate);
+        }
+};
 
-            }
-
+var battleState =function (t) {
+};
+battleState.prototype = {
+    preload:function() {
+    },
+    create:function () {
     }
+};
 
+var finalState =function (t) {
+};
+finalState.prototype = {
+    preload:function() {
+    },
+    create:function () {
+    }
+};
+/**
+ * Template always after all other code
+ */
+Template.Battlefield.onRendered(function()
+{
+
+    game = new Phaser.Game( 1230 , 740 , Phaser.AUTO, 'field');//1280(60*20.5)*740(80*9.25) basic
+    game.global = {},
+        game.state.add('boot',bootState),
+        game.state.add('preload',preloadState),
+        game.state.add('reconnaissance',reconnaissanceState),
+        game.state.add('battle',battleState);
+    game.state.add('final',finalState);
+    game.state.start('boot')
+});
+
+Template.Battlefield.onCreated(function()
+{
+    BS = battles.findOne({}).BS;
+});
+/**
+ * This isn't final
+ * TODO:save who you are in session o local var, or triple request to mongo
+ */
+Template.Battlefield.helpers({
+    name1       : function()
+        {
+            return battles.findOne().name1;
+        },
+    name2       : function()
+        {
+            return battles.findOne().name2;
+        },
+    cards:function()
+        {
+            if (Meteor.user().username==battles.findOne().name1)
+                {
+                    return BS.deck1;
+                }
+            else if (Meteor.user().username==battles.findOne().name2)
+            {
+                return BS.deck2;
+            }
+            else {
+                    alert ("You name doesn't consist in battlestate");
+                }
+
+        },
+    /**
+     *need understand how changed this
+     */
+    reconnaissance:
+        {
+            state:true
+        }
+});

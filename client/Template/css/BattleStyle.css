@@ -13,3 +13,14 @@
     width  : 100%;
     height : 80%;
 }
+.left-panel
+{
+    float:left;
+    max-width: 50%;
+    overflow-y:auto;
+}
+.right-panel
+{
+    max-width: 50%;
+    overflow-y:auto;
+}
