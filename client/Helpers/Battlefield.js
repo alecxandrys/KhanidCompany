@@ -67,12 +67,14 @@ reconnaissanceState.prototype = {
     preload:function() {
     },
     create:function () {
+        game.tiles = game.add.group();
+        game.squads = game.add.group();
         this.RenderField();
 
 
     },
     RenderField:function() {
-        var tiles = game.add.group();
+        game.tiles = game.add.group();
         for(var i = 0; i < 12; i++)
             {
                 for(var j = 0; j < 20; j++)
@@ -83,23 +85,23 @@ reconnaissanceState.prototype = {
                         var yCoordinate=60*i;//60 is R(vertical side) + vertical shift ((80-R)/2)
                         if(tmp == 1)
                             {
-                                cell = tiles.create(xCoordinate, yCoordinate, 'Grass');
+                                cell = game.tiles.create(xCoordinate, yCoordinate, 'Grass');
                             }
                         else if(tmp == 2)
                             {
-                                cell = tiles.create(xCoordinate, yCoordinate, 'Cover');
+                                cell = game.tiles.create(xCoordinate, yCoordinate, 'Cover');
                             }
                         else if(tmp == 3)
                             {
-                                cell = tiles.create(xCoordinate, yCoordinate, 'Danger');
+                                cell = game.tiles.create(xCoordinate, yCoordinate, 'Danger');
                             }
                         else if(tmp == 4)
                             {
-                                cell = tiles.create(xCoordinate, yCoordinate, 'Diff');
+                                cell = game.tiles.create(xCoordinate, yCoordinate, 'Diff');
                             }
                         else if(tmp == 0)
                             {
-                                cell = tiles.create(xCoordinate, yCoordinate, 'Unreached');
+                                cell = game.tiles.create(xCoordinate, yCoordinate, 'Unreached');
                             }
                         //Save coordinate.Maybe it's unnecessary?
                         battle.BS.map[i][j].xCoordinate = xCoordinate;
@@ -119,12 +121,15 @@ reconnaissanceState.prototype = {
             }
     },
     /**
-     * This wor
-     * @param cell current cell with saved param< like index and coordinate.
+     * This work
+     * @param cell current cell with saved param, like index and coordinate.
      */
     addSquad:function(cell)
         {
-
+            if (battle.BS.chosenCardId!=null)
+                {
+                    Meteor.call('setPosition',game.side,battle.BS.chosenCardId,cell.collomn,cell.row);
+                }
         }
 };
 
@@ -160,10 +165,7 @@ Template.Battlefield.onCreated(function()
     game.state.start('boot');
 
 });
-/**
- * This isn't final
- * TODO:save who you are in session o local var, or triple request to mongo
- */
+
 Template.Battlefield.helpers({
     name1       : function()
         {
@@ -177,10 +179,12 @@ Template.Battlefield.helpers({
         {
             if (Meteor.user().username==battle.name1)
                 {
+                    game.side=1;
                     return battle.BS.deck1;
                 }
             else if (Meteor.user().username==battle.name2)
             {
+                game.side=2;
                 return battle.BS.deck2;
             }
             else {
@@ -205,7 +209,7 @@ Template.Battlefield.helpers({
 Template.Battlefield.events({
     "click .card":function(event){
         event.preventDefault();
-        battle.BS.chosenCard=parseInt($(event.currentTarget).children('a').text());
+        game.chosenCardId=parseInt($(event.currentTarget).children('a').text());
     },
     "dbclick .card":function(event){
         event.preventDefault();

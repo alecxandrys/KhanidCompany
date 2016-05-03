@@ -6,13 +6,15 @@
  * must return a boolean, or some result of dice
  */
 Meteor.methods({
-    canReach: function()
+    /**
+     *
+     * @param player 1 or 2 player in battle
+     * @param card id of card in player's deck
+     * @param xCoordinate
+     * @param yCoordinate
+     */
+    setPosition: function(player, card, xCoordinate, yCoordinate)
         {
-        },
-    canShoot: function()
-        {
-        },
-    canSetup: function()
-        {
+
         }
 });
