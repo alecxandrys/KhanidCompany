@@ -3,7 +3,7 @@
  * Remember, that game and BS in debug mod only without var
  */
 var game;
-var battle;
+battle={};
 var _stateDep=new Deps.Dependency();
 /**
  * Basic image height=80
@@ -128,7 +128,8 @@ reconnaissanceState.prototype = {
         {
             if (battle.BS.chosenCardId!=null)
                 {
-                    Meteor.call('setPosition',game.side,battle.BS.chosenCardId,cell.collomn,cell.row);
+                    //battle_id and _id in battles collection is the same
+                    Meteor.call(battle._id,'setPosition',game.side,battle.BS.chosenCardId,cell.collomn,cell.row);
                 }
         }
 };

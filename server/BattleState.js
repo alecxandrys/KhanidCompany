@@ -22,7 +22,6 @@ BattleState = function(ID, sizeX, sizeY, deck1, deck2)
         this.map = createMap(mapHash, sizeX, sizeY);
         this.deck1 = deck1;
         this.deck2 = deck2;
-        this.status = 0;
     };
 /**
  *generate a massive (in object) of object, that consist state all of cells
