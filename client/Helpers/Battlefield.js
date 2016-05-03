@@ -2,9 +2,9 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
-Meteor.subscribe('battles');
 game = {};
-BS = {};
+battle = {};
+var _stateDep=new Deps.Dependency();
 /**
  * Basic image height=80
  * Basic image width=60
@@ -75,7 +75,7 @@ reconnaissanceState.prototype = {
                 for(var j = 0; j < 20; j++)
                     {
                         var cell;
-                        var tmp = BS.map[i][j].ground;
+                        var tmp = battle.BS.map[i][j].ground;
                         var xCoordinate=60*j+(i%2)*30;//and a half shifting in each second row
                         var yCoordinate=60*i;//60 is R(vertical side) + vertical shift ((80-R)/2)
                         if(tmp == 1)
@@ -99,8 +99,8 @@ reconnaissanceState.prototype = {
                                 cell = tiles.create(xCoordinate, yCoordinate, 'Unreached');
                             }
                         //Save coordinate.Maybe it's unnecessary?
-                        BS.map[i][j].xCoordinate = xCoordinate;
-                        BS.map[i][j].yCoordinate = yCoordinate;
+                        battle.BS.map[i][j].xCoordinate = xCoordinate;
+                        battle.BS.map[i][j].yCoordinate = yCoordinate;
 
                         //Remember the coordinate to cell
                         cell.xCoordinate=xCoordinate;
@@ -122,6 +122,7 @@ reconnaissanceState.prototype = {
     addSquad:function(cell)
         {
             //console.log("cell event"+cell.xCoordinate+" "+cell.yCoordinate);
+            _stateDep.changed();
         }
 };
 
@@ -145,9 +146,8 @@ finalState.prototype = {
 /**
  * Template always after all other code
  */
-Template.Battlefield.onRendered(function()
+Template.Battlefield.onCreated(function()
 {
-
     game = new Phaser.Game( 1230 , 740 , Phaser.AUTO, 'field');//1280(60*20.5)*740(80*9.25) basic
     game.global = {},
         game.state.add('boot',bootState),
@@ -155,12 +155,8 @@ Template.Battlefield.onRendered(function()
         game.state.add('reconnaissance',reconnaissanceState),
         game.state.add('battle',battleState);
     game.state.add('final',finalState);
-    game.state.start('boot')
-});
+    game.state.start('boot');
 
-Template.Battlefield.onCreated(function()
-{
-    BS = battles.findOne({}).BS;
 });
 /**
  * This isn't final
@@ -169,21 +165,21 @@ Template.Battlefield.onCreated(function()
 Template.Battlefield.helpers({
     name1       : function()
         {
-            return battles.findOne().name1;
+            return battle.name1;
         },
     name2       : function()
         {
-            return battles.findOne().name2;
+            return battle.name2;
         },
     cards:function()
         {
-            if (Meteor.user().username==battles.findOne().name1)
+            if (Meteor.user().username==battle.name1)
                 {
-                    return BS.deck1;
+                    return battle.BS.deck1;
                 }
-            else if (Meteor.user().username==battles.findOne().name2)
+            else if (Meteor.user().username==battle.name2)
             {
-                return BS.deck2;
+                return battle.BS.deck2;
             }
             else {
                     alert ("You name doesn't consist in battlestate");
@@ -191,10 +187,19 @@ Template.Battlefield.helpers({
 
         },
     /**
-     *need understand how changed this
+     *Deps.Dependency was added, work correctly
      */
-    reconnaissance:
+    reconnaissance:function()
         {
-            state:true
+            _stateDep.depend();
+            var isTrue;
+            isTrue = game.state.current == '' || game.state.current=="reconnaissance";
+            return {
+                state:isTrue
+            }
         }
+});
+Deps.autorun(function() {
+    Meteor.subscribe('battles');
+    battle=battles.findOne({});
 });
