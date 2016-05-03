@@ -2,8 +2,8 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
-game = {};
-battle = {};
+var game;
+var battle;
 var _stateDep=new Deps.Dependency();
 /**
  * Basic image height=80
@@ -46,6 +46,9 @@ preloadState.prototype = {
         this.load.image('Danger', 'BattleResource/Danger.svg');
         this.load.image('Diff', 'BattleResource/Diff.svg');
         this.load.image('Unreached', 'BattleResource/Unreached.svg');
+        this.load.image('Unreached', 'BattleResource/Devastator.svg');
+        this.load.image('Unreached', 'BattleResource/Scout.svg');
+        this.load.image('Unreached', 'BattleResource/Marine.svg');
     },
 
     create:function ()
@@ -121,8 +124,7 @@ reconnaissanceState.prototype = {
      */
     addSquad:function(cell)
         {
-            //console.log("cell event"+cell.xCoordinate+" "+cell.yCoordinate);
-            _stateDep.changed();
+
         }
 };
 
@@ -199,6 +201,19 @@ Template.Battlefield.helpers({
             }
         }
 });
+
+Template.Battlefield.events({
+    "click .card":function(event){
+        event.preventDefault();
+        battle.BS.chosenCard=parseInt($(event.currentTarget).children('a').text());
+    },
+    "dbclick .card":function(event){
+        event.preventDefault();
+        var id = parseInt($(event.currentTarget).children('a').text());
+    }
+
+});
+
 Deps.autorun(function() {
     Meteor.subscribe('battles');
     battle=battles.findOne({});
