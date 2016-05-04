@@ -26,11 +26,11 @@ Meteor.methods({
 
             if (player==1)
                 {
-                    battles.update(_id,{});
+                    battles.update(_id,{$set:{'BS.deck1[card].xCoordinate':xCoordinate,'BS.deck1[card].yCoordinate':yCoordinate}});
                 }
             if (player==2)
                 {
-                    battles.update(_id,{});
+                    battles.update(_id,{$set:{'BS.deck2[card].xCoordinate':xCoordinate,'BS.deck2[card].yCoordinate':yCoordinate}});
                 }
         }
 });
