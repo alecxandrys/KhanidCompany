@@ -24,13 +24,20 @@ Meteor.methods({
                 yCoordinate:{type:Number,min:0,max:12}
             }).validate(_id,player,card,xCoordinate,yCoordinate);
 
+            var deck;
             if (player==1)
                 {
-                    battles.update(_id,{$set:{'BS.deck1[card].xCoordinate':xCoordinate,'BS.deck1[card].yCoordinate':yCoordinate}});
+                    deck=battles.findOne({}).BS.deck1;
+                    deck[card].xCoordinate=xCoordinate;
+                    deck[card].yCoordinate=yCoordinate;
+                    battles.update(_id,{$set:{'BS.deck1':deck}});
                 }
             if (player==2)
                 {
-                    battles.update(_id,{$set:{'BS.deck2[card].xCoordinate':xCoordinate,'BS.deck2[card].yCoordinate':yCoordinate}});
+                    deck=battles.findOne({}).BS.deck2;
+                    deck[card].xCoordinate=xCoordinate;
+                    deck[card].yCoordinate=yCoordinate;
+                    battles.update(_id,{$set:{'BS.deck2':deck}});
                 }
         }
 });
