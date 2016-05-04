@@ -18,15 +18,16 @@ Meteor.methods({
         {
             new SimpleSchema({
                 _id:{type:String},
-                player:{type:Number,max:2,min:2},
+                player:{type:Number,min:1,max:2},
                 card:{type:Number},
                 xCoordinate:{type:Number,min:0,max:20},
                 yCoordinate:{type:Number,min:0,max:12}
-            }).validate(_id,player,card,xCoordinate,yCoordinate);
+            }).validate({_id:_id,player:player,card:card,xCoordinate:xCoordinate,yCoordinate:yCoordinate});
 
             var deck;
             if (player==1)
                 {
+                   // console.log('update done player1'+card);
                     deck=battles.findOne({}).BS.deck1;
                     deck[card].xCoordinate=xCoordinate;
                     deck[card].yCoordinate=yCoordinate;
@@ -34,6 +35,7 @@ Meteor.methods({
                 }
             if (player==2)
                 {
+                    //console.log('update done player2'+card);
                     deck=battles.findOne({}).BS.deck2;
                     deck[card].xCoordinate=xCoordinate;
                     deck[card].yCoordinate=yCoordinate;
