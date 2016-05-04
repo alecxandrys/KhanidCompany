@@ -2,8 +2,8 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
-game={};
-battle={};
+var game={};
+var battle={};
 var _stateDep=new Deps.Dependency();
 /**
  * Basic image height=80
@@ -72,6 +72,22 @@ reconnaissanceState.prototype = {
         this.RenderField();
 
 
+    },
+    update:function(){
+        battle.BS.deck1.forEach(function(squad) {
+            if (squad.placed)
+            {
+                var _squad;
+                _squad=game.squads.create(battle.BS.map[squad.column][squad.row].xCoordinate,battle.BS.map[squad.column][squad.row].yCoordinate,squad.name);
+            }
+        });
+        battle.BS.deck2.forEach(function(squad) {
+            if (squad.placed)
+            {
+                var _squad;
+                _squad=game.squads.create(battle.BS.map[squad.column][squad.row].xCoordinate,battle.BS.map[squad.column][squad.row].yCoordinate,squad.name);
+            }
+        });
     },
     RenderField:function() {
         game.tiles = game.add.group();
@@ -216,6 +232,37 @@ Template.Battlefield.events({
     "dbclick .card":function(event){
         event.preventDefault();
         var id = parseInt($(event.currentTarget).children('a').text());
+    },
+    "click .ready":function(event) {
+        var checkAllPlaced=true;
+        if (game.side==1)
+        {
+            //TODO make break interrupt (forEach cannot use break in-build)
+            battle.BS.deck1.forEach(function(squad)
+            {
+               if (squad.placed!=true)
+               {
+                   checkAllPlaced=false;
+               }
+            });
+        }
+        else
+        {
+            battle.BS.deck2.forEach(function(squad)
+            {
+                if (squad.placed!=true)
+                {
+                    checkAllPlaced=false;
+                }
+            });
+        }
+        if (!checkAllPlaced)
+        {checkAllPlaced=confirm("Placed all squad?");}
+        if (checkAllPlaced)
+        {
+            //go to next state, let's war begin
+        }
+
     }
 
 });

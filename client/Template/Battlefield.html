@@ -7,12 +7,16 @@
             {{#each cards}}
                 <div class="card">
                 <a class="id">{{@index}}</a>
-                {{name}}
+                    {{name}}
+                    {{#if placed}}
+                    {{column}}
+                    {{row}}
+                    {{/if}}
                 </div>
             {{/each}}
         {{/if}}
     </div>
     <div class="right-panel">
-
+        <button class="ready">Battle</button>
     </div>
 </template>
