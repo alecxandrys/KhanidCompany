@@ -46,6 +46,17 @@ Meteor.methods({
         },
     Status_ready:function(_id,player)
         {
-            new SimpleSchema()
+            new SimpleSchema({
+                _id:{type:String},
+                player:{type:Number,min:1,max:2}
+            }).validate({_id:_id,player:player});
+
+            switch(player)
+            {
+                case 1:{battles.update(_id,{$set:{state1:"ready"}});break;}
+                case 2:{battles.update(_id,{$set:{state2:"ready"}});break;}
+                default:{}
+            }
+
         }
 });

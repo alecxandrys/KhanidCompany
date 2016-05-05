@@ -2,8 +2,8 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
-var game={};
-var battle={};
+ game={};
+ battle={};
 var _stateDep=new Deps.Dependency();
 /**
  * Basic image height=80
@@ -46,9 +46,9 @@ preloadState.prototype = {
         this.load.image('Danger', 'BattleResource/Danger.svg');
         this.load.image('Diff', 'BattleResource/Diff.svg');
         this.load.image('Unreached', 'BattleResource/Unreached.svg');
-        this.load.image('Unreached', 'BattleResource/Devastator.svg');
-        this.load.image('Unreached', 'BattleResource/Scout.svg');
-        this.load.image('Unreached', 'BattleResource/Marine.svg');
+        this.load.image('Devastator', 'BattleResource/Devastator.svg');
+        this.load.image('Scout', 'BattleResource/Scout.svg');
+        this.load.image('Marine', 'BattleResource/Marine.svg');
     },
 
     create:function ()
@@ -67,6 +67,7 @@ reconnaissanceState.prototype = {
     preload:function() {
     },
     create:function () {
+        game.curState='reconnaissance';
         game.tiles = game.add.group();
         game.squads = game.add.group();
         this.RenderField();
@@ -79,6 +80,8 @@ reconnaissanceState.prototype = {
             {
                 var _squad;
                 _squad=game.squads.create(battle.BS.map[squad.column][squad.row].xCoordinate,battle.BS.map[squad.column][squad.row].yCoordinate,squad.name);
+                _squad.row=squad.row;
+                _squad.column=squad.column;
             }
         });
         battle.BS.deck2.forEach(function(squad) {
@@ -86,6 +89,8 @@ reconnaissanceState.prototype = {
             {
                 var _squad;
                 _squad=game.squads.create(battle.BS.map[squad.column][squad.row].xCoordinate,battle.BS.map[squad.column][squad.row].yCoordinate,squad.name);
+                _squad.row=squad.row;
+                _squad.column=squad.column;
             }
         });
     },
@@ -142,10 +147,9 @@ reconnaissanceState.prototype = {
      */
     addSquad:function(cell)
         {
-            if (game.chosenCardId!=undefined || game.chosenCardId!=null)
+            if (game.chosenCardId!=undefined || game.chosenCardId!=null && game.curState=='reconnaissance' )
                 {
                     //TODO make a error callback
-                    //console.log('chosen cards id is '+game.chosenCardId);
                     Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row);
                 }
         }
@@ -233,7 +237,7 @@ Template.Battlefield.events({
         event.preventDefault();
         var id = parseInt($(event.currentTarget).children('a').text());
     },
-    "click .ready":function(event) {
+    "click .ready":function() {
         var checkAllPlaced=true;
         if (game.side==1)
         {
@@ -261,6 +265,7 @@ Template.Battlefield.events({
         if (checkAllPlaced)
         {
             //go to next state, let's war begin
+            game.curState='wait';
             Meteor.call('Status_ready',battle._id,game.side);
         }
 
@@ -271,4 +276,12 @@ Template.Battlefield.events({
 Deps.autorun(function() {
     Meteor.subscribe('battles');
     battle=battles.findOne({});
+
+
+    //TODO check this autorun
+    if(battles.state1=="ready" && battle.state2=="ready")
+        {
+            game.state.start('battle');
+            game.curState='turn';
+        }
 });
