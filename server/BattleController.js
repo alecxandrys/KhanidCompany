@@ -11,26 +11,41 @@ Meteor.methods({
      * @param _id is the same in battle and in battles collection
      * @param player 1 or 2 player in battle
      * @param card id of card in player's deck
-     * @param xCoordinate
-     * @param yCoordinate
+     * @param column x position
+     * @param row y position
      */
-    setPosition: function(_id,player, card, xCoordinate, yCoordinate)
+    setPosition: function(_id,player, card, column, row)
         {
             new SimpleSchema({
                 _id:{type:String},
-                player:{type:Number,max:2,min:2},
+                player:{type:Number,min:1,max:2},
                 card:{type:Number},
-                xCoordinate:{type:Number,min:0,max:20},
-                yCoordinate:{type:Number,min:0,max:12}
-            }).validate(_id,player,card,xCoordinate,yCoordinate);
+                column:{type:Number,min:0,max:20},
+                row:{type:Number,min:0,max:12}
+            }).validate({_id:_id,player:player,card:card,column:column,row:row});
 
+            var deck;
             if (player==1)
                 {
-                    battles.update(_id,{$set:{'BS.deck1[card].xCoordinate':xCoordinate,'BS.deck1[card].yCoordinate':yCoordinate}});
+                   // console.log('update done player1'+card);
+                    deck=battles.findOne({}).BS.deck1;
+                    deck[card].column=column;
+                    deck[card].row=row;
+                    deck[card].placed=true;
+                    battles.update(_id,{$set:{'BS.deck1':deck}});
                 }
             if (player==2)
                 {
-                    battles.update(_id,{$set:{'BS.deck2[card].xCoordinate':xCoordinate,'BS.deck2[card].yCoordinate':yCoordinate}});
+                    //console.log('update done player2'+card);
+                    deck=battles.findOne({}).BS.deck2;
+                    deck[card].column=column;
+                    deck[card].row=row;
+                    deck[card].placed=true;
+                    battles.update(_id,{$set:{'BS.deck2':deck}});
                 }
+        },
+    Status_ready:function(_id,player)
+        {
+            new SimpleSchema()
         }
 });

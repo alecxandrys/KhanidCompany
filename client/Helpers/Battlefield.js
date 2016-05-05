@@ -2,8 +2,8 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
-var game;
-battle={};
+var game={};
+var battle={};
 var _stateDep=new Deps.Dependency();
 /**
  * Basic image height=80
@@ -73,6 +73,22 @@ reconnaissanceState.prototype = {
 
 
     },
+    update:function(){
+        battle.BS.deck1.forEach(function(squad) {
+            if (squad.placed)
+            {
+                var _squad;
+                _squad=game.squads.create(battle.BS.map[squad.column][squad.row].xCoordinate,battle.BS.map[squad.column][squad.row].yCoordinate,squad.name);
+            }
+        });
+        battle.BS.deck2.forEach(function(squad) {
+            if (squad.placed)
+            {
+                var _squad;
+                _squad=game.squads.create(battle.BS.map[squad.column][squad.row].xCoordinate,battle.BS.map[squad.column][squad.row].yCoordinate,squad.name);
+            }
+        });
+    },
     RenderField:function() {
         game.tiles = game.add.group();
         for(var i = 0; i < 12; i++)
@@ -126,10 +142,11 @@ reconnaissanceState.prototype = {
      */
     addSquad:function(cell)
         {
-            if (battle.BS.chosenCardId!=null)
+            if (game.chosenCardId!=undefined || game.chosenCardId!=null)
                 {
-                    //battle_id and _id in battles collection is the same
-                    Meteor.call(battle._id,'setPosition',game.side,battle.BS.chosenCardId,cell.collomn,cell.row);
+                    //TODO make a error callback
+                    //console.log('chosen cards id is '+game.chosenCardId);
+                    Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row);
                 }
         }
 };
@@ -215,6 +232,38 @@ Template.Battlefield.events({
     "dbclick .card":function(event){
         event.preventDefault();
         var id = parseInt($(event.currentTarget).children('a').text());
+    },
+    "click .ready":function(event) {
+        var checkAllPlaced=true;
+        if (game.side==1)
+        {
+            //TODO make break interrupt (forEach cannot use break in-build)
+            battle.BS.deck1.forEach(function(squad)
+            {
+               if (squad.placed!=true)
+               {
+                   checkAllPlaced=false;
+               }
+            });
+        }
+        else
+        {
+            battle.BS.deck2.forEach(function(squad)
+            {
+                if (squad.placed!=true)
+                {
+                    checkAllPlaced=false;
+                }
+            });
+        }
+        if (!checkAllPlaced)
+        {checkAllPlaced=confirm("Placed all squad?");}
+        if (checkAllPlaced)
+        {
+            //go to next state, let's war begin
+            Meteor.call('Status_ready',battle._id,game.side);
+        }
+
     }
 
 });
