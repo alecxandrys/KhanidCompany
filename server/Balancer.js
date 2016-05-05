@@ -39,8 +39,10 @@ Meteor.startup(function()
                             battles.insert({
                                 ID1     : prevuser.userId,
                                 name1   : prevuser.username,
+                                state1  :"reconnaissance",
                                 ID2     : user.userId,
                                 name2   : user.username,
+                                state2  :"reconnaissance",
                                 BS      : BS,
                                 battleID: path
                             });
