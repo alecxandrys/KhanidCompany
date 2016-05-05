@@ -43,5 +43,9 @@ Meteor.methods({
                     deck[card].placed=true;
                     battles.update(_id,{$set:{'BS.deck2':deck}});
                 }
+        },
+    Status_ready:function(_id,player)
+        {
+            new SimpleSchema()
         }
 });

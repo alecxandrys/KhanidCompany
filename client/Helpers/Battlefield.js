@@ -261,6 +261,7 @@ Template.Battlefield.events({
         if (checkAllPlaced)
         {
             //go to next state, let's war begin
+            Meteor.call('Status_ready',battle._id,game.side);
         }
 
     }
