@@ -77,26 +77,31 @@ reconnaissanceState.prototype = {
     },
     update:function(){
         battle.BS.deck1.forEach(function(squad) {
-            console.log(squad.model);
-            if (squad.model===null && squad.placed)
+            if (squad.placed)
                 {
-                    squad.model=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                }
-            else if ( squad.model.position.x!=battle.BS.map[squad.row][squad.column].xCoordinate || squad.model.position.y!=battle.BS.map[squad.row][squad.column].yCoordinate)
-                {
-                    squad.model.position.x=game.map[squad.row][squad.column].xCoordinate;
-                    squad.model.position.y=game.map[squad.row][squad.column].yCoordinate;
+                    if(squad.model === null)
+                        {
+                            squad.model = game.squads.create(game.map[squad.row][squad.column].xCoordinate, game.map[squad.row][squad.column].yCoordinate, squad.name);
+                        }
+                    else if(squad.model.position.x != battle.BS.map[squad.row][squad.column].xCoordinate || squad.model.position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                        {
+                            squad.model.position.x = game.map[squad.row][squad.column].xCoordinate;
+                            squad.model.position.y = game.map[squad.row][squad.column].yCoordinate;
+                        }
                 }
         });
         battle.BS.deck2.forEach(function(squad) {
-            if (squad.model===null  && squad.placed)
+            if (squad.placed)
                 {
-                    squad.model=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                }
-            else if ( squad.model.position.x!=battle.BS.map[squad.row][squad.column].xCoordinate || squad.model.position.y!=battle.BS.map[squad.row][squad.column].yCoordinate)
-                {
-                    squad.model.position.x=game.map[squad.row][squad.column].xCoordinate;
-                    squad.model.position.y=game.map[squad.row][squad.column].yCoordinate;
+                    if(squad.model === null && squad.placed)
+                        {
+                            squad.model = game.squads.create(game.map[squad.row][squad.column].xCoordinate, game.map[squad.row][squad.column].yCoordinate, squad.name);
+                        }
+                    else if(squad.model.position.x != battle.BS.map[squad.row][squad.column].xCoordinate || squad.model.position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                        {
+                            squad.model.position.x = game.map[squad.row][squad.column].xCoordinate;
+                            squad.model.position.y = game.map[squad.row][squad.column].yCoordinate;
+                        }
                 }
         });
         game.world.bringToTop(game.squads);
