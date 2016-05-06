@@ -16,11 +16,13 @@
 .left-panel
 {
     float:left;
-    max-width: 50%;
+    width: 50%;
     overflow-y:auto;
+    max-height: 18%;
 }
 .right-panel
 {
     max-width: 50%;
     overflow-y:auto;
+    max-height: 18%;
 }

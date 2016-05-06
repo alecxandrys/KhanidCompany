@@ -2,9 +2,10 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
- game={};
- battle={};
+game={};
+battle={};
 var _stateDep=new Deps.Dependency();
+var _turnDep=new Deps.Dependency();
 /**
  * Basic image height=80
  * Basic image width=60
@@ -76,26 +77,26 @@ reconnaissanceState.prototype = {
     },
     update:function(){
         battle.BS.deck1.forEach(function(squad) {
-            if (squad.model==undefined && squad.placed)
+            console.log(squad.model);
+            if (squad.model===null && squad.placed)
                 {
-                    squad.model=game.squads.create(battle.BS.map[squad.row][squad.column].xCoordinate,battle.BS.map[squad.row][squad.column].yCoordinate,squad.name);
+                    squad.model=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
                 }
-            else if (squad.model!=undefined)
+            else if ( squad.model.position.x!=battle.BS.map[squad.row][squad.column].xCoordinate || squad.model.position.y!=battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
-                    squad.model.position.x=battle.BS.map[squad.row][squad.column].xCoordinate;
-                    squad.model.position.y=battle.BS.map[squad.row][squad.column].yCoordinate;
+                    squad.model.position.x=game.map[squad.row][squad.column].xCoordinate;
+                    squad.model.position.y=game.map[squad.row][squad.column].yCoordinate;
                 }
         });
         battle.BS.deck2.forEach(function(squad) {
-            if (squad.model==undefined && squad.placed)
+            if (squad.model===null  && squad.placed)
                 {
-                    squad.model=game.squads.create(battle.BS.map[squad.row][squad.column].xCoordinate,battle.BS.map[squad.row][squad.column].yCoordinate,squad.name);
-
+                    squad.model=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
                 }
-            else if (squad.model!=undefined)
+            else if ( squad.model.position.x!=battle.BS.map[squad.row][squad.column].xCoordinate || squad.model.position.y!=battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
-                    squad.model.position.x=battle.BS.map[squad.row][squad.column].xCoordinate;
-                    squad.model.position.y=battle.BS.map[squad.row][squad.column].yCoordinate;
+                    squad.model.position.x=game.map[squad.row][squad.column].xCoordinate;
+                    squad.model.position.y=game.map[squad.row][squad.column].yCoordinate;
                 }
         });
         game.world.bringToTop(game.squads);
@@ -131,12 +132,12 @@ reconnaissanceState.prototype = {
                                 cell = game.tiles.create(xCoordinate, yCoordinate, 'Unreached');
                             }
                         //Save coordinate.Maybe it's unnecessary?
-                        battle.BS.map[i][j].xCoordinate = xCoordinate;
-                        battle.BS.map[i][j].yCoordinate = yCoordinate;
+                        game.map[i][j].xCoordinate = xCoordinate;
+                        game.map[i][j].yCoordinate = yCoordinate;
 
                         //Remember the coordinate to cell
-                        cell.xCoordinate=xCoordinate;
-                        cell.yCoordinate=yCoordinate;
+                        //cell.xCoordinate=xCoordinate;
+                        //cell.yCoordinate=yCoordinate;
 
                         //remember index of cell
                         cell.row=i;
@@ -192,6 +193,27 @@ Template.Battlefield.onCreated(function()
     game.state.add('final',finalState);
     game.state.start('boot');
 
+    if (Meteor.user().username==battle.name1)
+        {
+            game.side=1;
+        }
+    else if (Meteor.user().username==battle.name2)
+        {
+            game.side=2;
+        }
+    else {
+            alert ("You name doesn't consist in battlestate");
+        }
+
+    game.map=[];
+    for (var i= 0;i<12;i++)
+    {
+        game.map[i]=[];
+        for (var j=0;j<20;j++)
+            {
+                game.map[i][j]={};
+            }
+    }
 });
 
 Template.Battlefield.helpers({
@@ -203,21 +225,17 @@ Template.Battlefield.helpers({
         {
             return battle.name2;
         },
-    cards:function()
+    cards       :function()
         {
-            if (Meteor.user().username==battle.name1)
-                {
-                    game.side=1;
-                    return battle.BS.deck1;
-                }
-            else if (Meteor.user().username==battle.name2)
-            {
-                game.side=2;
-                return battle.BS.deck2;
-            }
-            else {
-                    alert ("You name doesn't consist in battlestate");
-                }
+            _turnDep.depend();
+            if (game.side==1)
+               {
+                   return battle.BS.deck1;
+               }
+            else
+               {
+                   return battle.BS.deck2;
+               }
 
         },
     /**
@@ -258,11 +276,11 @@ Deps.autorun(function() {
     Meteor.subscribe('battles');
     battle=battles.findOne({});
 
-
     //TODO check this autorun
     if(battles.state1=="ready" && battle.state2=="ready")
         {
             game.state.start('battle');
             game.curState='turn';
         }
+    _turnDep.changed();
 });

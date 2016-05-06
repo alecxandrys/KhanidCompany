@@ -24,3 +24,4 @@ gnomathibus:meteor-phaser
 standard-minifier-css
 standard-minifier-js
 aldeed:simple-schema
+ecmascript
