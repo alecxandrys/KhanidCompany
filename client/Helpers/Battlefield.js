@@ -68,31 +68,37 @@ reconnaissanceState.prototype = {
     },
     create:function () {
         game.curState='reconnaissance';
-        game.tiles = game.add.group();
         game.squads = game.add.group();
+        game.tiles = game.add.group();
         this.RenderField();
 
 
     },
     update:function(){
         battle.BS.deck1.forEach(function(squad) {
-            if (squad.placed)
-            {
-                var _squad;
-                _squad=game.squads.create(battle.BS.map[squad.column][squad.row].xCoordinate,battle.BS.map[squad.column][squad.row].yCoordinate,squad.name);
-                _squad.row=squad.row;
-                _squad.column=squad.column;
-            }
+            if (squad.model==undefined && squad.placed)
+                {
+                    squad.model=game.squads.create(battle.BS.map[squad.row][squad.column].xCoordinate,battle.BS.map[squad.row][squad.column].yCoordinate,squad.name);
+                }
+            else if (squad.model!=undefined)
+                {
+                    squad.model.position.x=battle.BS.map[squad.row][squad.column].xCoordinate;
+                    squad.model.position.y=battle.BS.map[squad.row][squad.column].yCoordinate;
+                }
         });
         battle.BS.deck2.forEach(function(squad) {
-            if (squad.placed)
-            {
-                var _squad;
-                _squad=game.squads.create(battle.BS.map[squad.column][squad.row].xCoordinate,battle.BS.map[squad.column][squad.row].yCoordinate,squad.name);
-                _squad.row=squad.row;
-                _squad.column=squad.column;
-            }
+            if (squad.model==undefined && squad.placed)
+                {
+                    squad.model=game.squads.create(battle.BS.map[squad.row][squad.column].xCoordinate,battle.BS.map[squad.row][squad.column].yCoordinate,squad.name);
+
+                }
+            else if (squad.model!=undefined)
+                {
+                    squad.model.position.x=battle.BS.map[squad.row][squad.column].xCoordinate;
+                    squad.model.position.y=battle.BS.map[squad.row][squad.column].yCoordinate;
+                }
         });
+        game.world.bringToTop(game.squads);
     },
     RenderField:function() {
         game.tiles = game.add.group();
@@ -238,36 +244,11 @@ Template.Battlefield.events({
         var id = parseInt($(event.currentTarget).children('a').text());
     },
     "click .ready":function() {
-        var checkAllPlaced=true;
-        if (game.side==1)
-        {
-            //TODO make break interrupt (forEach cannot use break in-build)
-            battle.BS.deck1.forEach(function(squad)
-            {
-               if (squad.placed!=true)
-               {
-                   checkAllPlaced=false;
-               }
-            });
-        }
-        else
-        {
-            battle.BS.deck2.forEach(function(squad)
-            {
-                if (squad.placed!=true)
-                {
-                    checkAllPlaced=false;
-                }
-            });
-        }
-        if (!checkAllPlaced)
-        {checkAllPlaced=confirm("Placed all squad?");}
-        if (checkAllPlaced)
-        {
-            //go to next state, let's war begin
+
+        //go to next state, let's war begin
+        //TODO Check work and changes
             game.curState='wait';
             Meteor.call('Status_ready',battle._id,game.side);
-        }
 
     }
 

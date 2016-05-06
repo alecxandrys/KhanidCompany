@@ -20,29 +20,27 @@ Meteor.methods({
                 _id:{type:String},
                 player:{type:Number,min:1,max:2},
                 card:{type:Number},
-                column:{type:Number,min:0,max:20},
-                row:{type:Number,min:0,max:12}
+                column:{type:Number,min:0,max:19},
+                row:{type:Number,min:0,max:11}
             }).validate({_id:_id,player:player,card:card,column:column,row:row});
 
             var deck;
+            var deckName;
             if (player==1)
-                {
-                   // console.log('update done player1'+card);
-                    deck=battles.findOne({}).BS.deck1;
-                    deck[card].column=column;
-                    deck[card].row=row;
-                    deck[card].placed=true;
-                    battles.update(_id,{$set:{'BS.deck1':deck}});
-                }
-            if (player==2)
-                {
-                    //console.log('update done player2'+card);
-                    deck=battles.findOne({}).BS.deck2;
-                    deck[card].column=column;
-                    deck[card].row=row;
-                    deck[card].placed=true;
-                    battles.update(_id,{$set:{'BS.deck2':deck}});
-                }
+                {deckName='deck1';}
+            else
+                {deckName='deck2';}
+
+            deck=battles.findOne({}).BS[deckName];
+
+            deck[card].column=column;
+            deck[card].row=row;
+            deck[card].placed=true;
+             if (player==1)
+                 {battles.update(_id,{$set:{'BS.deck1':deck}});}
+            else
+                 {battles.update(_id,{$set:{'BS.deck2':deck}});}
+
         },
     Status_ready:function(_id,player)
         {
