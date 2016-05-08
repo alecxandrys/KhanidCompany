@@ -56,5 +56,13 @@ Meteor.methods({
                 default:{}
             }
 
+        },
+    clickOnSquad:function()
+        {
+
+        },
+    moveTo:function()
+        {
+
         }
 });

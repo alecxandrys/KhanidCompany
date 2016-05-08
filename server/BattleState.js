@@ -33,14 +33,14 @@ BattleState = function(ID, sizeX, sizeY, deck1, deck2)
  * @param mapHash
  * @param sizeX
  * @param sizeY
- * @returns {{}}
+ * @returns {Array}
  */
 function createMap(mapHash, sizeX, sizeY)
     {
-        var map = {};
+        var map = [];
         for(var i = 0; i < sizeY; i++)
             {
-                map[i] = {};
+                map[i] = [];
                 for(var j = 0; j < sizeX; j++)
                     {
                         var cell = {};

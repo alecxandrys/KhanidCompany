@@ -175,7 +175,88 @@ battleState.prototype = {
     preload:function() {
     },
     create:function () {
-    }
+        this.RenderField();//render start disposition
+
+    },
+    RenderField:function()
+        {
+            for(var i = 0; i < 12; i++)
+                {
+                    for(var j = 0; j < 20; j++)
+                        {
+                            var cell;
+                            var tmp = battle.BS.map[i][j].ground;
+                            if(tmp == 1)
+                                {
+                                    cell = game.tiles.create(game.map[i][j].xCoordinate, game.map[i][j].yCoordinate, 'Grass');
+                                }
+                            else if(tmp == 2)
+                                {
+                                    cell = game.tiles.create(game.map[i][j].xCoordinate, game.map[i][j].yCoordinate, 'Cover');
+                                }
+                            else if(tmp == 3)
+                                {
+                                    cell = game.tiles.create(game.map[i][j].xCoordinate, game.map[i][j].yCoordinate, 'Danger');
+                                }
+                            else if(tmp == 4)
+                                {
+                                    cell = game.tiles.create(game.map[i][j].xCoordinate, game.map[i][j].yCoordinate, 'Diff');
+                                }
+                            else if(tmp == 0)
+                                {
+                                    cell = game.tiles.create(game.map[i][j].xCoordinate, game.map[i][j].yCoordinate, 'Unreached');
+                                }
+                            cell.row=i;
+                            cell.collomn=j;
+                            cell.events.onInputDown.add(this.selectCell,this);
+                        }
+                }
+            battle.BS.deck1.forEach(function(squad, index)
+            {
+                if(squad.placed)
+                    {
+                        game.deck1_Model[index] = game.add.sprite(game.map[squad.row][squad.column].xCoordinate, game.map[squad.row][squad.column].yCoordinate, squad.name);
+                        game.deck1_Model[index].events.onInputDown.add(this.selectSquad,this);
+                        game.deck1_Model[index].index=index;
+                        game.deck1_Model[index].side=1;
+                        game.squads.add(game.deck1_Model[index]);
+                    }
+            });
+            battle.BS.deck2.forEach(function(squad, index)
+            {
+                if(squad.placed)
+                    {
+                        game.deck2_Model[index] = game.add.sprite(game.map[squad.row][squad.column].xCoordinate, game.map[squad.row][squad.column].yCoordinate, squad.name);
+                        game.deck2_Model[index].events.onInputDown.add(this.selectSquad,this);
+                        game.deck2_Model[index].index=index;
+                        game.deck2_Model[index].side=2;
+                        game.squads.add(game.deck2_Model[index]);
+                    }
+            });
+            game.world.bringToTop(game.squads);
+        },
+    selectSquad:function(model)
+        {
+            //TODO:: make a check for turn (and add the initiative table)
+            if (game.chosenCardId!=undefined || game.chosenCardId!=null)
+                {
+                    game.chosenCardId=model;
+                }
+            else
+                {
+                    Meteor.call('clickOnSquad');
+                    game.chosenCardId=null;
+                }
+        },
+    selectCell:function(cell)
+        {
+            if (game.chosenCardId!=undefined || game.chosenCardId!=null)
+                {
+                    Meteor.call('moveTo');
+                    game.chosenCardId=null;
+                }
+
+        }
 };
 
 var finalState =function (t) {
@@ -299,6 +380,7 @@ Deps.autorun(function() {
         {
             if(battle.state1 == "ready" && battle.state2 == "ready")
                 {
+                    //after it all dead, so we need fully render again
                     game.state.start('battle');
                     game.curState = 'turn';
                 }
