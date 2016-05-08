@@ -84,7 +84,7 @@ reconnaissanceState.prototype = {
                             game.deck1_Model[index] = game.add.sprite(game.map[squad.row][squad.column].xCoordinate, game.map[squad.row][squad.column].yCoordinate, squad.name);
                             game.squads.add(game.deck1_Model[index]);
                         }
-                    else if(game.deck2_Model[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2_Model[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                    else if(game.deck1_Model[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1_Model[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
                         {
                             game.deck1_Model[index].position.x = game.map[squad.row][squad.column].xCoordinate;
                             game.deck1_Model[index].position.y = game.map[squad.row][squad.column].yCoordinate;
@@ -197,7 +197,7 @@ Template.Battlefield.onCreated(function()
         game.state.add('preload',preloadState),
         game.state.add('reconnaissance',reconnaissanceState),
         game.state.add('battle',battleState);
-    game.state.add('final',finalState);
+        game.state.add('final',finalState);
     game.state.start('boot');
 
     if (Meteor.user().username==battle.name1)
@@ -227,7 +227,7 @@ Template.Battlefield.onCreated(function()
             game.deck1_Model[i]=null;
         }
     game.deck2_Model=[];
-    for (i=0;i<battle.BS.deck1.length;i++)
+    for (i=0;i<battle.BS.deck2.length;i++)
         {
             game.deck2_Model[i]=null;
         }
@@ -293,11 +293,16 @@ Deps.autorun(function() {
     Meteor.subscribe('battles');
     battle=battles.findOne({});
 
-    //TODO check this autorun
-    if(battles.state1=="ready" && battle.state2=="ready")
+
+    //In first time battle is undefined
+    if (battle)
         {
-            game.state.start('battle');
-            game.curState='turn';
+            if(battle.state1 == "ready" && battle.state2 == "ready")
+                {
+                    game.state.start('battle');
+                    game.curState = 'turn';
+                }
         }
+
     _turnDep.changed();
 });
