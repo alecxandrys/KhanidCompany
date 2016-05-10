@@ -6,11 +6,11 @@ Meteor.methods({
 
     "call test":function()
         {
-            FullRandomSignature(10,1,2,3,3,6);
+            FullRandomSignature(10,2,2,3,3,6);
         },
     "call test2":function()
         {
-            OptimalSignature(10,1,2,3,3,6);
+            OptimalSignature(10,4,4,3,3,1);
         }
 });
 
@@ -115,6 +115,7 @@ var FullRandomSignature=function(count,shoot,hit,penetrate,wound,afterEffect){
                 }
         }
     result.afterEffect=success;
+    console.log(result);
     return result;
 };
 
@@ -166,7 +167,7 @@ var OptimalSignature=function(count,shoot,hit,penetrate,wound,afterEffect){
             count=count*((15*del - (del/5|0)*5*(del-4) - (del/8|0)*5*(del-7))/100);
         }
     result.afterEffect=Math.floor(count);
-
+    console.log(result);
     return result;
 };
 
