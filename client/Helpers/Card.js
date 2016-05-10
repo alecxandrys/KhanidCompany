@@ -50,7 +50,8 @@ Template.Card.events({
         },
     "click .clear"  : function()
         {
-            Deck.erase();
+            Meteor.call('call test');
+            //Deck.erase();
         },
     //TODO:finish work, add price of squad
     "click .ready"  : function()
