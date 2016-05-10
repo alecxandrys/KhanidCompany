@@ -55,7 +55,8 @@ Template.Card.events({
     //TODO:finish work, add price of squad
     "click .ready"  : function()
         {
-            if(Deck._unit.length === 0)
+            Meteor.call('call test2');
+           /* if(Deck._unit.length === 0)
                 {
                     alert("Deck is empty, you cannot join in battle");
                 }
@@ -68,5 +69,6 @@ Template.Card.events({
                     Meteor.call("addPlayerInQueue",Deck._unit);
                     Router.go('/wait');
                 }
+                */
         }
 });
