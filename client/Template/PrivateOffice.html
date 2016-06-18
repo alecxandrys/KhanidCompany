@@ -1,8 +1,10 @@
 <template name="PrivateOffice">
     <div class="container">
-        <nav>
             {{>navigate}}
-        </nav>
+        <header>
+            {{>loginButtons}}
+            Ваша информация, отчеты боев и результаты
+        </header>
         <p>
             You player's id is {{currentUser._id }}
         </p>

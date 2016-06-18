@@ -10,11 +10,11 @@ Template.Main.helpers({
         {
             if(!Meteor.userId() && Router.current().route.getName() !== undefined)
                 {
-                    return "You are not auth to visit this page";
+                    return "Вы не можете посетить данную страницу. Зарегестрируйтесь пожалуйста";
                 }
             else
                 {
-                    return "Welcome to WCG40k Khanid Company";
+                    return "Добро пожаловать в WCG40k-Khanid Company";
                 }
         }
 });

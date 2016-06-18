@@ -1,6 +1,6 @@
 .siteBody
 {
-    font-family     : serif;
+    font-family     : sans-serif;
     background      : #315481 url(/SiteResource/mainfon.jpg) no-repeat fixed;
     background-size : cover;
     font-size       : 14px;
@@ -70,4 +70,20 @@ a.id
 
 .ready
 {
+
+}
+
+.mainMessage
+{
+    margin     : 0 8px;
+    font-family     :"Lucida Console", Monaco, monospace;
+    font-size       :16px;
+    text-align      :center;
+
+}
+
+.navigate
+{
+    padding:5px 15px 5px;
+    margin:0 auto;
 }
