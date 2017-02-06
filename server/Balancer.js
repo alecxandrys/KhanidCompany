@@ -34,7 +34,7 @@ Meteor.startup(function()
                             //need to translate object
                             //need async call for this shit
                             //Will keep in waitingCollection
-                            var BS = new BattleState(path, 20, 12,prevuser.deck,user.deck);
+                            var BS = new BattleState(path, 12, 20,prevuser.deck,user.deck);
                             console.log(path + " " + " ===1 " + " " + index);
                             battles.insert({
                                 ID1     : prevuser.userId,
