@@ -26,3 +26,4 @@ aldeed:simple-schema
 shell-server
 npm-bcrypt@0.8.7
 accounts-password
+twbs:bootstrap
