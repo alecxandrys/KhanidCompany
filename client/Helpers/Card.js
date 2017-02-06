@@ -24,6 +24,25 @@ var Deck = {
             this._unitDepend.changed();
         }
 };
+var Card={
+    _card:{},
+    _cardDepend: new Tracker.Dependency(),
+    getCard:function()
+    {
+        this._cardDepend.depend();
+        return this._card
+    },
+    setCard:function(Unit)
+    {
+        this._card=Unit;
+        this._cardDepend.changed();
+    },
+    erase:function()
+    {
+        this._card={};
+        this._cardDepend.changed();
+    }
+};
 Template.Card.helpers({
     cards: function()
         {
@@ -32,7 +51,11 @@ Template.Card.helpers({
     deck : function()
         {
             return Deck.getUnit();
-        }
+        },
+    card: function()
+    {
+        return Card.getCard();
+    }
 });
 Template.Card.events({
     "click .card"   : function(event)
@@ -45,6 +68,7 @@ Template.Card.events({
         {
             event.preventDefault();
             var id = parseInt($(event.currentTarget).children('a').text());
+            Card.setCard(SpaceMarineForce[id]);
             Deck.setUnit(SpaceMarineForce[id]);
             //this is id in array of unit, which was dbcliked just right now
         },

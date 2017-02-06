@@ -18,8 +18,8 @@
  */
 BattleState = function(ID, sizeX, sizeY, deck1, deck2)
     {
-        var mapHash = setMapHash(sizeX, sizeY);
-        this.map = createMap(mapHash, sizeX, sizeY);
+        this.ID=ID;
+        this.map = createMap(sizeX, sizeY);
         this.deck1 = deck1;
         this.deck2 = deck2;
     };
@@ -30,12 +30,11 @@ BattleState = function(ID, sizeX, sizeY, deck1, deck2)
  * 3-Diff
  * 4-Danger
  * 0-Unreached
- * @param mapHash
  * @param sizeX
  * @param sizeY
  * @returns {Array}
  */
-function createMap(mapHash, sizeX, sizeY)
+function createMap(sizeX, sizeY)
     {
         var map = [];
         for(var i = 0; i < sizeY; i++)
@@ -44,24 +43,9 @@ function createMap(mapHash, sizeX, sizeY)
                 for(var j = 0; j < sizeX; j++)
                     {
                         var cell = {};
-                        cell.ground = mapHash.charAt(i * sizeX + j);
+                        cell.ground = Math.floor(Math.random() * 5) + 1;
                         map[i][j] = cell;
                     }
             }
         return map;
-    }
-/**
- * map generator, need seriously fix, path check and more other stuff
- * @param x
- * @param y
- * @returns {string}
- */
-function setMapHash(x, y)
-    {
-        var str = "";
-        while(str.length < (x * y))
-            {
-                str = str + Math.floor(Math.random() * 5) + 1;
-            }
-        return str;
     }
