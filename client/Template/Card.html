@@ -10,19 +10,25 @@
                 <div class="card">
                     {{name}}
                     <a class="id">{{@index}}</a>
-
+                    {{description}}<br>
                     <div class="card-content">
-                        {{description}}<br>
-                        Count:{{baseCount}}<br>
-                        WS:{{weaponSkill}}<br>
-                        BS:{{ballisticSkill}}<br>
-                        S:{{streight}}<br>
-                        T:{{taffnes}}<br>
-                        I:{{iniative}}<br>
-                        W:{{wound}}<br>
-                        A:{{attackCount}}<br>
-                        L{{leadership}}<br>
-                        ArmSv:{{armorSave}}<br>
+                        Commander:{{commander}}<br>
+                        Cost:{{cost}}<br>
+                        Rules:{{rules}}<br>
+
+                        WeaponSkill:{{weaponSkill}}<br>
+                        BallisticSkill:{{ballisticSkill}}<br>
+                        Streight:{{strength}}<br>
+                        Toughness:{{toughness}}<br>
+                        Initiative:{{initiative}}<br>
+                        Speed:{{speed}}<br>
+                        Wound:{{wound}}<br>
+                        AttackCount:{{attackCount}}<br>
+                        Leadership:{{leadership}}<br>
+                        ArmorSave:{{armorSave}}<br>
+
+                        RangeWeapon:{{rangeWeapon}}<br>
+                        MeleeWeapon:{{meleeWeapon}}<br>
                     </div>
                 </div>
             {{/each}}
