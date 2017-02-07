@@ -16,7 +16,7 @@ Meteor.methods({
 Meteor.startup(function()
 {
 
-    //this is correct timer work with guaranteed Interval
+    //this is correct timer work with guaranteed Interval, which can be changed if it necessary
     var tickTime = 3000;
     var timerId = Meteor.setTimeout(function tick()
     {
@@ -34,7 +34,7 @@ Meteor.startup(function()
                             //need to translate object
                             //need async call for this shit
                             //Will keep in waitingCollection
-                            var BS = new BattleState(path, 12, 20,prevuser.deck,user.deck);
+                            var BS = new BattleState(12, 20,prevuser.deck,user.deck);
                             console.log(path + " " + " ===1 " + " " + index);
                             battles.insert({
                                 ID1     : prevuser.userId,

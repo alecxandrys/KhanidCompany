@@ -9,15 +9,15 @@
  * Status:
  * 0-allocation;
  * 1-active game;
- * @param ID
  * @param xSize vertical size
  * @param ySize horizontal size
  * @constructor
  * @param deck1
  * @param deck2
  */
-BattleState = function (ID, xSize, ySize, deck1, deck2) {
-    this.ID = ID;
+BattleState = function (xSize, ySize, deck1, deck2) {
+    this.xSize=xSize;
+    this.ySize=ySize;
     this.map = createMap(xSize, ySize);
     this.deck1 = deck1;
     this.deck2 = deck2;
@@ -42,7 +42,7 @@ function createMap(xSize, ySize) {
             cell.x=x;
             cell.y=y;
             if (OffsetOut(xSize, x, ySize, y)) {
-                cell.ground = Math.floor(Math.random() * 5) + 1;
+                cell.ground = Math.floor(Math.random() * 5);
             }
             else {
                 cell.ground=-1;
