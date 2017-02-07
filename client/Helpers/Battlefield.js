@@ -139,15 +139,16 @@ reconnaissanceState.prototype={
 
                     //for changeable field and different first shift
                     //this part from lab, where A* pathfinder was realised
+                    //only removed horisontal offset (now idea why) and add vertical shift
                     if(battle.BS.xSize%2 == 1)
                     {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2)+(game.yLineSize/2)*(Math.abs(x%2-1));
-                        yCoordinate=game.xLineSize*x;
+                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
+                        yCoordinate=game.xLineSize*x*0.75;
                     }
                     else
                     {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2)+(game.yLineSize/2)*(x%2);
-                        yCoordinate=game.xLineSize*x;
+                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
+                        yCoordinate=game.xLineSize*x*0.75;
                     }
                     switch(tmp)
                     {
@@ -229,17 +230,15 @@ battleState.prototype={
                     var xCoordinate;
                     var yCoordinate;
 
-                    //for changeable field and different first shift
-                    //this part from lab, where A* pathfinder was realised
                     if(battle.BS.xSize%2 == 1)
                     {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2)+(game.yLineSize/2)*(Math.abs(x%2-1));
-                        yCoordinate=game.xLineSize*x;
+                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
+                        yCoordinate=game.xLineSize*x*0.75;
                     }
                     else
                     {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2)+(game.yLineSize/2)*(x%2);
-                        yCoordinate=game.xLineSize*x;
+                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
+                        yCoordinate=game.xLineSize*x*0.75;
                     }
                     switch(tmp)
                     {

@@ -20,8 +20,8 @@ Meteor.methods({
             _id:{type:String},
             player:{type:Number,min:1,max:2},
             card:{type:Number},
-            column:{type:Number,min:0,max:19},
-            row:{type:Number,min:0,max:11}
+            column:{type:Number,min:0},
+            row:{type:Number,min:0}
         }).validate({_id:_id,player:player,card:card,column:column,row:row});
 
         var deck;
@@ -45,7 +45,8 @@ Meteor.methods({
     Status_ready:function(_id,player)
     {
         new SimpleSchema({
-            _id:{type:String},player:{type:Number,min:1,max:2}
+            _id:{type:String},
+            player:{type:Number,min:1,max:2}
         }).validate({_id:_id,player:player});
 
         switch(player)
