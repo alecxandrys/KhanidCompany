@@ -41,8 +41,8 @@ preloadState.prototype={
 
     preload:function()
     {
-      //  this.text=this.add.text(this.game.width/2,this.game.height/2,'загрузка',{fill:'#ffffff'});
-     //   this.text.anchor.set(0.5,0.5);
+        this.text=this.add.text(this.game.width/2,this.game.height/2,'загрузка',{fill:'#ffffff'});
+        this.text.anchor.set(0.5,0.5);
         this.load.onFileComplete.add(this.fileComplete,this);
 
         this.load.image('Grass','BattleResource/Grass.svg');
@@ -64,7 +64,7 @@ preloadState.prototype={
 
     fileComplete:function(progress)
     {
-      //  this.text.text='Loading '+progress+'%';
+      this.text.text='Loading '+progress+'%';
     }
 };
 
@@ -124,7 +124,7 @@ reconnaissanceState.prototype={
     RenderField:function()
     {
         //game.tiles = game.add.group();
-        for(var x=(battle.BS.xSize-1); x>=12; x--)
+        for(var x=(battle.BS.xSize-1); x>=0; x--)
         {
             for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
             {
@@ -345,10 +345,10 @@ Template.Battlefield.onCreated(function()
     }
 
     game.map=[];
-    for(var i=0; i<12; i++)
+    for(var i=0; i<battle.BS.xSize; i++)
     {
         game.map[i]=[];
-        for(var j=0; j<20; j++)
+        for(var j=0; j<(battle.BS.ySize + battle.BS.xSize / 2); j++)
         {
             game.map[i][j]={};
         }
