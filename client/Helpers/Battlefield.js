@@ -41,8 +41,8 @@ preloadState.prototype={
 
     preload:function()
     {
-        this.text=this.add.text(this.game.width/2,this.game.height/2,'загрузка',{fill:'#ffffff'});
-        this.text.anchor.set(0.5,0.5);
+      //  this.text=this.add.text(this.game.width/2,this.game.height/2,'загрузка',{fill:'#ffffff'});
+     //   this.text.anchor.set(0.5,0.5);
         this.load.onFileComplete.add(this.fileComplete,this);
 
         this.load.image('Grass','BattleResource/Grass.svg');
@@ -64,7 +64,7 @@ preloadState.prototype={
 
     fileComplete:function(progress)
     {
-        this.text.text='Loading '+progress+'%';
+      //  this.text.text='Loading '+progress+'%';
     }
 };
 

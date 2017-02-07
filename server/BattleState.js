@@ -47,7 +47,7 @@ function createMap(xSize, ySize) {
             else {
                 cell.ground=-1;
             }
-            map[x][j] = cell;
+            map[x][y] = cell;
         }
     }
     return map;
