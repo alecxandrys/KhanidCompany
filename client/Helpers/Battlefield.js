@@ -35,7 +35,6 @@ bootState.prototype={
 
 var preloadState=function(t)
 {
-
 };
 preloadState.prototype={
 
@@ -45,23 +44,23 @@ preloadState.prototype={
         this.text.anchor.set(0.5,0.5);
         this.load.onFileComplete.add(this.fileComplete,this);
 
-        this.load.image('Grass','BattleResource/Grass.svg');
-        this.load.image('Cover','BattleResource/Cover.svg');
-        this.load.image('Danger','BattleResource/Danger.svg');
-        this.load.image('Diff','BattleResource/Diff.svg');
-        this.load.image('Unreached','BattleResource/Unreached.svg');
-        this.load.image('Devastator','BattleResource/Devastator.svg');
-        this.load.image('Scout','BattleResource/Scout.svg');
-        this.load.image('Marine','BattleResource/Marine.svg');
+        this.load.image('Grass','BattleResource/Terrain/Grass.svg');
+        this.load.image('Cover','BattleResource/Terrain/Cover.svg');
+        this.load.image('Danger','BattleResource/Terrain/Danger.svg');
+        this.load.image('Diff','BattleResource/Terrain/Diff.svg');
+        this.load.image('Unreached','BattleResource/Terrain/Unreached.svg');
+        this.load.image('Offset','BattleResource/Terrain/Offset.svg');
+        this.load.image('Ruin','BattleResource/Terrain/Ruin.svg');
         game.xLineSize=80;
         game.yLineSize=60;
+        this.load.image('Devastator','BattleResource/Models/Devastator.svg');
+        this.load.image('Scout','BattleResource/Models/Scout.svg');
+        this.load.image('Marine','BattleResource/Models/Marine.svg');
     },
-
     create:function()
     {
         this.state.start('reconnaissance');
     },
-
     fileComplete:function(progress)
     {
       this.text.text='Loading '+progress+'%';
@@ -71,18 +70,21 @@ preloadState.prototype={
 var reconnaissanceState=function(t)
 {
 };
+/**
+ * squad-consist all sprite of unit to bring them to top
+ */
 reconnaissanceState.prototype={
     preload:function()
     {
-    },create:function()
+    },
+    create:function()
     {
         game.curState='reconnaissance';
         game.squads=game.add.group();
         game.tiles=game.add.group();
         this.RenderField();
-
-
-    },update:function()
+    },
+    update:function()
     {
         battle.BS.deck1.forEach(function(squad,index)
         {
@@ -123,7 +125,6 @@ reconnaissanceState.prototype={
      */
     RenderField:function()
     {
-        //game.tiles = game.add.group();
         for(var x=(battle.BS.xSize-1); x>=0; x--)
         {
             for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
@@ -164,10 +165,15 @@ reconnaissanceState.prototype={
                         case 4:
                             cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
                             break;
+                        case 5:
+                            cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');
+                            break;
                         case 0:
                             cell=game.tiles.create(xCoordinate,yCoordinate,'Unreached');
                             break;
                         default:
+                            cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
+                            break;
                     }
 
                     //Save coordinate.Maybe it's unnecessary?
@@ -187,7 +193,8 @@ reconnaissanceState.prototype={
                 }
             }
         }
-    },/**
+    },
+    /**
      * This work
      * @param cell current cell with saved param, like index and coordinate.
      */
@@ -217,7 +224,7 @@ battleState.prototype={
      */
     RenderField:function()
     {
-        for(var x=(battle.BS.xSize-1); x>=12; x--)
+        for(var x=(battle.BS.xSize-1); x>=0; x--)
         {
             for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
             {
@@ -254,10 +261,15 @@ battleState.prototype={
                         case 4:
                             cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
                             break;
+                        case 5:
+                            cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');
+                            break;
                         case 0:
                             cell=game.tiles.create(xCoordinate,yCoordinate,'Unreached');
                             break;
                         default:
+                            cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
+                            break;
                     }
 
                     cell.events.onInputDown.add(this.selectCell,this);
@@ -287,7 +299,8 @@ battleState.prototype={
             }
         });
         game.world.bringToTop(game.squads);
-    },selectSquad:function(model)
+    },
+    selectSquad:function(model)
     {
         //TODO:: make a check for turn (and add the initiative table)
         if(game.chosenCardId != undefined || game.chosenCardId != null)
@@ -299,7 +312,8 @@ battleState.prototype={
             Meteor.call('clickOnSquad');
             game.chosenCardId=null;
         }
-    },selectCell:function(cell)
+    },
+    selectCell:function(cell)
     {
         if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
@@ -316,7 +330,8 @@ var finalState=function(t)
 finalState.prototype={
     preload:function()
     {
-    },create:function()
+    },
+    create:function()
     {
     }
 };
@@ -368,10 +383,12 @@ Template.Battlefield.helpers({
     name1:function()
     {
         return battle.name1;
-    },name2:function()
+    },
+    name2:function()
     {
         return battle.name2;
-    },cards:function()
+    },
+    cards:function()
     {
         _turnDep.depend();
         if(game.side == 1)
@@ -382,8 +399,8 @@ Template.Battlefield.helpers({
         {
             return battle.BS.deck2;
         }
-
-    },/**
+    },
+    /**
      *Deps.Dependency was added, work correctly
      */
     reconnaissance:function()
@@ -412,21 +429,17 @@ Template.Battlefield.events({
             .text());
     },"click .ready":function()
     {
-
         //go to next state, let's war begin
         //TODO Check work and changes
         game.curState='wait';
         Meteor.call('Status_ready',battle._id,game.side);
-
     }
-
 });
 
 Deps.autorun(function()
 {
     Meteor.subscribe('battles');
     battle=battles.findOne({});
-
 
     //In first time battle is undefined
     if(battle)
@@ -438,6 +451,5 @@ Deps.autorun(function()
             game.curState='turn';
         }
     }
-
     _turnDep.changed();
 });

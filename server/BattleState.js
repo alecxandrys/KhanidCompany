@@ -42,7 +42,7 @@ function createMap(xSize, ySize) {
             cell.x=x;
             cell.y=y;
             if (OffsetOut(xSize, x, ySize, y)) {
-                cell.ground = Math.floor(Math.random() * 5);
+                cell.ground = Math.floor(Math.random() * 6);
             }
             else {
                 cell.ground=-1;

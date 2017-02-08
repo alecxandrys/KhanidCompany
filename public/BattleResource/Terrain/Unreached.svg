@@ -14,7 +14,7 @@
    viewBox="0 0 60.000004 80"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.92.0 r15299"
    sodipodi:docname="Unreached.svg">
   <defs
      id="defs4" />
@@ -33,7 +33,7 @@
      showgrid="false"
      units="px"
      inkscape:window-width="1366"
-     inkscape:window-height="746"
+     inkscape:window-height="745"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1" />
@@ -85,5 +85,11 @@
        inkscape:randomized="0"
        d="m 39.464285,1018.0765 -26.402011,0.015 -13.21428714,-22.8571 13.18772414,-22.87248 26.402012,-0.0153 13.214286,22.85714 z"
        transform="matrix(0,1.4995941,-1.2912072,0,1315.1815,973.04565)" />
+    <path
+       style="fill:#000000;stroke-width:0.17857143"
+       d="M 15.53696,69.149863 1.1210745,59.480548 1.1619596,40.04205 1.2028447,20.603552 15.659423,10.896115 30.116,1.1886764 30.596455,1.4953266 c 0.264252,0.1686576 6.79292,4.5254003 14.508156,9.6816504 l 14.027698,9.375 0.0058,19.464286 0.0058,19.464285 -14.444416,9.6875 c -7.944428,5.328125 -14.512414,9.679316 -14.595521,9.669315 -0.08311,-0.01 -6.638254,-4.369379 -14.56699,-9.6875 z"
+       id="path9"
+       inkscape:connector-curvature="0"
+       transform="translate(0,972.36223)" />
   </g>
 </svg>
