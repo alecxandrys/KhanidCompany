@@ -1,5 +1,6 @@
 <template name="Card">
     <div class="container">
+
         {{>navigate}}
         <div class="row">
             <a id="ready" class="btn btn-danger col-md-push-5 col-xs-2">Battle!</a>
@@ -60,22 +61,28 @@
                 {{/if}}
             </div>
 
-            <div class="right-hand col-md-4">
 
-                {{#each deck}}
-                    <div class="added-card panel panel-warning">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{{name}}</h3>
-                        </div>
-                        <a class="id">{{@index}}</a>
+			<div class="right-hand col-md-4 pre-scrollable">
 
-                        <div class="panel-body">
-                            {{description}}
+                <div class="y-scroll">
+                    {{#each deck}}
+                        <div class="added-card panel panel-warning" >
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{name}}</h3>
+                            </div>
+                            <a class="id">{{@index}}</a>
+
+
+                            <div class="panel-body">
+                                {{description}}
+                            </div>
                         </div>
-                    </div>
-                {{/each}}
-            </div>
-        </div>
+
+                    {{/each}}
+                </div>
+			</div>
+		</div>
+
     </div>
     <!-- Скрипт для инициализации элементов на странице, имеющих атрибут data-toggle="tooltip" -->
     <script>

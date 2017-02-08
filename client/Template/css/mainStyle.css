@@ -1,9 +1,10 @@
 .siteBody
 {
-    font-family     : Georgia, serif ;
+    font-family     : inherit, Georgia, serif ;
     background      : #315481 url(/SiteResource/mainfon.jpg) no-repeat fixed;
     background-size : cover;
-    font-size       : 16px;
+    min-font-size   : 14px;
+    font-size       : 2vh;
     position        : absolute;
     top             : 0;
     bottom          : 0;
@@ -57,9 +58,15 @@ a.id
     text-align      :center;
 
 }
-
-.navigate
-{
-    padding:5px 15px 5px;
-    margin:0 auto;
+.pre-scrollable{
+    max-height: 83vh;
+    overflow-y: auto;
+}
+.h7vh{
+    height: 7vh;
+}
+.navbar{
+    height: 6vh;
+    border: 1vh;
+    margin-bottom: 1vh;
 }
