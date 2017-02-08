@@ -1,36 +1,36 @@
 <template name="PrivateOffice">
-    <div class="container whiteback">
+    <div class="container ">
             {{>navigate}}
-        <header>
-            {{>loginButtons}}
-            Ваша информация, отчеты боев и результаты
-        </header>
-        <p>
-            You player's id is {{currentUser._id }}
-        </p>
-
-        <p>
-            You username is {{currentUser.username}}
-        </p>
-
-        <p>
-            You have registered {{currentUser.createdAt}}
-        </p>
-
-        <p>
-            You current rating by Elo {{currentUser.rateELO}}
-        </p>
-
-        <p>
-            You current combine rating {{currentUser.rateCombine}}
-        </p>
-
-        <p>
-            You current battle count is {{currentUser.battleCount}}
-        </p>
-
-        <p>
-            You current win percent is {{currentUser.winPercent}}
-        </p>
+        <div class="jumbotron">
+            <p class="alert alert-warning">Ваша информация, отчеты боев и результаты</p>
+            <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <td>Username</td>
+                        <th>{{currentUser.username}}</th>
+                    </tr>
+                    <tr>
+                        <td>Registraton</td>
+                        <th>{{currentUser.createdAt}}</th>
+                    </tr>
+                    <tr>
+                        <td>ELO rating</td>
+                        <th>{{currentUser.rateELO}}</th>
+                    </tr>
+                    <tr>
+                        <td>Combine rating</td>
+                        <th>{{currentUser.rateCombine}}</th>
+                    </tr>
+                    <tr>
+                        <td>Overcome battles</td>
+                        <th>{{currentUser.battleCount}}</th>
+                    </tr>
+                    <tr>
+                        <td>Win percent is </td>
+                        <th>{{currentUser.winPercent}}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
