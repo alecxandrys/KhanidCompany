@@ -4,8 +4,10 @@
  */
 game={};//this is local variable, which consist graphic (like sprite) and other param
 battle={};//this is variable which rewrite always when change BattleState
+
 var _stateDep=new Deps.Dependency();
 var _turnDep=new Deps.Dependency();
+var _posDep=new Deps.Dependency();
 /**
  * Basic image height=80
  * Basic image width=60
@@ -82,7 +84,7 @@ reconnaissanceState.prototype={
         game.curState='reconnaissance';
         game.squads=game.add.group();
         game.tiles=game.add.group();
-        this.RenderField();
+        RenderField(this.AddPart,1);
     },
     update:function()
     {
@@ -90,15 +92,16 @@ reconnaissanceState.prototype={
         {
             if(squad.placed)
             {
-                if(game.deck1_Model[index] === null)
+                if(game.deck1[index] === null)
                 {
-                    game.deck1_Model[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                    game.squads.add(game.deck1_Model[index]);
+                    game.deck1[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                    game.deck1[index].index=index;
+                    game.squads.add(game.deck1[index]);
                 }
-                else if(game.deck1_Model[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1_Model[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                else if(game.deck1[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
-                    game.deck1_Model[index].position.x=game.map[squad.row][squad.column].xCoordinate;
-                    game.deck1_Model[index].position.y=game.map[squad.row][squad.column].yCoordinate;
+                    game.deck1[index].position.x=game.map[squad.row][squad.column].xCoordinate;
+                    game.deck1[index].position.y=game.map[squad.row][squad.column].yCoordinate;
                 }
             }
         });
@@ -106,93 +109,36 @@ reconnaissanceState.prototype={
         {
             if(squad.placed)
             {
-                if(game.deck2_Model[index] === null)
+                if(game.deck2[index] === null)
                 {
-                    game.deck2_Model[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                    game.squads.add(game.deck2_Model[index]);
+                    game.deck2[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                    game.deck2[index].index=index;
+                    game.squads.add(game.deck2[index]);
                 }
-                else if(game.deck2_Model[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2_Model[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                else if(game.deck2[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
-                    game.deck2_Model[index].position.x=game.map[squad.row][squad.column].xCoordinate;
-                    game.deck2_Model[index].position.y=game.map[squad.row][squad.column].yCoordinate;
+                    game.deck2[index].position.x=game.map[squad.row][squad.column].xCoordinate;
+                    game.deck2[index].position.y=game.map[squad.row][squad.column].yCoordinate;
                 }
             }
         });
         game.world.bringToTop(game.squads);
-    },/**
+    },
+    /**
      * Render ground, may be refactor because use twice in next state?
+     * context was binded from RenderField so this work fine
      * @constructor
      */
-    RenderField:function()
+    AddPart:function()
     {
-        for(var x=(battle.BS.xSize-1); x>=0; x--)
-        {
-            for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
-            {
-                if(OffsetOut(battle.BS.xSize,x,battle.BS.ySize,y))
-                {
+        game.map[this.x][this.y].xCoordinate=this.xCoordinate;
+        game.map[this.x][this.y].yCoordinate=this.yCoordinate;
 
-                    var cell;
-                    var tmp=battle.BS.map[x][y].ground;
+        this.cell.row=this.x;
+        this.cell.collomn=this.y;
 
-                    var xCoordinate;
-                    var yCoordinate;
-
-                    //for changeable field and different first shift
-                    //this part from lab, where A* pathfinder was realised
-                    //only removed horisontal offset (now idea why) and add vertical shift
-                    if(battle.BS.xSize%2 == 1)
-                    {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
-                        yCoordinate=game.xLineSize*x*0.75;
-                    }
-                    else
-                    {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
-                        yCoordinate=game.xLineSize*x*0.75;
-                    }
-                    switch(tmp)
-                    {
-                        case 1:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Grass');
-                            break;
-                        case 2:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Cover');
-                            break;
-                        case 3:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Danger');
-                            break;
-                        case 4:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
-                            break;
-                        case 5:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');
-                            break;
-                        case 0:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Unreached');
-                            break;
-                        default:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
-                            break;
-                    }
-
-                    //Save coordinate.Maybe it's unnecessary?
-                    game.map[x][y].xCoordinate=xCoordinate;
-                    game.map[x][y].yCoordinate=yCoordinate;
-
-                    //Remember the coordinate to cell
-                    //cell.xCoordinate=xCoordinate;
-                    //cell.yCoordinate=yCoordinate;
-
-                    //remember index of cell
-                    cell.row=x;
-                    cell.collomn=y;
-
-                    cell.inputEnabled=true;
-                    cell.events.onInputDown.add(this.addSquad,this)
-                }
-            }
-        }
+        this.cell.inputEnabled=true;
+        this.cell.events.onInputDown.add(reconnaissanceState.prototype.addSquad,this)
     },
     /**
      * This work
@@ -200,10 +146,13 @@ reconnaissanceState.prototype={
      */
     addSquad:function(cell)
     {
+        game.chosenCell=cell;
+        _posDep.changed();
         if(game.chosenCardId != undefined || game.chosenCardId != null && game.curState == 'reconnaissance')
         {
             //TODO make a error callback
             Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row);
+            game.chosenCardId = null;
         }
     }
 };
@@ -214,88 +163,38 @@ var battleState=function(t)
 battleState.prototype={
     preload:function()
     {
-    },create:function()
+    },
+    create:function()
     {
-        this.RenderField();//render start disposition
-
-    },/**
-     * this part maybe reused from prev state
+        RenderField(this.AddPart,2);//render start disposition
+        this.RenderSquad();
+    },
+    /**
+     * uses with context from RenderField
      * @constructor
      */
-    RenderField:function()
+    AddPart:function()
     {
-        for(var x=(battle.BS.xSize-1); x>=0; x--)
-        {
-            for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
-            {
-                if(OffsetOut(battle.BS.xSize,x,battle.BS.ySize,y))
-                {
-
-                    var cell;
-                    var tmp=battle.BS.map[x][y].ground;
-
-                    var xCoordinate;
-                    var yCoordinate;
-
-                    if(battle.BS.xSize%2 == 1)
-                    {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
-                        yCoordinate=game.xLineSize*x*0.75;
-                    }
-                    else
-                    {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
-                        yCoordinate=game.xLineSize*x*0.75;
-                    }
-                    switch(tmp)
-                    {
-                        case 1:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Grass');
-                            break;
-                        case 2:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Cover');
-                            break;
-                        case 3:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Danger');
-                            break;
-                        case 4:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
-                            break;
-                        case 5:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');
-                            break;
-                        case 0:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Unreached');
-                            break;
-                        default:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
-                            break;
-                    }
-
-                    cell.events.onInputDown.add(this.selectCell,this);
-                }
-            }
-        }
+        this.cell.events.onInputDown.add(battleState.prototype.selectCell,this);
+    },
+    RenderSquad:function()
+    {
         battle.BS.deck1.forEach(function(squad,index)
         {
             if(squad.placed)
             {
-                game.deck1_Model[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                game.deck1_Model[index].events.onInputDown.add(this.selectSquad,this);
-                game.deck1_Model[index].index=index;
-                game.deck1_Model[index].side=1;
-                game.squads.add(game.deck1_Model[index]);
+                game.deck1[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                game.deck1[index].events.onInputDown.add(this.selectSquad,this);
+                game.squads.add(game.deck1[index]);
             }
         });
         battle.BS.deck2.forEach(function(squad,index)
         {
             if(squad.placed)
             {
-                game.deck2_Model[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                game.deck2_Model[index].events.onInputDown.add(this.selectSquad,this);
-                game.deck2_Model[index].index=index;
-                game.deck2_Model[index].side=2;
-                game.squads.add(game.deck2_Model[index]);
+                game.deck2[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                game.deck2[index].events.onInputDown.add(this.selectSquad,this);
+                game.squads.add(game.deck2[index]);
             }
         });
         game.world.bringToTop(game.squads);
@@ -340,7 +239,7 @@ finalState.prototype={
  */
 Template.Battlefield.onCreated(function()
 {
-    game=new Phaser.Game(1230,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
+    game=new Phaser.Game(1200,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
     game.global={}, game.state.add('boot',bootState), game.state.add('preload',preloadState), game.state.add('reconnaissance',reconnaissanceState), game.state.add('battle',battleState);
     game.state.add('final',finalState);
     game.state.start('boot');
@@ -367,15 +266,15 @@ Template.Battlefield.onCreated(function()
             game.map[i][j]={};
         }
     }
-    game.deck1_Model=[];
+    game.deck1=[];
     for(i=0; i<battle.BS.deck1.length; i++)
     {
-        game.deck1_Model[i]=null;
+        game.deck1[i]=null;
     }
-    game.deck2_Model=[];
+    game.deck2=[];
     for(i=0; i<battle.BS.deck2.length; i++)
     {
-        game.deck2_Model[i]=null;
+        game.deck2[i]=null;
     }
 });
 
@@ -411,6 +310,14 @@ Template.Battlefield.helpers({
         return {
             state:isTrue
         }
+    },
+    position:function()
+    {
+        _posDep.depend();
+        if (game.chosenCell)
+        {
+            return game.chosenCell.row+' '+game.chosenCell.collomn;
+        }
     }
 });
 
@@ -421,13 +328,15 @@ Template.Battlefield.events({
         game.chosenCardId=parseInt($(event.currentTarget)
             .children('a')
             .text());
-    },"dbclick .card":function(event)
+    },
+    "dbclick .card":function(event)
     {
         event.preventDefault();
         var id=parseInt($(event.currentTarget)
             .children('a')
             .text());
-    },"click .ready":function()
+    },
+    "click .ready":function()
     {
         //go to next state, let's war begin
         //TODO Check work and changes
@@ -436,6 +345,76 @@ Template.Battlefield.events({
     }
 });
 
+function RenderField(addPart,point)
+{
+    var context={};
+    for(var x=(battle.BS.xSize-1); x>=0; x--)
+    {
+        for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
+        {
+            if(OffsetOut(battle.BS.xSize,x,battle.BS.ySize,y))
+            {
+
+                var xCoordinate;
+                var yCoordinate;
+                var cell;
+                var tmp=battle.BS.map[x][y].ground;
+
+                //for changeable field and different first shift
+                //this part from lab, where A* pathfinder was realised
+                //only removed horisontal offset (now idea why) and add vertical shift
+                if(battle.BS.xSize%2 == 1)
+                {
+                    xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
+                    yCoordinate=game.xLineSize*x*0.75;
+                }
+                else
+                {
+                    xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
+                    yCoordinate=game.xLineSize*x*0.75;
+                }
+                switch(tmp)
+                {
+                    case 1:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Grass');
+                        break;
+                    case 2:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Cover');
+                        break;
+                    case 3:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Danger');
+                        break;
+                    case 4:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
+                        break;
+                    case 5:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');
+                        break;
+                    case 0:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Unreached');
+                        break;
+                    default:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
+                        break;
+                }
+                context.xCoordinate=xCoordinate;
+                context.yCoordinate=yCoordinate;
+                context.cell=cell;
+                context.x=x;
+                context.y=y;
+                if ((point==1) || (point==2))
+                {
+                    var f=addPart.bind(context);
+                    f();
+                }
+
+            }
+        }
+    }
+}
+/**
+ * Template always after all other code
+ */
 Deps.autorun(function()
 {
     Meteor.subscribe('battles');
