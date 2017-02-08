@@ -1,7 +1,7 @@
 <template name="Card">
     <div class="container">
             {{>navigate}}
-        <div class="row">
+        <div class="row h7vh">
             <a class="ready btn btn-danger col-md-push-5 col-xs-2">Battle!</a>
             <a class="clear btn btn-danger col-md-push-7 col-xs-2">Clear deck</a>
         </div>
@@ -42,20 +42,22 @@
 			
 			</div>
 
-			<div class="right-hand col-md-4">
+			<div class="right-hand col-md-4 pre-scrollable">
 
-				{{#each deck}}
-					<div class="added-card panel panel-warning" >
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{{name}}</h3>
-                        </div>
-						<a class="id">{{@index}}</a>
+                <div class="y-scroll">
+                    {{#each deck}}
+                        <div class="added-card panel panel-warning" >
+                            <div class="panel-heading">
+                                <h3 class="panel-title">{{name}}</h3>
+                            </div>
+                            <a class="id">{{@index}}</a>
 
-                        <div class="panel-body">
-                            {{description}}
+                            <div class="panel-body">
+                                {{description}}
+                            </div>
                         </div>
-					</div>
-				{{/each}}
+                    {{/each}}
+                </div>
 			</div>
 		</div>
     </div>
