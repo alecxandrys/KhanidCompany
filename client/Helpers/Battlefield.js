@@ -4,8 +4,10 @@
  */
 game={};//this is local variable, which consist graphic (like sprite) and other param
 battle={};//this is variable which rewrite always when change BattleState
+
 var _stateDep=new Deps.Dependency();
 var _turnDep=new Deps.Dependency();
+var _posDep=new Deps.Dependency();
 /**
  * Basic image height=80
  * Basic image width=60
@@ -93,6 +95,7 @@ reconnaissanceState.prototype={
                 if(game.deck1[index] === null)
                 {
                     game.deck1[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                    game.deck1[index].index=index;
                     game.squads.add(game.deck1[index]);
                 }
                 else if(game.deck1[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
@@ -109,6 +112,7 @@ reconnaissanceState.prototype={
                 if(game.deck2[index] === null)
                 {
                     game.deck2[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                    game.deck2[index].index=index;
                     game.squads.add(game.deck2[index]);
                 }
                 else if(game.deck2[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
@@ -142,10 +146,13 @@ reconnaissanceState.prototype={
      */
     addSquad:function(cell)
     {
+        game.chosenCell=cell;
+        _posDep.changed();
         if(game.chosenCardId != undefined || game.chosenCardId != null && game.curState == 'reconnaissance')
         {
             //TODO make a error callback
             Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row);
+            game.chosenCardId = null;
         }
     }
 };
@@ -232,7 +239,7 @@ finalState.prototype={
  */
 Template.Battlefield.onCreated(function()
 {
-    game=new Phaser.Game(1230,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
+    game=new Phaser.Game(1200,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
     game.global={}, game.state.add('boot',bootState), game.state.add('preload',preloadState), game.state.add('reconnaissance',reconnaissanceState), game.state.add('battle',battleState);
     game.state.add('final',finalState);
     game.state.start('boot');
@@ -303,6 +310,14 @@ Template.Battlefield.helpers({
         return {
             state:isTrue
         }
+    },
+    position:function()
+    {
+        _posDep.depend();
+        if (game.chosenCell)
+        {
+            return game.chosenCell.row+' '+game.chosenCell.collomn;
+        }
     }
 });
 
@@ -328,24 +343,6 @@ Template.Battlefield.events({
         game.curState='wait';
         Meteor.call('Status_ready',battle._id,game.side);
     }
-});
-
-Deps.autorun(function()
-{
-    Meteor.subscribe('battles');
-    battle=battles.findOne({});
-
-    //In first time battle is undefined
-    if(battle)
-    {
-        if(battle.state1 == "ready" && battle.state2 == "ready")
-        {
-            //after it all dead, so we need fully render again
-            game.state.start('battle');
-            game.curState='turn';
-        }
-    }
-    _turnDep.changed();
 });
 
 function RenderField(addPart,point)
@@ -414,4 +411,24 @@ function RenderField(addPart,point)
             }
         }
     }
-};
+}
+/**
+ * Template always after all other code
+ */
+Deps.autorun(function()
+{
+    Meteor.subscribe('battles');
+    battle=battles.findOne({});
+
+    //In first time battle is undefined
+    if(battle)
+    {
+        if(battle.state1 == "ready" && battle.state2 == "ready")
+        {
+            //after it all dead, so we need fully render again
+            game.state.start('battle');
+            game.curState='turn';
+        }
+    }
+    _turnDep.changed();
+});

@@ -27,3 +27,5 @@ npm-bcrypt@0.8.7
 accounts-password
 twbs:bootstrap
 vrakfall:phaser
+ecmascript
+modules
