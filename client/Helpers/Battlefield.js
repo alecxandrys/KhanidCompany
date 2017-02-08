@@ -82,7 +82,7 @@ reconnaissanceState.prototype={
         game.curState='reconnaissance';
         game.squads=game.add.group();
         game.tiles=game.add.group();
-        this.RenderField();
+        RenderField(this.AddPart,1);
     },
     update:function()
     {
@@ -119,80 +119,22 @@ reconnaissanceState.prototype={
             }
         });
         game.world.bringToTop(game.squads);
-    },/**
+    },
+    /**
      * Render ground, may be refactor because use twice in next state?
+     * context was binded from RenderField so this work fine
      * @constructor
      */
-    RenderField:function()
+    AddPart:function()
     {
-        for(var x=(battle.BS.xSize-1); x>=0; x--)
-        {
-            for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
-            {
-                if(OffsetOut(battle.BS.xSize,x,battle.BS.ySize,y))
-                {
+        game.map[this.x][this.y].xCoordinate=this.xCoordinate;
+        game.map[this.x][this.y].yCoordinate=this.yCoordinate;
 
-                    var cell;
-                    var tmp=battle.BS.map[x][y].ground;
+        this.cell.row=this.x;
+        this.cell.collomn=this.y;
 
-                    var xCoordinate;
-                    var yCoordinate;
-
-                    //for changeable field and different first shift
-                    //this part from lab, where A* pathfinder was realised
-                    //only removed horisontal offset (now idea why) and add vertical shift
-                    if(battle.BS.xSize%2 == 1)
-                    {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
-                        yCoordinate=game.xLineSize*x*0.75;
-                    }
-                    else
-                    {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
-                        yCoordinate=game.xLineSize*x*0.75;
-                    }
-                    switch(tmp)
-                    {
-                        case 1:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Grass');
-                            break;
-                        case 2:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Cover');
-                            break;
-                        case 3:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Danger');
-                            break;
-                        case 4:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
-                            break;
-                        case 5:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');
-                            break;
-                        case 0:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Unreached');
-                            break;
-                        default:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
-                            break;
-                    }
-
-                    //Save coordinate.Maybe it's unnecessary?
-                    game.map[x][y].xCoordinate=xCoordinate;
-                    game.map[x][y].yCoordinate=yCoordinate;
-
-                    //Remember the coordinate to cell
-                    //cell.xCoordinate=xCoordinate;
-                    //cell.yCoordinate=yCoordinate;
-
-                    //remember index of cell
-                    cell.row=x;
-                    cell.collomn=y;
-
-                    cell.inputEnabled=true;
-                    cell.events.onInputDown.add(this.addSquad,this)
-                }
-            }
-        }
+        this.cell.inputEnabled=true;
+        this.cell.events.onInputDown.add(reconnaissanceState.prototype.addSquad,this)
     },
     /**
      * This work
@@ -214,68 +156,22 @@ var battleState=function(t)
 battleState.prototype={
     preload:function()
     {
-    },create:function()
+    },
+    create:function()
     {
-        this.RenderField();//render start disposition
-
-    },/**
-     * this part maybe reused from prev state
+        RenderField(this.AddPart,2);//render start disposition
+        this.RenderSquad();
+    },
+    /**
+     * uses with context from RenderField
      * @constructor
      */
-    RenderField:function()
+    AddPart:function()
     {
-        for(var x=(battle.BS.xSize-1); x>=0; x--)
-        {
-            for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
-            {
-                if(OffsetOut(battle.BS.xSize,x,battle.BS.ySize,y))
-                {
-
-                    var cell;
-                    var tmp=battle.BS.map[x][y].ground;
-
-                    var xCoordinate;
-                    var yCoordinate;
-
-                    if(battle.BS.xSize%2 == 1)
-                    {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
-                        yCoordinate=game.xLineSize*x*0.75;
-                    }
-                    else
-                    {
-                        xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
-                        yCoordinate=game.xLineSize*x*0.75;
-                    }
-                    switch(tmp)
-                    {
-                        case 1:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Grass');
-                            break;
-                        case 2:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Cover');
-                            break;
-                        case 3:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Danger');
-                            break;
-                        case 4:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
-                            break;
-                        case 5:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');
-                            break;
-                        case 0:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Unreached');
-                            break;
-                        default:
-                            cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
-                            break;
-                    }
-
-                    cell.events.onInputDown.add(this.selectCell,this);
-                }
-            }
-        }
+        this.cell.events.onInputDown.add(battleState.prototype.selectCell,this);
+    },
+    RenderSquad:function()
+    {
         battle.BS.deck1.forEach(function(squad,index)
         {
             if(squad.placed)
@@ -453,3 +349,71 @@ Deps.autorun(function()
     }
     _turnDep.changed();
 });
+
+RenderField=function(addPart,point)
+{
+    var context={};
+    for(var x=(battle.BS.xSize-1); x>=0; x--)
+    {
+        for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
+        {
+            if(OffsetOut(battle.BS.xSize,x,battle.BS.ySize,y))
+            {
+
+                var xCoordinate;
+                var yCoordinate;
+                var cell;
+                var tmp=battle.BS.map[x][y].ground;
+
+                //for changeable field and different first shift
+                //this part from lab, where A* pathfinder was realised
+                //only removed horisontal offset (now idea why) and add vertical shift
+                if(battle.BS.xSize%2 == 1)
+                {
+                    xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
+                    yCoordinate=game.xLineSize*x*0.75;
+                }
+                else
+                {
+                    xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
+                    yCoordinate=game.xLineSize*x*0.75;
+                }
+                switch(tmp)
+                {
+                    case 1:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Grass');
+                        break;
+                    case 2:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Cover');
+                        break;
+                    case 3:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Danger');
+                        break;
+                    case 4:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
+                        break;
+                    case 5:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');
+                        break;
+                    case 0:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Unreached');
+                        break;
+                    default:
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
+                        break;
+                }
+                context.xCoordinate=xCoordinate;
+                context.yCoordinate=yCoordinate;
+                context.cell=cell;
+                context.x=x;
+                context.y=y;
+                if ((point==1) || (point==2))
+                {
+                    var f=addPart.bind(context);
+                    f();
+                }
+
+            }
+        }
+    }
+};
