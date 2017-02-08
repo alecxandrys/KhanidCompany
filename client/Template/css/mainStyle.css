@@ -1,9 +1,9 @@
 .siteBody
 {
-    font-family     : sans-serif;
+    font-family     : Georgia, serif ;
     background      : #315481 url(/SiteResource/mainfon.jpg) no-repeat fixed;
     background-size : cover;
-    font-size       : 14px;
+    font-size       : 16px;
     position        : absolute;
     top             : 0;
     bottom          : 0;
