@@ -1,14 +1,14 @@
 <template name="Card">
     <div class="container">
-            {{>navigate}}
+        {{>navigate}}
         <div class="row">
-            <a class="ready btn btn-danger col-md-push-5 col-xs-2">Battle!</a>
-            <a class="clear btn btn-danger col-md-push-7 col-xs-2">Clear deck</a>
+            <a id="ready" class="btn btn-danger col-md-push-5 col-xs-2">Battle!</a>
+            <a id="clear" class="btn btn-danger col-md-push-7 col-xs-2">Clear deck</a>
         </div>
-		<div class="container"> 
-			<div class="left-hand col-md-4">
-				{{#each cards}}
-					<div class="card panel panel-warning" data-toggle="tooltip" data-placement="right" data-html="true"
+        <div class="container">
+            <div class="left-hand col-md-4">
+                {{#each cards}}
+                    <div class="card panel panel-warning" data-toggle="tooltip" data-placement="right" data-html="true"
                          title="
                             Commander:{{commander}}<br>
 							Cost:{{cost}} <br>
@@ -30,33 +30,52 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">{{name}}</h3>
                         </div>
-						<a class="id">{{@index}}</a>
+                        <a class="id">{{@index}}</a>
                         <div class="panel-body">
                             {{description}}
                         </div>
-					</div>
-				{{/each}}
-			</div>
-			<div class="col-md-4">
-			
-			</div>
+                    </div>
+                {{/each}}
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <a id="add" class="btn btn-danger col-md-push-5 col-xs-2">Add</a>
+                    <a id="remove" class="btn btn-danger col-md-push-7 col-xs-2">Remove</a>
+                </div>
+                {{#if card}}
+                    <div>
+                        Cost:{{card.cost}} <br>
+                        Rules:{{card.rules}} <br>
+                        WeaponSkill:{{card.weaponSkill}}<br>
+                        BallisticSkill:{{card.ballisticSkill}}<br>
+                        Strength:{{card.strength}}<br>
+                        Toughness:{{card.toughness}}<br>
+                        Initiative:{{card.initiative}}<br>
+                        Speed:{{card.speed}}<br>
+                        Wound:{{card.wound}}<br>
+                        AttackCount:{{card.attackCount}}<br>
+                        Leadership:{{card.leadership}}<br>
+                        ArmorSave:{{card.armorSave}}<br>
+                    </div>
+                {{/if}}
+            </div>
 
-			<div class="right-hand col-md-4">
+            <div class="right-hand col-md-4">
 
-				{{#each deck}}
-					<div class="added-card panel panel-warning" >
+                {{#each deck}}
+                    <div class="added-card panel panel-warning">
                         <div class="panel-heading">
                             <h3 class="panel-title">{{name}}</h3>
                         </div>
-						<a class="id">{{@index}}</a>
+                        <a class="id">{{@index}}</a>
 
                         <div class="panel-body">
                             {{description}}
                         </div>
-					</div>
-				{{/each}}
-			</div>
-		</div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
     </div>
     <!-- Скрипт для инициализации элементов на странице, имеющих атрибут data-toggle="tooltip" -->
     <script>

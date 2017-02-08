@@ -25,7 +25,7 @@ var Deck = {
         }
 };
 var Card={
-    _card:{},
+    _card:null,
     _cardDepend: new Tracker.Dependency(),
     getCard:function()
     {
@@ -39,7 +39,7 @@ var Card={
     },
     erase:function()
     {
-        this._card={};
+        this._card=null;
         this._cardDepend.changed();
     }
 };
@@ -69,15 +69,15 @@ Template.Card.events({
             event.preventDefault();
             var id = parseInt($(event.currentTarget).children('a').text());
             Card.setCard(SpaceMarineForce[id]);
-            Deck.setUnit(SpaceMarineForce[id]);
+            //Deck.setUnit(SpaceMarineForce[id]);
             //this is id in array of unit, which was dbcliked just right now
         },
-    "click .clear"  : function()
+    "click #clear"  : function()
         {
             Deck.erase();
         },
     //TODO:finish work, add price of squad
-    "click .ready"  : function()
+    "click #ready"  : function()
         {
             if(Deck._unit.length === 0)
                 {
@@ -92,5 +92,13 @@ Template.Card.events({
                     Meteor.call("addPlayerInQueue",Deck._unit);
                     Router.go('/wait');
                 }
-        }
+        },
+    "click #add"  : function()
+    {
+        Deck.setUnit(Card.getCard());
+    },
+    "click #remove"  : function()
+    {
+        Card.erase();
+    }
 });
