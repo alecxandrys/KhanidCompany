@@ -57,11 +57,23 @@
                         AttackCount:{{card.attackCount}}<br>
                         Leadership:{{card.leadership}}<br>
                         ArmorSave:{{card.armorSave}}<br>
+                        {{#if card.meleeWeapon}}
+                            <div class="meleeWeapon">
+                            {{card.meleeWeapon.name}}
+                                {{card.meleeWeapon.description}}
+                            </div>
+                        {{/if}}
+                        {{#if card.rangeWeapon}}
+                            <div class="rangeWeapon">
+                                {{card.rangeWeapon.name}}
+                                {{card.rangeWeapon.description}}
+                            </div>
+                        {{/if}}
                     </div>
                     <div>
                         Available weapon:<br>
-                        {{#each availableWeapon}}
-                            <div>
+                        {{#each card.availableWeapon}}
+                            <div class="availableWeapon">
                                 {{name}}<br>
                                 {{description}}<br>
                                 {{cost}}<br>
@@ -71,7 +83,8 @@
                                 {{attackCount}}<br>
                                 {{oneHanded}}<br>
                                 {{type}}<br>
-                                {{rules}}<br>
+                                {{rules}}
+                                <a class="id">{{@index}}</a>
                             </div>
                         {{/each}}
                     </div>
@@ -79,7 +92,7 @@
             </div>
 
 
-			<div class="right-hand col-md-4 pre-scrollable">
+            <div class="right-hand col-md-4 pre-scrollable">
 
                 <div class="y-scroll">
                     {{#each deck}}
@@ -97,14 +110,16 @@
 
                     {{/each}}
                 </div>
-			</div>
-		</div>
+            </div>
+        </div>
 
     </div>
     <!-- Скрипт для инициализации элементов на странице, имеющих атрибут data-toggle="tooltip" -->
     <script>
-        $(function () {
-            $("[data-toggle='tooltip']").tooltip();
+        $(function()
+        {
+            $("[data-toggle='tooltip']")
+                    .tooltip();
         });
     </script>
 </template>
