@@ -128,11 +128,40 @@ a:hover {
     color: gold!important;
 }
 .login-button:hover{
+    background-color: gold!important;
+    border-color: #1a1a1c!important;
+    color: #1a1a1c!important;
+}
+.login-button:hover{
     border-color: gold!important;
 }
+.login-button:focus, .login-button:active, .login-button:focus:active{
+    color: #000000!important;
+    background-color: #dfb700!important;
+    border-color: #000000!important;
+}
 .accounts-dialog * {
-    color: #f2eee5!important ;
+    color: gold ;
 }
 .accounts-dialog *:hover{
-    color: gold!important ;
+
 }
+.accounts-dialog *:active:focus,.accounts-dialog *:active, .accounts-dialog *:focus{
+}
+input{
+    background-color: #1a1a1c!important;
+    border-color: #f2eee5!important;
+}
+#back-to-login-link:active:focus,#back-to-login-link:active, #back-to-login-link:focus,
+#signup-link:active:focus,#signup-link:active,#signup-link:focus,
+.login-close-text:active:focus,.login-close-text:active,.login-close-text:focus,.login-close-text:active:hover
+{
+    color: #dfb700!important;
+}
+#signup-link, #back-to-login-link,.login-close-text{
+    color: #f2eee5;
+}
+#signup-link:hover,#back-to-login-link:hover{
+    color: gold;
+}
+
