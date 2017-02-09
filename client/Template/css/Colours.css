@@ -10,7 +10,7 @@
 }
 body{
     color: #f2eee5;
-    background-color: #1a1a1c!important;
+    background-color: #000!important;
 }
 .panel-title{
     color: gold;
@@ -111,4 +111,28 @@ a:hover {
     background-color: #dfb700;
     border-color: #000000;
 
+}
+#bf-bottom-bar{
+    background-color: #1a1a1c;
+}
+#login-dropdown-list{
+    background: #1a1a1c;
+}
+.login-close-text:active:hover, .btn-default.active:hover, .open > .dropdown-toggle.btn-default:hover, .btn-default:active:focus, .btn-default.active:focus, .open > .dropdown-toggle.btn-default:focus, .btn-default:active.focus, .btn-default.active.focus, .open > .dropdown-toggle.btn-default.focus
+{
+    color: #f2eee5!important;
+}
+.login-button{
+    background-color: #1a1a1c!important;
+    border-color: #f2eee5!important;
+    color: gold!important;
+}
+.login-button:hover{
+    border-color: gold!important;
+}
+.accounts-dialog * {
+    color: #f2eee5!important ;
+}
+.accounts-dialog *:hover{
+    color: gold!important ;
 }

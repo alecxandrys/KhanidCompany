@@ -9,7 +9,7 @@
         <div class="container">
             <div class="left-hand col-md-4">
                 {{#each cards}}
-                    <div class="card panel panel-default br1" data-toggle="tooltip" data-placement="right" data-html="true"
+                    <div class="card panel panel-default br1" data-toggle="tooltip" data-placement=" auto top" data-html="true"
                          title="
                             Commander:<wbr>{{commander}}<br>
 							Cost:<wbr>{{cost}} <br>
@@ -38,7 +38,7 @@
                     </div>
                 {{/each}}
             </div>
-            <div class="col-md-4 pre-scrollable container">
+                <div class="col-md-4 pre-scrollable container" id="hand">
                 {{#if card}}
                     <br>
                     <div class="row">
@@ -100,7 +100,7 @@
             </div>
 
 
-            <div class="right-hand col-md-4 pre-scrollable">
+            <div class="right-hand col-md-4 pre-scrollable" id="hand">
 
                 <h4 id="total-cost">total cost:{{deckCost}}</h4>
                     {{#each deck}}
