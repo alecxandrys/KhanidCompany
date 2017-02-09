@@ -8,6 +8,7 @@ Meteor.subscribe("userData");
 var Deck={
     _unit:[],
     _unitDepend:new Tracker.Dependency(),
+    cost:0,
     getUnit:function()
     {
         this._unitDepend.depend();
@@ -22,9 +23,17 @@ var Deck={
     {
         this._unit=[];
         this._unitDepend.changed();
+    },
+    getCost:function()
+    {
+        return this.cost;
+    },
+    setCost:function(cost)
+    {
+        this.cost=cost;
     }
 };
-Card={
+var Card={
     _card:null,
     _cardDepend:new Tracker.Dependency(),
     getCard:function()
@@ -75,6 +84,28 @@ Template.Card.helpers({
     card:function()
     {
         return Card.getCard();
+    },
+    unitCost:function()
+    {
+        var res=Card.getCard();
+        var cost=res.cost;
+        if (res.meleeWeapon){cost=cost+res.meleeWeapon.cost;}
+        if (res.rangeWeapon){cost=cost+res.rangeWeapon.cost;}
+        return cost;
+    },
+    deckCost:function()
+    {
+        var res=Deck.getUnit();
+        var cost=0;
+        for (var card of res)
+        {
+            cost=cost+card.cost;
+            if (card.meleeWeapon){cost=cost+card.meleeWeapon.cost;}
+            if (card.rangeWeapon){cost=cost+card.rangeWeapon.cost;}
+        }
+        Deck.setCost(cost);
+        return cost;
+
     }
 });
 Template.Card.events({
@@ -94,7 +125,7 @@ Template.Card.events({
         var id=parseInt($(event.currentTarget)
             .children('a')
             .text());
-        if(Card._card.availableWeapon.type == 'Ranged')
+        if(this.type == 'Ranged')
         {
             Card.addRangeWeapon(id);
         }

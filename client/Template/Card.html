@@ -26,7 +26,9 @@
 							Leadership:<wbr>{{leadership}}<br>
 							ArmorSave:<wbr>{{armorSave}}<br>
 
-							AvailableWeapon:<wbr>{{availableWeapon}}<br>
+							AvailableWeapon:<wbr>{{#each availableWeapon}}
+                             {{name}}<br>
+                            {{/each}}
                             ">
                         <a class="id">{{@index}}</a>
                         <div class="panel-body">
@@ -43,7 +45,7 @@
                         <a id="remove" class="btn btn-danger col-xs-push-1  col-xs-4">Remove</a>
                         <a id="add" class="btn btn-danger col-xs-push-2 col-xs-4">Add to deck</a>
                     </div>
-                    <h4 id="cost-with-weapon">cost-with-weapon:</h4>
+                    <h4 id="cost-with-weapon">cost-with-weapon:{{unitCost}}</h4>
                     <div class="panel panel-default br1" id="card-predeck">
                         <div class="panel-body">
                             Cost:{{card.cost}} <br>
@@ -94,7 +96,7 @@
 
             <div class="right-hand col-md-4 pre-scrollable">
 
-                <h4 id="total-cost">total cost:</h4>
+                <h4 id="total-cost">total cost:{{deckCost}}</h4>
                     {{#each deck}}
                         <div class="added-card panel panel-default br1" >
 
