@@ -1,0 +1,81 @@
+.jumbotron{
+    background: #1a1a1c;
+    color: #f2eee5;
+
+}
+.navbar{
+    color: #f2eee5;
+    background: #1a1a1c;
+    border-color: gold;
+}
+body{
+    color: #f2eee5;
+    background-color: #1a1a1c!important;
+}
+.panel-title{
+    color: gold;
+}
+.btn-default{
+    color: gold;
+    background: #1a1a1c;
+}
+.panel-default{
+    color: #f2eee5;
+    background-color: #1a1a1c;
+    border-color: #f2eee5;
+}
+#bs-example-navbar-collapse-1 > ul > li > a{
+    color: #f2eee5;
+}
+#bs-example-navbar-collapse-1 > ul > li > a:hover{
+    color: gold;
+}
+.panel-default:hover{
+    color: gold;
+    background-color: #1a1a1c;
+    border-color: gold;
+}
+.table-hover > tbody > tr:hover{
+    background-color: #1a1a1c;
+}
+.alert-default{
+    background-color: #1a1a1c;
+    color: #f2eee5;
+}
+ h3{
+     background-color: #1a1a1c;
+     border-color: #f2eee5;
+     border: 1px;
+ }
+h4{
+    background-color: #1a1a1c;
+    border-color: #f2eee5;
+    border: 1px;
+}
+
+h2{
+    color: gold;
+}
+a {
+    color: #f2eee5; /* Цвет обычной ссылки */
+}
+a:visited {
+    color: #f2eee5; /* Цвет посещенной ссылки */
+}
+a:hover {
+    text-decoration: none; /* Убираем подчеркивание */
+    color: gold; /* Цвет ссылки при наведении на нее курсора мыши */
+}
+.btn-danger{
+    color: #f2eee5;
+}
+
+#card-predeck:hover{
+    color: #f2eee5;
+}
+.left-panel{
+    background-color: #1a1a1c;
+}
+.right-panel{
+    background-color: #1a1a1c;
+}
