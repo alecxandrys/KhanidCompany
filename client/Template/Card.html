@@ -66,14 +66,14 @@
 
                                     {{#if card.meleeWeapon}}
                                         <div class="meleeWeapon " id="equiped-weapon">
-                                            {{card.meleeWeapon.name}}
-                                            {{card.meleeWeapon.description}}
+                                            Name:{{card.meleeWeapon.name}}<br>
+                                            Description:{{card.meleeWeapon.description}}
                                         </div>
                                     {{/if}}
                                     {{#if card.rangeWeapon}}
-                                        <div class="rangeWeapon label label-default" id="equiped-weapon">
-                                            {{card.rangeWeapon.name}}
-                                            {{card.rangeWeapon.description}}
+                                        <div class="rangeWeapon " id="equiped-weapon">
+                                            Name:{{card.rangeWeapon.name}}<br>
+                                            Description:{{card.rangeWeapon.description}}
                                         </div>
                                     {{/if}}
                                 </div>
@@ -83,16 +83,16 @@
                     <h4>Available weapons:</h4>
                     {{#each card.availableWeapon}}
                         <div class="panel panel-default br1 availableWeapon panel-body">
-                            {{name}}<br>
-                            {{description}}<br>
-                            {{cost}}<br>
-                            {{range}}<br>
-                            {{strength}}<br>
-                            {{AP}}<br>
-                            {{attackCount}}<br>
-                            {{oneHanded}}<br>
-                            {{type}}<br>
-                            {{rules}}
+                            Name:{{name}}<br>
+                            Description:{{description}}<br>
+                            Cost:{{cost}}<br>
+                            Range:{{range}}<br>
+                            Strength:{{strength}}<br>
+                            AP:{{AP}}<br>
+                            Attack:{{attackCount}}<br>
+                            One-Handed:{{#if oneHanded}}Yes{{else}}No{{/if}}<br>
+                            Type:{{type}}<br>
+                            Rules:{{rules}}
                             <a class="id">{{@index}}</a>
                         </div>
                     {{/each}}
