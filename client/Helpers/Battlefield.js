@@ -2,8 +2,8 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
-var game={};//this is local variable, which consist graphic (like sprite) and other param
-var battle={};//this is variable which rewrite always when change BattleState
+game={};//this is local variable, which consist graphic (like sprite) and other param
+battle={};//this is variable which rewrite always when change BattleState
 
 var log='';
 
@@ -151,31 +151,39 @@ reconnaissanceState.prototype={
     {
         game.chosenCell=cell;
         _posDep.changed();
-        if(game.chosenCardId != undefined || game.chosenCardId != null && game.curState == 'reconnaissance')
+        if (game.chosenCardId != undefined || game.chosenCardId != null)
         {
-            Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row,function(error,result)
+            if(game.curState == 'reconnaissance')
             {
-                if(!error)
+                Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row,function(error,result)
                 {
-                    if(result)
+                    if(!error)
                     {
-                        log=log+'Unit placed';
+                        if(result)
+                        {
+                            log='Unit placed';
+                        }
+                        else
+                        {
+                            log='Unit can\'t be placed';
+                        }
                     }
                     else
                     {
-                        log=log+'Unit can\'t be placed';
+                        log="Server error";
                     }
-                }
-                else
-                {
-                    log=log+"\nServer error";
-                }
-            });
+                    _logDep.changed();
+                });
+            }
+            else
+            {
+                log=" You cannot placed unit anymore";
+            }
             game.chosenCardId=null;
         }
         else
         {
-            log=log+" You cannot placed unit anymore";
+            log=" Please select unit to placement";
         }
         _logDep.changed();
     }
@@ -351,10 +359,10 @@ Template.Battlefield.helpers({
 });
 
 Template.Battlefield.events({
-    "dbclick .card":function(event)
+    "click .card":function(event)
     {
         event.preventDefault();
-        var id=parseInt($(event.currentTarget)
+        game.chosenCardId=parseInt($(event.currentTarget)
             .children('a')
             .text());
     },
@@ -369,7 +377,7 @@ Template.Battlefield.events({
         }
         else
         {
-            log=log+"Your are alredy waiting opponent";
+            log="Your are alredy waiting opponent";
             _logDep.changed();
         }
     }
