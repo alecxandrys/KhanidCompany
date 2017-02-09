@@ -2,9 +2,12 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
-game={};//this is local variable, which consist graphic (like sprite) and other param
-battle={};//this is variable which rewrite always when change BattleState
+var game={};//this is local variable, which consist graphic (like sprite) and other param
+var battle={};//this is variable which rewrite always when change BattleState
 
+log='';
+
+var _logDep=new Deps.Dependency();
 var _stateDep=new Deps.Dependency();
 var _turnDep=new Deps.Dependency();
 var _posDep=new Deps.Dependency();
@@ -150,16 +153,25 @@ reconnaissanceState.prototype={
         _posDep.changed();
         if(game.chosenCardId != undefined || game.chosenCardId != null && game.curState == 'reconnaissance')
         {
-            //TODO make a error callback
-            var message=Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row);
-            if (message)
+            Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row,function(error,result)
             {
-
-            }
-            else
-            {
-
-            }
+                if (!error)
+                {
+                    if (result)
+                    {
+                        log=log+'Unit placed';
+                    }
+                    else
+                    {
+                        log=log+'Unit can\'t be placed';
+                    }
+                }
+                else
+                {
+                    log=log+"\nServer error";
+                }
+                _logDep.changed();
+            });
             game.chosenCardId = null;
         }
     }
@@ -326,6 +338,11 @@ Template.Battlefield.helpers({
         {
             return game.chosenCell.row+' '+game.chosenCell.collomn;
         }
+    },
+    log:function()
+    {
+        _logDep.depend();
+        return log;
     }
 });
 

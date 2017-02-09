@@ -31,7 +31,7 @@ Meteor.methods({
         if(player == 1)
         {
             deckName='deck1';
-            if (row>2) {return false;}
+            if (row>1) {return false;}
         }
         else
         {
@@ -39,9 +39,7 @@ Meteor.methods({
             if (row<(BS.xSize-2)) {return false;}
         }
 
-        //deck=battles.findOne({}).BS[deckName];
         deck=BS[deckName];
-
         deck[card].column=column;
         deck[card].row=row;
         deck[card].placed=true;
@@ -49,7 +47,6 @@ Meteor.methods({
         {battles.update(_id,{$set:{'BS.deck1':deck}});return true;}
         else
         {battles.update(_id,{$set:{'BS.deck2':deck}});return true;}
-
     },
     Status_ready:function(_id,player)
     {
@@ -70,8 +67,6 @@ Meteor.methods({
                 battles.update(_id,{$set:{state2:"ready"}});
                 break;
             }
-            default:
-            {}
         }
 
     },
