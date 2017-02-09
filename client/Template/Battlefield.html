@@ -1,26 +1,31 @@
 <template name="Battlefield">
     <h3 class="battleTitle">Battle between {{name1}} and  {{name2}}</h3>
 
+    <script>
+        $(document).prop('title', 'Battle between {{name1}} and  {{name2}}');
+    </script>
     <div id="field"></div>
-    <div class="left-panel">
-        {{#if reconnaissance.state}}
-            {{#each cards}}
-                <div class="card panel panel-default br1">
-                    <a class="id">{{@index}}</a>
-                    <div class="panel-body" id="battlecardview">
-                        {{name}}
-                        {{#if placed}}
-                            {{row}}
-                            {{column}}
-                        {{/if}}
+    <div class="container row" id="bf-bottom-bar">
+        <div class="left-panel col-xs-10">
+            {{#if reconnaissance.state}}
+                {{#each cards}}
+                    <div class="card panel panel-default br1 col-sm-3 col-xs-4 col-lg-1 col-md-2">
+                        <a class="id">{{@index}}</a>
+                        <div class="panel-body" id="battlecardview">
+                            {{name}}<wbr>
+                            {{#if placed}}
+                                {{row}}
+                                {{column}}
+                            {{/if}}
+                        </div>
                     </div>
-                </div>
-            {{/each}}
-        {{/if}}
-    </div>
-    <div class="right-panel">
-        <a class="ready btn btn-default">Battle</a>
-        <div>{{position}}</div>
-        <div class="panel panel-default pre-scrollable">{{log}}</div>
+                {{/each}}
+            {{/if}}
+        </div>
+        <div class="right-panel col-xs-2">
+            <a class="ready btn btn-default col-xs-12">Battle</a>
+            <div class="col-xs-12">{{position}}</div>
+            <div class="panel panel-default pre-scrollable">{{log}}</div>
+        </div>
     </div>
 </template>

@@ -46,7 +46,9 @@ a.id
 
 .ready
 {
-
+    margin-left: 0;
+    margin-right: auto;
+    text-align: center;
 }
 
 .mainMessage
@@ -57,9 +59,9 @@ a.id
     text-align      :center;
 
 }
-.pre-scrollable{
+#hand{
     max-height: 83vh;
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
 }
 .h7vh{
@@ -89,4 +91,12 @@ h4{
 #selected-weapon{
     min-height: 2.8vh;
     padding: 0.5vh;
+}
+.tooltip{
+    z-index: 10;
+}
+#bf-bottom-bar{
+    width: 100%;
+    min-height: 54px;
+    margin: 0;
 }

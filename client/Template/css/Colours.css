@@ -10,7 +10,7 @@
 }
 body{
     color: #f2eee5;
-    background-color: #1a1a1c!important;
+    background-color: #000!important;
 }
 .panel-title{
     color: gold;
@@ -111,4 +111,7 @@ a:hover {
     background-color: #dfb700;
     border-color: #000000;
 
+}
+#bf-bottom-bar{
+    background-color: #1a1a1c;
 }
