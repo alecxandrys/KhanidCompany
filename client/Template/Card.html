@@ -43,13 +43,7 @@
                         <a id="remove" class="btn btn-danger col-xs-push-1  col-xs-4">Remove</a>
                         <a id="add" class="btn btn-danger col-xs-push-2 col-xs-4">Add to deck</a>
                     </div>
-                    <br>
-                    <br>
-                    <div class="row">
-                        <a id="remove" class="btn btn-danger col-xs-push-1  col-xs-4">Remove</a>
-                        <a id="add" class="btn btn-danger col-xs-push-2 col-xs-4">Add to deck</a>
-                    </div>
-                    <br>
+                    <h4 id="cost-with-weapon">cost-with-weapon:</h4>
                     <div class="panel panel-default br1" id="card-predeck">
                         <div class="panel-body">
                             Cost:{{card.cost}} <br>
@@ -78,33 +72,29 @@
                             {{/if}}
                         </div>
                     </div>
-                    <div class="panel panel-default br1 " id="card-predeck">
-                        <div class="panel-body">
-                            Available weapon:<br>
-                            {{#each card.availableWeapon}}
-                                <div class="availableWeapon">
-                                    {{name}}<br>
-                                    {{description}}<br>
-                                    {{cost}}<br>
-                                    {{range}}<br>
-                                    {{strength}}<br>
-                                    {{AP}}<br>
-                                    {{attackCount}}<br>
-                                    {{oneHanded}}<br>
-                                    {{type}}<br>
-                                    {{rules}}
-                                    <a class="id">{{@index}}</a>
-                                </div>
-                            {{/each}}
+                    <h4>Available weapon:</h4>
+                    {{#each card.availableWeapon}}
+                        <div class="panel panel-default br1 availableWeapon panel-body">
+                            {{name}}<br>
+                            {{description}}<br>
+                            {{cost}}<br>
+                            {{range}}<br>
+                            {{strength}}<br>
+                            {{AP}}<br>
+                            {{attackCount}}<br>
+                            {{oneHanded}}<br>
+                            {{type}}<br>
+                            {{rules}}
+                            <a class="id">{{@index}}</a>
                         </div>
-                    </div>
+                    {{/each}}
                 {{/if}}
             </div>
 
 
             <div class="right-hand col-md-4 pre-scrollable">
 
-                <div class="y-scroll">
+                <h4 id="total-cost">total cost:</h4>
                     {{#each deck}}
                         <div class="added-card panel panel-default br1" >
 
@@ -118,7 +108,6 @@
                         </div>
 
                     {{/each}}
-                </div>
 			</div>
 		</div>
 

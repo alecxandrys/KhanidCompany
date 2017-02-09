@@ -44,7 +44,14 @@ body{
 }
  h3{
      background-color: #1a1a1c;
+     border-color: #f2eee5;
+     border: 1px;
  }
+h4{
+    background-color: #1a1a1c;
+    border-color: #f2eee5;
+    border: 1px;
+}
 
 h2{
     color: gold;
