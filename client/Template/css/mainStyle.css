@@ -86,3 +86,7 @@ h3{
 h4{
     border-radius: 1px !important;
 }
+#selected-weapon{
+    min-height: 2.8vh;
+    padding: 0.5vh;
+}

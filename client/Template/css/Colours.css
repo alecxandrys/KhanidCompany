@@ -15,10 +15,6 @@ body{
 .panel-title{
     color: gold;
 }
-.btn-default{
-    color: gold;
-    background: #1a1a1c;
-}
 .panel-default{
     color: #f2eee5;
     background-color: #1a1a1c;
@@ -55,6 +51,9 @@ h4{
 
 h2{
     color: gold;
+    background-color: #1a1a1c;
+    border-color: #f2eee5;
+    border: 1px;
 }
 a {
     color: #f2eee5; /* Цвет обычной ссылки */
@@ -78,4 +77,38 @@ a:hover {
 }
 .right-panel{
     background-color: #1a1a1c;
+}
+#equiped-weapon{
+    color: gold;
+    background-color: #1a1a1c;
+    border-color: #f2eee5;
+    border: 1px;
+}
+.btn-default{
+    color: gold;
+    border-color: #f2eee5;
+    background-color: #1a1a1c;
+}
+.btn-default:hover{
+    color: #1a1a1c;
+    background-color: gold;
+    border-color: #1a1a1c;
+}
+.btn-default:active{
+    color: #000000;
+    background-color: #dfb700;
+    border-color: #000000;
+
+}
+.btn-default:focus{
+    color: #1a1a1c;
+    background-color: gold;
+    border-color: #1a1a1c;
+}
+.btn-default:active:hover, .btn-default.active:hover, .open > .dropdown-toggle.btn-default:hover, .btn-default:active:focus, .btn-default.active:focus, .open > .dropdown-toggle.btn-default:focus, .btn-default:active.focus, .btn-default.active.focus, .open > .dropdown-toggle.btn-default.focus
+{
+    color: #000000;
+    background-color: #dfb700;
+    border-color: #000000;
+
 }
