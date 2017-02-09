@@ -44,6 +44,10 @@ body{
  h3{
      background-color: #1a1a1c;
  }
+
+h2{
+    color: gold;
+}
 a {
     color: #f2eee5; /* Цвет обычной ссылки */
 }
@@ -53,4 +57,11 @@ a:visited {
 a:hover {
     text-decoration: none; /* Убираем подчеркивание */
     color: gold; /* Цвет ссылки при наведении на нее курсора мыши */
+}
+.btn-danger{
+    color: #f2eee5;
+}
+
+#card-predeck:hover{
+    color: #f2eee5;
 }
