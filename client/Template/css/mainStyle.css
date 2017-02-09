@@ -61,6 +61,7 @@ a.id
 .pre-scrollable{
     max-height: 83vh;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 .h7vh{
     height: 7vh;
@@ -69,4 +70,11 @@ a.id
     height: 6vh;
     border: 1vh;
     margin-bottom: 1vh;
+}
+.br1 {
+    border-radius: 1px !important;
+}
+.btn-danger{
+    margin-left: 5px;
+    margin-right: 5px;
 }

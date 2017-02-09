@@ -7,9 +7,9 @@
             <a id="clear" class="btn btn-danger col-md-push-7 col-xs-2">Clear deck</a>
         </div>
         <div class="container">
-            <div class="left-hand col-md-4">
+            <div class="left-hand col-md-4 ">
                 {{#each cards}}
-                    <div class="card panel panel-warning" data-toggle="tooltip" data-placement="right" data-html="true"
+                    <div class="card panel panel-default br1" data-toggle="tooltip" data-placement="right" data-html="true"
                          title="
                             Commander:{{commander}}<br>
 							Cost:{{cost}} <br>
@@ -28,35 +28,37 @@
 
 							AvailableWeapon:{{availableWeapon}}<br>
                             ">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{{name}}</h3>
-                        </div>
                         <a class="id">{{@index}}</a>
                         <div class="panel-body">
+                            <h3 class="panel-title">{{name}}</h3>
                             {{description}}
                         </div>
                     </div>
                 {{/each}}
             </div>
-            <div class="col-md-4">
-                <div>
-                    <a id="add" class="btn btn-danger col-md-push-5 col-xs-2">Add</a>
-                    <a id="remove" class="btn btn-danger col-md-push-7 col-xs-2">Remove</a>
-                </div>
+            <div class="col-md-4 pre-scrollable container">
                 {{#if card}}
-                    <div>
-                        Cost:{{card.cost}} <br>
-                        Rules:{{card.rules}} <br>
-                        WeaponSkill:{{card.weaponSkill}}<br>
-                        BallisticSkill:{{card.ballisticSkill}}<br>
-                        Strength:{{card.strength}}<br>
-                        Toughness:{{card.toughness}}<br>
-                        Initiative:{{card.initiative}}<br>
-                        Speed:{{card.speed}}<br>
-                        Wound:{{card.wound}}<br>
-                        AttackCount:{{card.attackCount}}<br>
-                        Leadership:{{card.leadership}}<br>
-                        ArmorSave:{{card.armorSave}}<br>
+                    <br>
+                    <div class="row">
+                        <a id="add" class="btn btn-danger col-xs-push-1 col-xs-4">Add</a>
+                        <a id="remove" class="btn btn-danger col-xs-push-2 col-xs-4">Remove</a>
+                    </div>
+                    <br>
+                    <div class="panel panel-default br1">
+                        <div class="panel-body">
+                            Cost:{{card.cost}} <br>
+                            Rules:{{card.rules}} <br>
+                            WeaponSkill:{{card.weaponSkill}}<br>
+                            BallisticSkill:{{card.ballisticSkill}}<br>
+                            Strength:{{card.strength}}<br>
+                            Toughness:{{card.toughness}}<br>
+                            Initiative:{{card.initiative}}<br>
+                            Speed:{{card.speed}}<br>
+                            Wound:{{card.wound}}<br>
+                            AttackCount:{{card.attackCount}}<br>
+                            Leadership:{{card.leadership}}<br>
+                            ArmorSave:{{card.armorSave}}<br>
+                        </div>
                     </div>
                 {{/if}}
             </div>
@@ -66,14 +68,13 @@
 
                 <div class="y-scroll">
                     {{#each deck}}
-                        <div class="added-card panel panel-warning" >
-                            <div class="panel-heading">
-                                <h3 class="panel-title">{{name}}</h3>
-                            </div>
+                        <div class="added-card panel panel-default br1" >
+
                             <a class="id">{{@index}}</a>
 
 
                             <div class="panel-body">
+                                <h3 class="panel-title">{{name}}</h3>
                                 {{description}}
                             </div>
                         </div>

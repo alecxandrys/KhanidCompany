@@ -1,0 +1,46 @@
+.jumbotron{
+    background: #1a1a1c;
+    color: #f2eee5;
+
+}
+.navbar{
+    color: #f2eee5;
+    background: #1a1a1c;
+    border-color: gold;
+}
+body{
+    color: #f2eee5;
+}
+.panel-title{
+    color: gold;
+}
+.btn-default{
+    color: gold;
+    background: #1a1a1c;
+}
+.panel-default{
+    color: #f2eee5;
+    background-color: #1a1a1c;
+    border-color: #f2eee5;
+}
+#bs-example-navbar-collapse-1 > ul > li > a{
+    color: #f2eee5;
+}
+#bs-example-navbar-collapse-1 > ul > li > a:hover{
+    color: gold;
+}
+.panel-default:hover{
+    color: gold;
+    background-color: #1a1a1c;
+    border-color: gold;
+}
+.table-hover > tbody > tr:hover{
+    background-color: #1a1a1c;
+}
+.alert-default{
+    background-color: #1a1a1c;
+    color: #f2eee5;
+}
+ h3{
+     background-color: #1a1a1c;
+ }
