@@ -3,8 +3,8 @@
 
         {{>navigate}}
         <div class="row">
-            <a id="ready" class="btn btn-danger col-md-push-5 col-xs-2">Battle!</a>
-            <a id="clear" class="btn btn-danger col-md-push-7 col-xs-2">Clear deck</a>
+            <a id="ready" class="btn btn-default col-md-push-5 col-xs-2">Battle!</a>
+            <a id="clear" class="btn btn-default col-md-push-7 col-xs-2">Clear deck</a>
         </div>
         <div class="container">
             <div class="left-hand col-md-4">
@@ -42,8 +42,8 @@
                 {{#if card}}
                     <br>
                     <div class="row">
-                        <a id="remove" class="btn btn-danger col-xs-push-1  col-xs-4">Remove</a>
-                        <a id="add" class="btn btn-danger col-xs-push-2 col-xs-4">Add to deck</a>
+                        <a id="remove" class="btn btn-default col-xs-push-1  col-xs-4">Remove</a>
+                        <a id="add" class="btn btn-default col-xs-push-2 col-xs-4">Add to deck</a>
                     </div>
                     <h4 id="cost-with-weapon">cost-with-weapon:{{unitCost}}</h4>
                     <div class="panel panel-default br1" id="card-predeck">
@@ -60,21 +60,27 @@
                             AttackCount:{{card.attackCount}}<br>
                             Leadership:{{card.leadership}}<br>
                             ArmorSave:{{card.armorSave}}<br>
-                            {{#if card.meleeWeapon}}
-                                <div class="meleeWeapon">
-                                    {{card.meleeWeapon.name}}
-                                    {{card.meleeWeapon.description}}
+                            Selected Weapon:
+                            <div class="panel panel-default">
+                                <div class="panel-body" id="selected-weapon">
+
+                                    {{#if card.meleeWeapon}}
+                                        <div class="meleeWeapon " id="equiped-weapon">
+                                            {{card.meleeWeapon.name}}
+                                            {{card.meleeWeapon.description}}
+                                        </div>
+                                    {{/if}}
+                                    {{#if card.rangeWeapon}}
+                                        <div class="rangeWeapon label label-default" id="equiped-weapon">
+                                            {{card.rangeWeapon.name}}
+                                            {{card.rangeWeapon.description}}
+                                        </div>
+                                    {{/if}}
                                 </div>
-                            {{/if}}
-                            {{#if card.rangeWeapon}}
-                                <div class="rangeWeapon">
-                                    {{card.rangeWeapon.name}}
-                                    {{card.rangeWeapon.description}}
-                                </div>
-                            {{/if}}
+                            </div>
                         </div>
                     </div>
-                    <h4>Available weapon:</h4>
+                    <h4>Available weapons:</h4>
                     {{#each card.availableWeapon}}
                         <div class="panel panel-default br1 availableWeapon panel-body">
                             {{name}}<br>
