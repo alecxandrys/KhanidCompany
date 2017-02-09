@@ -151,7 +151,15 @@ reconnaissanceState.prototype={
         if(game.chosenCardId != undefined || game.chosenCardId != null && game.curState == 'reconnaissance')
         {
             //TODO make a error callback
-            Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row);
+            var message=Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row);
+            if (message)
+            {
+
+            }
+            else
+            {
+
+            }
             game.chosenCardId = null;
         }
     }

@@ -26,20 +26,29 @@ Meteor.methods({
 
         var deck;
         var deckName;
-        if(player == 1)
-        {deckName='deck1';}
-        else
-        {deckName='deck2';}
+        var BS=battles.findOne({}).BS;
 
-        deck=battles.findOne({}).BS[deckName];
+        if(player == 1)
+        {
+            deckName='deck1';
+            if (row>2) {return false;}
+        }
+        else
+        {
+            deckName='deck2';
+            if (row<(BS.xSize-2)) {return false;}
+        }
+
+        //deck=battles.findOne({}).BS[deckName];
+        deck=BS[deckName];
 
         deck[card].column=column;
         deck[card].row=row;
         deck[card].placed=true;
         if(player == 1)
-        {battles.update(_id,{$set:{'BS.deck1':deck}});}
+        {battles.update(_id,{$set:{'BS.deck1':deck}});return true;}
         else
-        {battles.update(_id,{$set:{'BS.deck2':deck}});}
+        {battles.update(_id,{$set:{'BS.deck2':deck}});return true;}
 
     },
     Status_ready:function(_id,player)
