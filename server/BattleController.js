@@ -68,6 +68,12 @@ Meteor.methods({
                 break;
             }
         }
+        var BS=battles.findOne({}).BS;
+        if (BS.state1=="ready" && BS.state2=="ready")
+        {
+            battles.update(_id,{$set:{state1:"battle"}});
+            battles.update(_id,{$set:{state2:"battle"}});
+        }
 
     },
     clickOnSquad:function()

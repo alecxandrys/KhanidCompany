@@ -5,7 +5,7 @@
 var game={};//this is local variable, which consist graphic (like sprite) and other param
 var battle={};//this is variable which rewrite always when change BattleState
 
-log='';
+var log='';
 
 var _logDep=new Deps.Dependency();
 var _stateDep=new Deps.Dependency();
@@ -68,7 +68,7 @@ preloadState.prototype={
     },
     fileComplete:function(progress)
     {
-      this.text.text='Loading '+progress+'%';
+        this.text.text='Loading '+progress+'%';
     }
 };
 
@@ -155,9 +155,9 @@ reconnaissanceState.prototype={
         {
             Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row,function(error,result)
             {
-                if (!error)
+                if(!error)
                 {
-                    if (result)
+                    if(result)
                     {
                         log=log+'Unit placed';
                     }
@@ -170,10 +170,14 @@ reconnaissanceState.prototype={
                 {
                     log=log+"\nServer error";
                 }
-                _logDep.changed();
             });
-            game.chosenCardId = null;
+            game.chosenCardId=null;
         }
+        else
+        {
+            log=log+" You cannot placed unit anymore";
+        }
+        _logDep.changed();
     }
 };
 
@@ -281,7 +285,7 @@ Template.Battlefield.onCreated(function()
     for(var i=0; i<battle.BS.xSize; i++)
     {
         game.map[i]=[];
-        for(var j=0; j<(battle.BS.ySize + battle.BS.xSize / 2); j++)
+        for(var j=0; j<(battle.BS.ySize+battle.BS.xSize/2); j++)
         {
             game.map[i][j]={};
         }
@@ -334,7 +338,7 @@ Template.Battlefield.helpers({
     position:function()
     {
         _posDep.depend();
-        if (game.chosenCell)
+        if(game.chosenCell)
         {
             return game.chosenCell.row+' '+game.chosenCell.collomn;
         }
@@ -347,13 +351,6 @@ Template.Battlefield.helpers({
 });
 
 Template.Battlefield.events({
-    "click .card":function(event)
-    {
-        event.preventDefault();
-        game.chosenCardId=parseInt($(event.currentTarget)
-            .children('a')
-            .text());
-    },
     "dbclick .card":function(event)
     {
         event.preventDefault();
@@ -364,9 +361,17 @@ Template.Battlefield.events({
     "click .ready":function()
     {
         //go to next state, let's war begin
-        //TODO Check work and changes
-        game.curState='wait';
-        Meteor.call('Status_ready',battle._id,game.side);
+        if(game.curState != 'ready')
+        {
+
+            game.curState='ready';
+            Meteor.call('Status_ready',battle._id,game.side);
+        }
+        else
+        {
+            log=log+"Your are alredy waiting opponent";
+            _logDep.changed();
+        }
     }
 });
 
@@ -427,7 +432,7 @@ function RenderField(addPart,point)
                 context.cell=cell;
                 context.x=x;
                 context.y=y;
-                if ((point==1) || (point==2))
+                if((point == 1) || (point == 2))
                 {
                     var f=addPart.bind(context);
                     f();
@@ -448,11 +453,20 @@ Deps.autorun(function()
     //In first time battle is undefined
     if(battle)
     {
+        switch(game.side)
+        {
+            case 1:
+                game.curState=battle.state1;
+                break;
+            case 2:
+                game.curState=battle.state2;
+                break;
+        }
         if(battle.state1 == "ready" && battle.state2 == "ready")
         {
             //after it all dead, so we need fully render again
             game.state.start('battle');
-            game.curState='turn';
+            game.curState='battle';
         }
     }
     _turnDep.changed();
