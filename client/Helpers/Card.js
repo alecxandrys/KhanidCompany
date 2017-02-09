@@ -5,28 +5,28 @@
  * Card template
  */
 Meteor.subscribe("userData");
-var Deck = {
-    _unit      : [],
-    _unitDepend: new Tracker.Dependency(),
-    getUnit: function()
-        {
-            this._unitDepend.depend();
-            return this._unit;
-        },
-    setUnit: function(Unit)
-        {
-            this._unit.push(Unit);
-            this._unitDepend.changed();
-        },
-    erase  : function()
-        {
-            this._unit = [];
-            this._unitDepend.changed();
-        }
+var Deck={
+    _unit:[],
+    _unitDepend:new Tracker.Dependency(),
+    getUnit:function()
+    {
+        this._unitDepend.depend();
+        return this._unit;
+    },
+    setUnit:function(Unit)
+    {
+        this._unit.push(Unit);
+        this._unitDepend.changed();
+    },
+    erase:function()
+    {
+        this._unit=[];
+        this._unitDepend.changed();
+    }
 };
-var Card={
+Card={
     _card:null,
-    _cardDepend: new Tracker.Dependency(),
+    _cardDepend:new Tracker.Dependency(),
     getCard:function()
     {
         this._cardDepend.depend();
@@ -41,63 +41,103 @@ var Card={
     {
         this._card=null;
         this._cardDepend.changed();
+    },
+    addMeleeWeapon:function(id)
+    {
+        Card._card.meleeWeapon=Card._card.availableWeapon[id];
+        this._cardDepend.changed();
+    },
+    addRangeWeapon:function(id)
+    {
+        Card._card.rangeWeapon=Card._card.availableWeapon[id];
+        this._cardDepend.changed();
+    },
+    removeMeleeWeapon:function()
+    {
+        Card._card.meleeWeapon=null
+        this._cardDepend.changed();
+    },
+    removeRangeWeapon:function()
+    {
+        Card._card.rangeWeapon=null
+        this._cardDepend.changed();
     }
 };
 Template.Card.helpers({
-    cards: function()
-        {
-            return SpaceMarineForce;
-        },
-    deck : function()
-        {
-            return Deck.getUnit();
-        },
-    card: function()
+    cards:function()
+    {
+        return SpaceMarineForce;
+    },
+    deck:function()
+    {
+        return Deck.getUnit();
+    },
+    card:function()
     {
         return Card.getCard();
     }
 });
 Template.Card.events({
-    "click .card"   : function(event)
+    "dblclick .meleeWeapon":function(event)
+    {
+        event.preventDefault();
+        Card.removeMeleeWeapon();
+    },
+    "dblclick .rangeWeapon":function(event)
+    {
+        event.preventDefault();
+        Card.removeRangeWeapon();
+    },
+    "dblclick .availableWeapon":function(event)
+    {
+        event.preventDefault();
+        var id=parseInt($(event.currentTarget)
+            .children('a')
+            .text());
+        if(Card._card.availableWeapon.type == 'Ranged')
         {
-            event.preventDefault();
-            var id = parseInt($(event.currentTarget).children('a').text());
-            //this is id in array of unit, which was cliked just right now
-        },
-    "dblclick .card": function(event)
+            Card.addRangeWeapon(id);
+        }
+        else
         {
-            event.preventDefault();
-            var id = parseInt($(event.currentTarget).children('a').text());
-            Card.setCard(SpaceMarineForce[id]);
-            //Deck.setUnit(SpaceMarineForce[id]);
-            //this is id in array of unit, which was dbcliked just right now
-        },
-    "click #clear"  : function()
-        {
-            Deck.erase();
-        },
+            Card.addMeleeWeapon(id);
+        }
+    },
+    "dblclick .card":function(event)
+    {
+        event.preventDefault();
+        var id=parseInt($(event.currentTarget)
+            .children('a')
+            .text());
+        Card.setCard(SpaceMarineForce[id]);
+        //this is id in array of unit, which was dbcliked just right now
+    },
+    "click #clear":function()
+    {
+        Deck.erase();
+    },
     //TODO:finish work, add price of squad
-    "click #ready"  : function()
+    "click #ready":function()
+    {
+        if(Deck._unit.length === 0)
         {
-            if(Deck._unit.length === 0)
-                {
-                    alert("Deck is empty, you cannot join in battle");
-                }
-            else if (Deck._unit.length>20)
-                {
-                    alert("deck is too large, erase some squad");
-                }
-            else
-                {
-                    Meteor.call("addPlayerInQueue",Deck._unit);
-                    Router.go('/wait');
-                }
-        },
-    "click #add"  : function()
+            alert("Deck is empty, you cannot join in battle");
+        }
+        else if(Deck._unit.length>20)
+        {
+            alert("deck is too large, erase some squad");
+        }
+        else
+        {
+            Meteor.call("addPlayerInQueue",Deck._unit);
+            Router.go('/wait');
+        }
+    },
+    "click #add":function()
     {
         Deck.setUnit(Card.getCard());
     },
-    "click #remove"  : function()
+    "click #remove":function()
     {
         Card.erase();
     }

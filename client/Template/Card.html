@@ -7,7 +7,7 @@
             <a id="clear" class="btn btn-danger col-md-push-7 col-xs-2">Clear deck</a>
         </div>
         <div class="container">
-            <div class="left-hand col-md-4 ">
+            <div class="left-hand col-md-4">
                 {{#each cards}}
                     <div class="card panel panel-default br1" data-toggle="tooltip" data-placement="right" data-html="true"
                          title="
@@ -44,6 +44,12 @@
                         <a id="add" class="btn btn-danger col-xs-push-2 col-xs-4">Add to deck</a>
                     </div>
                     <br>
+                    <br>
+                    <div class="row">
+                        <a id="remove" class="btn btn-danger col-xs-push-1  col-xs-4">Remove</a>
+                        <a id="add" class="btn btn-danger col-xs-push-2 col-xs-4">Add to deck</a>
+                    </div>
+                    <br>
                     <div class="panel panel-default br1" id="card-predeck">
                         <div class="panel-body">
                             Cost:{{card.cost}} <br>
@@ -58,13 +64,45 @@
                             AttackCount:{{card.attackCount}}<br>
                             Leadership:{{card.leadership}}<br>
                             ArmorSave:{{card.armorSave}}<br>
+                            {{#if card.meleeWeapon}}
+                                <div class="meleeWeapon">
+                                    {{card.meleeWeapon.name}}
+                                    {{card.meleeWeapon.description}}
+                                </div>
+                            {{/if}}
+                            {{#if card.rangeWeapon}}
+                                <div class="rangeWeapon">
+                                    {{card.rangeWeapon.name}}
+                                    {{card.rangeWeapon.description}}
+                                </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="panel panel-default br1 " id="card-predeck">
+                        <div class="panel-body">
+                            Available weapon:<br>
+                            {{#each card.availableWeapon}}
+                                <div class="availableWeapon">
+                                    {{name}}<br>
+                                    {{description}}<br>
+                                    {{cost}}<br>
+                                    {{range}}<br>
+                                    {{strength}}<br>
+                                    {{AP}}<br>
+                                    {{attackCount}}<br>
+                                    {{oneHanded}}<br>
+                                    {{type}}<br>
+                                    {{rules}}
+                                    <a class="id">{{@index}}</a>
+                                </div>
+                            {{/each}}
                         </div>
                     </div>
                 {{/if}}
             </div>
 
 
-			<div class="right-hand col-md-4 pre-scrollable">
+            <div class="right-hand col-md-4 pre-scrollable">
 
                 <div class="y-scroll">
                     {{#each deck}}
@@ -87,8 +125,10 @@
     </div>
     <!-- Скрипт для инициализации элементов на странице, имеющих атрибут data-toggle="tooltip" -->
     <script>
-        $(function () {
-            $("[data-toggle='tooltip']").tooltip();
+        $(function()
+        {
+            $("[data-toggle='tooltip']")
+                    .tooltip();
         });
     </script>
 </template>
