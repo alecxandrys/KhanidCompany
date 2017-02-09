@@ -55,6 +55,10 @@ Template.Card.helpers({
     card: function()
     {
         return Card.getCard();
+    },
+    availableWeapon:function()
+    {
+        return Card.getCard().availableWeapon;
     }
 });
 Template.Card.events({

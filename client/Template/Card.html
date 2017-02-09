@@ -58,6 +58,23 @@
                         Leadership:{{card.leadership}}<br>
                         ArmorSave:{{card.armorSave}}<br>
                     </div>
+                    <div>
+                        Available weapon:<br>
+                        {{#each availableWeapon}}
+                            <div>
+                                {{name}}<br>
+                                {{description}}<br>
+                                {{cost}}<br>
+                                {{range}}<br>
+                                {{strength}}<br>
+                                {{AP}}<br>
+                                {{attackCount}}<br>
+                                {{oneHanded}}<br>
+                                {{type}}<br>
+                                {{rules}}<br>
+                            </div>
+                        {{/each}}
+                    </div>
                 {{/if}}
             </div>
 
@@ -66,7 +83,7 @@
 
                 <div class="y-scroll">
                     {{#each deck}}
-                        <div class="added-card panel panel-warning" >
+                        <div class="added-card panel panel-warning">
                             <div class="panel-heading">
                                 <h3 class="panel-title">{{name}}</h3>
                             </div>
