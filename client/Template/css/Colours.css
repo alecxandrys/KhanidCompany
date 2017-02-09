@@ -10,6 +10,7 @@
 }
 body{
     color: #f2eee5;
+    background-color: #1a1a1c!important;
 }
 .panel-title{
     color: gold;
@@ -64,4 +65,10 @@ a:hover {
 
 #card-predeck:hover{
     color: #f2eee5;
+}
+.left-panel{
+    background-color: #1a1a1c;
+}
+.right-panel{
+    background-color: #1a1a1c;
 }
