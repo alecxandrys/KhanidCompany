@@ -7,28 +7,32 @@
         <div class="left-panel col-xs-8">
             {{#if reconnaissance.state}}
                 {{#each cards}}
-                    <div id="bg-card" class="card panel panel-default br1 col-sm-4 col-xs-5 col-lg-2 col-md-3">
-                        <a class="id">{{@index}}</a>
-                        <div class="panel-body" id="battlecardview">
-                            {{name}}<wbr>
-                            {{#if placed}}
-                                {{row}}
-                                {{column}}
-                            {{/if}}
+                    <div class="col-sm-4 col-xs-5 col-lg-2 col-md-3">
+                        <div id="bg-card" class="card panel panel-default br1 ">
+                            <a class="id">{{@index}}</a>
+                            <div class="panel-body" id="battlecardview">
+                                {{name}}<wbr>
+                                {{#if placed}}
+                                    {{row}}
+                                    {{column}}
+                                {{/if}}
+                            </div>
                         </div>
                     </div>
                 {{/each}}
             {{/if}}
         </div>
+        <div class="col-xs-2">
+            <div class="bg-log-panel  panel panel-default pre-scrollable br1">
+                <div class="panel-body">
+                    Log: <br>
+                    {{log}}
+                </div>
+            </div>
+        </div>
         <div class="right-panel col-xs-2">
             <a class="ready btn btn-default col-xs-12">Battle</a>
             <div class="col-xs-12">{{position}}</div>
-        </div>
-        <div class="bg-log-panel col-xs-2 panel panel-default pre-scrollable br1">
-            <div class="panel-body">
-                Log: <br>
-                {{log}}
-            </div>
         </div>
     </div>
 </template>
