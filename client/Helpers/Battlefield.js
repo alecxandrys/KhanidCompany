@@ -434,10 +434,10 @@ function RenderField(addPart,point)
                         cell=game.tiles.create(xCoordinate,yCoordinate,'Cover');
                         break;
                     case 3:
-                        cell=game.tiles.create(xCoordinate,yCoordinate,'Danger');
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
                         break;
                     case 4:
-                        cell=game.tiles.create(xCoordinate,yCoordinate,'Diff');
+                        cell=game.tiles.create(xCoordinate,yCoordinate,'Danger');
                         break;
                     case 5:
                         cell=game.tiles.create(xCoordinate,yCoordinate,'Ruin');

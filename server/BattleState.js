@@ -28,7 +28,9 @@ BattleState = function (xSize, ySize, deck1, deck2) {
  * 2-Cover
  * 3-Diff
  * 4-Danger
+ * 5-Ruin
  * 0-Unreached
+ * -1-Offset
  * @param xSize vertical size
  * @param ySize horizontal size
  * @returns {Array}
