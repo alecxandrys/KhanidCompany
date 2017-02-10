@@ -5,7 +5,7 @@
 game={};//this is local variable, which consist graphic (like sprite) and other param
 battle={};//this is variable which rewrite always when change BattleState
 
-var log='';
+log='';
 
 var _logDep=new Deps.Dependency();
 var _stateDep=new Deps.Dependency();
@@ -155,7 +155,7 @@ reconnaissanceState.prototype={
         {
             if(game.curState == 'reconnaissance')
             {
-                Meteor.call('setPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row,function(error,result)
+                Meteor.call('SetPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row,function(error,result)
                 {
                     if(!error)
                     {
@@ -240,7 +240,7 @@ battleState.prototype={
         }
         else
         {
-            Meteor.call('clickOnSquad');
+            Meteor.call('ClickOnSquad');
             game.chosenCardId=null;
         }
     },
@@ -369,17 +369,31 @@ Template.Battlefield.events({
     "click .ready":function()
     {
         //go to next state, let's war begin
-        if(game.curState != 'ready')
-        {
+        Meteor.call('PlacedAll',battle._id,game.side,function(error,result){
+            if (!error)
+            {
+                if (result)
+                {
+                    if(game.curState != 'ready')
+                    {
+                        log="Your are ready now";
+                        game.curState='ready';
+                        Meteor.call('Status_ready',battle._id,game.side);
+                    }
+                    else
+                    {
+                        log="Your are alredy waiting opponent";
 
-            game.curState='ready';
-            Meteor.call('Status_ready',battle._id,game.side);
-        }
-        else
-        {
-            log="Your are alredy waiting opponent";
-            _logDep.changed();
-        }
+                    }
+                    _logDep.changed();
+                }
+                else
+                {
+                    log="Your must place all you unit until begin";
+                    _logDep.changed();
+                }
+            }
+        });
     }
 });
 
@@ -472,7 +486,12 @@ Deps.autorun(function()
         }
         if(battle.state1 == "ready" && battle.state2 == "ready")
         {
+            // try to fix Chrome (in they push battle first
+            //reconnaissanceState.RenderSquad();//this is NOT A FUNCTION!
+            //location.reload();//eternal circle
             //after it all dead, so we need fully render again
+            log="Now your ate in battle now";
+            _logDep.changed();
             game.state.start('battle');
             game.curState='battle';
         }

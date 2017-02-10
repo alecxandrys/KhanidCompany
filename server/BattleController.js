@@ -8,13 +8,14 @@
 Meteor.methods({
     /**
      *
-     * @param _id is the same in battle and in battles collection
+     * @param id is the same in battle and in battles collection
      * @param player 1 or 2 player in battle
      * @param card id of card in player's deck
      * @param column x position
      * @param row y position
+     * @return {boolean}
      */
-    setPosition:function(_id,player,card,column,row)
+    SetPosition:function(id,player,card,column,row)
     {
         new SimpleSchema({
             _id:{type:String},
@@ -22,7 +23,7 @@ Meteor.methods({
             card:{type:Number},
             column:{type:Number,min:0},
             row:{type:Number,min:0}
-        }).validate({_id:_id,player:player,card:card,column:column,row:row});
+        }).validate({_id:id,player:player,card:card,column:column,row:row});
 
         var deck;
         var deckName;
@@ -44,9 +45,9 @@ Meteor.methods({
         deck[card].row=row;
         deck[card].placed=true;
         if(player == 1)
-        {battles.update(_id,{$set:{'BS.deck1':deck}});return true;}
+        {battles.update(id,{$set:{'BS.deck1':deck}});return true;}
         else
-        {battles.update(_id,{$set:{'BS.deck2':deck}});return true;}
+        {battles.update(id,{$set:{'BS.deck2':deck}});return true;}
     },
     Status_ready:function(_id,player)
     {
@@ -76,12 +77,37 @@ Meteor.methods({
         }
 
     },
-    clickOnSquad:function()
+    ClickOnSquad:function()
     {
 
     },
     moveTo:function()
     {
 
+    },
+    /**
+     * @return {boolean}
+     */
+    PlacedAll:function(id,player)
+    {
+        var BS=battles.findOne({}).BS;
+        var deckName;
+        if(player == 1)
+        {
+            deckName='deck1';
+        }
+        else
+        {
+            deckName='deck2';
+        }
+        var placed=true;
+        BS[deckName].every(function (unit){
+            if (!unit.placed)
+            {
+                placed=false;
+                return false;
+            }
+        });
+        return placed;
     }
 });
