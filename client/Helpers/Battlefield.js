@@ -207,6 +207,10 @@ battleState.prototype={
      */
     AddPart:function()
     {
+        this.cell.row=this.x;
+        this.cell.collomn=this.y;
+
+        this.cell.inputEnabled=true;
         this.cell.events.onInputDown.add(battleState.prototype.selectCell,this);
     },
     RenderSquad:function()
@@ -246,9 +250,19 @@ battleState.prototype={
     },
     selectCell:function(cell)
     {
+        if (!game.chosenCell)
+        {
+            game.chosenCell=cell;
+        }
+        else
+        {
+            var result=PathFinder.FindPath(game.chosenCell.x,game.chosenCell.x,cell.x,cell.y,battle.BS);
+            log=result.message;
+            _logDep.changed();
+        }
         if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
-            Meteor.call('moveTo');
+            Meteor.call('MoveTo');
             game.chosenCardId=null;
         }
 
