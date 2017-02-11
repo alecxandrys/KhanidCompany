@@ -84,7 +84,29 @@ reconnaissanceState.prototype={
     },
     create:function()
     {
-        game.curState='reconnaissance';
+        //when page was refreshed and game was reborn (and start from begin)
+        var state;
+        switch(game.side)
+        {
+            case 1:
+                state='state1';
+                break;
+            case 2:
+                state='state2';
+                break;
+        }
+        if(battle[state] == 'battle')
+        {
+            game.state.start('battle');
+        }
+        else if(battle[state] == 'reconnaissance')
+        {
+            game.curState='reconnaissance';
+        }
+        else
+        {
+            game.curState='ready';
+        }
         game.squads=game.add.group();
         game.tiles=game.add.group();
         RenderField(this.AddPart,1);
@@ -137,9 +159,6 @@ reconnaissanceState.prototype={
         game.map[this.x][this.y].xCoordinate=this.xCoordinate;
         game.map[this.x][this.y].yCoordinate=this.yCoordinate;
 
-        this.cell.row=this.x;
-        this.cell.collomn=this.y;
-
         this.cell.inputEnabled=true;
         this.cell.events.onInputDown.add(reconnaissanceState.prototype.addSquad,this)
     },
@@ -151,7 +170,7 @@ reconnaissanceState.prototype={
     {
         game.chosenCell=cell;
         _posDep.changed();
-        if (game.chosenCardId != undefined || game.chosenCardId != null)
+        if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
             if(game.curState == 'reconnaissance')
             {
@@ -198,6 +217,10 @@ battleState.prototype={
     },
     create:function()
     {
+        game.squads.destroy();
+        game.tiles.destroy();
+        game.squads=game.add.group();
+        game.tiles=game.add.group();
         RenderField(this.AddPart,2);//render start disposition
         this.RenderSquad();
     },
@@ -207,12 +230,13 @@ battleState.prototype={
      */
     AddPart:function()
     {
-        this.cell.row=this.x;
-        this.cell.collomn=this.y;
-
         this.cell.inputEnabled=true;
         this.cell.events.onInputDown.add(battleState.prototype.selectCell,this);
     },
+    /**
+     * only hard bind eventlistener
+     * @constructor
+     */
     RenderSquad:function()
     {
         battle.BS.deck1.forEach(function(squad,index)
@@ -220,7 +244,8 @@ battleState.prototype={
             if(squad.placed)
             {
                 game.deck1[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                game.deck1[index].events.onInputDown.add(this.selectSquad,this);
+                game.deck1[index].inputEnable=true;
+                game.deck1[index].events.onInputDown.add(battleState.prototype.selectSquad,this);
                 game.squads.add(game.deck1[index]);
             }
         });
@@ -229,7 +254,8 @@ battleState.prototype={
             if(squad.placed)
             {
                 game.deck2[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                game.deck2[index].events.onInputDown.add(this.selectSquad,this);
+                game.deck1[index].inputEnable=true;
+                game.deck2[index].events.onInputDown.add(battleState.prototype.selectSquad,this);
                 game.squads.add(game.deck2[index]);
             }
         });
@@ -250,13 +276,14 @@ battleState.prototype={
     },
     selectCell:function(cell)
     {
-        if (!game.chosenCell)
+        _posDep.changed();
+        if(!game.chosenCell)
         {
             game.chosenCell=cell;
         }
-        else
+        else if (cell)
         {
-            var result=PathFinder.FindPath(game.chosenCell.x,game.chosenCell.x,cell.x,cell.y,battle.BS);
+            var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.collomn,cell.row,cell.collomn,battle.BS);
             log=result.message;
             _logDep.changed();
         }
@@ -383,10 +410,11 @@ Template.Battlefield.events({
     "click .ready":function()
     {
         //go to next state, let's war begin
-        Meteor.call('PlacedAll',battle._id,game.side,function(error,result){
-            if (!error)
+        Meteor.call('PlacedAll',battle._id,game.side,function(error,result)
+        {
+            if(!error)
             {
-                if (result)
+                if(result)
                 {
                     if(game.curState != 'ready')
                     {
@@ -463,11 +491,16 @@ function RenderField(addPart,point)
                         cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
                         break;
                 }
+                cell.row=x;
+                cell.collomn=y;
+
                 context.xCoordinate=xCoordinate;
                 context.yCoordinate=yCoordinate;
                 context.cell=cell;
                 context.x=x;
                 context.y=y;
+
+
                 if((point == 1) || (point == 2))
                 {
                     var f=addPart.bind(context);
@@ -480,6 +513,7 @@ function RenderField(addPart,point)
 }
 /**
  * Template always after all other code
+ * Holy fuck after refresh (client think that state did.t change< so battle on server, recon on  clients
  */
 Deps.autorun(function()
 {
@@ -504,7 +538,7 @@ Deps.autorun(function()
             //reconnaissanceState.RenderSquad();//this is NOT A FUNCTION!
             //location.reload();//eternal circle
             //after it all dead, so we need fully render again
-            log="Now your ate in battle now";
+            log="Now your at in battle now";
             _logDep.changed();
             game.state.start('battle');
             game.curState='battle';
