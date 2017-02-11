@@ -286,8 +286,9 @@ battleState.prototype={
             var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.collomn,cell.row,cell.collomn,battle.BS);
             log=result.message;
             _logDep.changed();
+            game.chosenCell=null;
         }
-        if(game.chosenCardId != undefined || game.chosenCardId != null)
+        else if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
             Meteor.call('MoveTo');
             game.chosenCardId=null;
