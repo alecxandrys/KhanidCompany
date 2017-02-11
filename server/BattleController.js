@@ -69,9 +69,8 @@ Meteor.methods({
                 break;
             }
         }
-        var BS=battles.findOne({}).BS;
+        var BS=battles.findOne({});
 
-        //WTF?
         if (BS.state1=="ready" && BS.state2=="ready")
         {
             battles.update(_id,{$set:{state1:"battle"}});
