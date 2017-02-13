@@ -49,9 +49,11 @@
             <a class="ready btn btn-default col-xs-6">Battle</a>
             <div class="col-xs-6">{{position}}</div>
             <div class="bg-log-panel  panel panel-default pre-scrollable br1 col-xs-12">
-                <div class="panel-body">
-                    Log: <br>
-                    {{log}}
+                <div class="panel-body" data-html="true">
+                    Log:<wbr>
+                    {{#each mess in log}}
+                        {{mess}}<br>
+                    {{/each}}
                 </div>
             </div>
         </div>

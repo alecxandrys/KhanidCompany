@@ -5,7 +5,7 @@
 game={};//this is local variable, which consist graphic (like sprite) and other param
 battle={};//this is variable which rewrite always when change BattleState
 
-log='';
+log=[];
 
 var _logDep=new Deps.Dependency();
 var _stateDep=new Deps.Dependency();
@@ -180,29 +180,29 @@ reconnaissanceState.prototype={
                     {
                         if(result)
                         {
-                            log='Unit placed';
+                            log.push('Unit placed');
                         }
                         else
                         {
-                            log='Unit can\'t be placed';
+                            log.push('Unit can\'t be placed');
                         }
                     }
                     else
                     {
-                        log="Server error";
+                        log.push("Server error");
                     }
                     _logDep.changed();
                 });
             }
             else
             {
-                log=" You cannot placed unit anymore";
+                log.push(" You cannot placed unit anymore");
             }
             game.chosenCardId=null;
         }
         else
         {
-            log=" Please select unit to placement";
+            log.push("Please select unit to placement");
         }
         _logDep.changed();
     }
@@ -284,7 +284,7 @@ battleState.prototype={
         else if (cell)
         {
             var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.collomn,cell.row,cell.collomn,battle.BS);
-            log=result.message;
+            log.push(result.message);
             _logDep.changed();
             game.chosenCell=null;
         }
@@ -419,20 +419,20 @@ Template.Battlefield.events({
                 {
                     if(game.curState != 'ready')
                     {
-                        log="Your are ready now";
+                        log.push("Your are ready now");
                         game.curState='ready';
                         Meteor.call('Status_ready',battle._id,game.side);
                     }
                     else
                     {
-                        log="Your are alredy waiting opponent";
+                        log.push("Your are alredy waiting opponent");
 
                     }
                     _logDep.changed();
                 }
                 else
                 {
-                    log="Your must place all you unit until begin";
+                    log.push("Your must place all you unit until begin");
                     _logDep.changed();
                 }
             }
@@ -539,7 +539,7 @@ Deps.autorun(function()
             //reconnaissanceState.RenderSquad();//this is NOT A FUNCTION!
             //location.reload();//eternal circle
             //after it all dead, so we need fully render again
-            log="Now your at in battle now";
+            log.push("Now your at in battle now");
             _logDep.changed();
             game.state.start('battle');
             game.curState='battle';
