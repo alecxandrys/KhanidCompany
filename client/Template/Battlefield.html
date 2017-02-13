@@ -24,9 +24,11 @@
         </div>
         <div class="col-xs-2">
             <div class="bg-log-panel  panel panel-default pre-scrollable br1">
-                <div class="panel-body">
-                    Log: <br>
-                    {{log}}
+                <div class="panel-body" data-html="true">
+                    Log:<wbr>
+                    {{#each mess in log}}
+                    {{mess}}<br>
+                    {{/each}}
                 </div>
             </div>
         </div>

@@ -16,7 +16,7 @@
 .left-panel
 {
     float:left;
-    overflow-y:scroll;
+    overflow-y:auto;
     height: 20vh;
 }
 .right-panel
