@@ -20,16 +20,26 @@ body{
     background-color: #1a1a1c;
     border-color: #f2eee5;
 }
+.panel-default:hover{
+    color: gold;
+    background-color: #1a1a1c;
+    border-color: gold;
+}
+.panel-info{
+    color: #f2eee5;
+    background-color: #1a1a1c;
+    border-color: #f2eee5;
+}
+.panel-info:hover{
+    color: #f2eee5;
+    background-color: #1a1a1c;
+    border-color: #f2eee5;
+}
 #bs-example-navbar-collapse-1 > ul > li > a{
     color: #f2eee5;
 }
 #bs-example-navbar-collapse-1 > ul > li > a:hover{
     color: gold;
-}
-.panel-default:hover{
-    color: gold;
-    background-color: #1a1a1c;
-    border-color: gold;
 }
 .table-hover > tbody > tr:hover{
     background-color: #1a1a1c;

@@ -46,10 +46,12 @@
             {{/if}}
         </div>
         <div class="right-panel col-xs-4">
-            <a class="ready btn btn-default col-xs-6">Battle</a>
-            <div class="col-xs-6">{{position}}</div>
-            <div class="bg-log-panel  panel panel-default pre-scrollable br1 col-xs-12">
-                <div class="panel-body" data-html="true">
+            <div class="row" id="bg-bt-row">
+                <a class="ready btn btn-default col-xs-6" id="bg-bt-row">Battle</a>
+                <div class="col-xs-6" id="bg-bt-row">{{position}}</div>
+            </div>
+            <div class="bg-log-panel panel panel-info pre-scrollable br1 col-xs-12">
+                <div class="panel-body">
                     Log:<wbr>
                     {{#each mess in log}}
                         {{mess}}<br>
