@@ -32,6 +32,10 @@
     overflow-x: hidden;
     padding: 5px;
 }
+.bg-log-panel:hover{
+    color: #f2eee5;
+    border-color: #f2eee5;
+}
 #bg-card{
     padding-left: 5px;
     margin-left: 0;

@@ -8,7 +8,30 @@
             {{#if reconnaissance.state}}
                 {{#each cards}}
                     <div class="col-sm-4 col-xs-5 col-lg-2 col-md-3">
-                        <div id="bg-card" class="card panel panel-default br1 ">
+                        <div id="bg-card" class="card panel panel-default br1"  data-toggle="tooltip" data-placement=" auto top" data-html="true"
+                        title="
+                        Rules:<wbr>{{rules}} <br>
+
+                        WeaponSkill:<wbr>{{weaponSkill}}<br>
+                        BallisticSkill:<wbr>{{ballisticSkill}}<br>
+                        Strength:<wbr>{{strength}}<br>
+                        Toughness:<wbr>{{toughness}}<br>
+                        Initiative:<wbr>{{initiative}}<br>
+                        Speed:<wbr>{{speed}}<br>
+                        Wound:<wbr>{{wound}}<br>
+                        AttackCount:<wbr>{{attackCount}}<br>
+                        Leadership:<wbr>{{leadership}}<br>
+                        ArmorSave:<wbr>{{armorSave}}<br>
+                        Selected Weapons:
+                        {{#if card.meleeWeapon}}
+                            <br>Name:<wbr>{{card.meleeWeapon.name}}<br>
+                            Description:<wbr>{{card.meleeWeapon.description}}
+                        {{/if}}
+                        {{#if card.rangeWeapon}}
+                            <br>Name:{{card.rangeWeapon.name}}<br>
+                            Description:{{card.rangeWeapon.description}}
+                        {{/if}}
+                        ">
                             <a class="id">{{@index}}</a>
                             <div class="panel-body" id="battlecardview">
                                 {{name}}<wbr>
@@ -22,17 +45,22 @@
                 {{/each}}
             {{/if}}
         </div>
-        <div class="col-xs-2">
-            <div class="bg-log-panel  panel panel-default pre-scrollable br1">
+        <div class="right-panel col-xs-4">
+            <a class="ready btn btn-default col-xs-6">Battle</a>
+            <div class="col-xs-6">{{position}}</div>
+            <div class="bg-log-panel  panel panel-default pre-scrollable br1 col-xs-12">
                 <div class="panel-body">
                     Log: <br>
                     {{log}}
                 </div>
             </div>
         </div>
-        <div class="right-panel col-xs-2">
-            <a class="ready btn btn-default col-xs-12">Battle</a>
-            <div class="col-xs-12">{{position}}</div>
-        </div>
     </div>
+    <script>
+        $(function()
+        {
+            $("[data-toggle='tooltip']")
+                    .tooltip();
+        });
+    </script>
 </template>
