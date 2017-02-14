@@ -35,6 +35,7 @@ Meteor.startup(function()
                     //need async call for this shit
                     //Will keep in waitingCollection
                     var BS=new BattleState(12,20,prevuser.deck,user.deck);
+                    //var TurnOrder=new TurnOrder(BS);
                     console.log(path+" "+" ===1 "+" "+index);
                     battles.insert({
                         ID1:prevuser.userId,
@@ -45,6 +46,7 @@ Meteor.startup(function()
                         state2:"reconnaissance",
                         BS:BS,
                         battleID:path
+                        //TurnOrder:TurnOrder
                     });
                     readyPlayers.remove({userId:user.userId});
                     readyPlayers.remove({userId:prevuser.userId});
@@ -58,4 +60,3 @@ Meteor.startup(function()
         timerId=Meteor.setTimeout(tick,tickTime);
     },tickTime);
 });
-
