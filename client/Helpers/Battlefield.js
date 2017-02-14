@@ -281,7 +281,7 @@ battleState.prototype={
         {
             game.chosenCell=cell;
         }
-        else if (cell)
+        else if(cell)
         {
             var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.collomn,cell.row,cell.collomn,battle.BS);
             log.push(result.message);
@@ -407,6 +407,14 @@ Template.Battlefield.events({
         game.chosenCardId=parseInt($(event.currentTarget)
             .children('a')
             .text());
+    },
+    "click .leave":function(event)
+    {
+        event.preventDefault();
+    },
+    "click .testFunc":function(event)
+    {
+        event.preventDefault();
     },
     "click .ready":function()
     {

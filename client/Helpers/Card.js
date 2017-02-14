@@ -53,12 +53,26 @@ var Card={
     },
     addMeleeWeapon:function(id)
     {
-        Card._card.meleeWeapon=Card._card.availableWeapon[id];
+        if(Card._card.availableWeapon[id].oneHanded == true && (Card._card.rangeWeapon == null || Card._card.rangeWeapon.oneHanded == true))
+        {
+            Card._card.meleeWeapon=Card._card.availableWeapon[id];
+        }
+        else if(Card._card.availableWeapon[id].oneHanded == false && Card._card.rangeWeapon == null)
+        {
+            Card._card.meleeWeapon=Card._card.availableWeapon[id];
+        }
         this._cardDepend.changed();
     },
     addRangeWeapon:function(id)
     {
-        Card._card.rangeWeapon=Card._card.availableWeapon[id];
+        if(Card._card.availableWeapon[id].oneHanded == true && (Card._card.meleeWeapon == null || Card._card.meleeWeapon.oneHanded == true))
+        {
+            Card._card.rangeWeapon=Card._card.availableWeapon[id];
+        }
+        else if(Card._card.availableWeapon[id].oneHanded == false && Card._card.meleeWeapon == null)
+        {
+            Card._card.rangeWeapon=Card._card.availableWeapon[id];
+        }
         this._cardDepend.changed();
     },
     removeMeleeWeapon:function()
@@ -89,19 +103,23 @@ Template.Card.helpers({
     {
         var res=Card.getCard();
         var cost=res.cost;
-        if (res.meleeWeapon){cost=cost+res.meleeWeapon.cost;}
-        if (res.rangeWeapon){cost=cost+res.rangeWeapon.cost;}
+        if(res.meleeWeapon)
+        {cost=cost+res.meleeWeapon.cost;}
+        if(res.rangeWeapon)
+        {cost=cost+res.rangeWeapon.cost;}
         return cost;
     },
     deckCost:function()
     {
         var res=Deck.getUnit();
         var cost=0;
-        for (var card of res)
+        for(var card of res)
         {
             cost=cost+card.cost;
-            if (card.meleeWeapon){cost=cost+card.meleeWeapon.cost;}
-            if (card.rangeWeapon){cost=cost+card.rangeWeapon.cost;}
+            if(card.meleeWeapon)
+            {cost=cost+card.meleeWeapon.cost;}
+            if(card.rangeWeapon)
+            {cost=cost+card.rangeWeapon.cost;}
         }
         Deck.setCost(cost);
         return cost;
@@ -147,7 +165,6 @@ Template.Card.events({
     {
         Deck.erase();
     },
-    //TODO:finish work, add price of squad
     "click #ready":function()
     {
         if(Deck._unit.length === 0)
