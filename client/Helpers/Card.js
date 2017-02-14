@@ -24,13 +24,29 @@ var Deck={
         this._unit=[];
         this._unitDepend.changed();
     },
-    getCost:function()
-    {
-        return this.cost;
-    },
     setCost:function(cost)
     {
         this.cost=cost;
+    },
+    getCost:function()
+    {
+        this._unitDepend.depend();
+        var res=this.getUnit();
+        var cost=0;
+        for(var card of res)
+        {
+            cost=cost+card.cost;
+            if(card.meleeWeapon)
+            {
+                cost=cost+card.meleeWeapon.cost;
+            }
+            if(card.rangeWeapon)
+            {
+                cost=cost+card.rangeWeapon.cost;
+            }
+        }
+        this.setCost(cost);
+        return cost;
     }
 };
 var Card={
@@ -84,6 +100,20 @@ var Card={
     {
         Card._card.rangeWeapon=null
         this._cardDepend.changed();
+    },
+    getCost:function()
+    {
+        this._cardDepend.depend();
+        var cost=this._card.cost;
+        if(this._card.meleeWeapon)
+        {
+            cost=cost+this._card.meleeWeapon.cost;
+        }
+        if(this._card.rangeWeapon)
+        {
+            cost=cost+this._card.rangeWeapon.cost;
+        }
+        return cost;
     }
 };
 Template.Card.helpers({
@@ -101,29 +131,11 @@ Template.Card.helpers({
     },
     unitCost:function()
     {
-        var res=Card.getCard();
-        var cost=res.cost;
-        if(res.meleeWeapon)
-        {cost=cost+res.meleeWeapon.cost;}
-        if(res.rangeWeapon)
-        {cost=cost+res.rangeWeapon.cost;}
-        return cost;
+        return Card.getCost();
     },
     deckCost:function()
     {
-        var res=Deck.getUnit();
-        var cost=0;
-        for(var card of res)
-        {
-            cost=cost+card.cost;
-            if(card.meleeWeapon)
-            {cost=cost+card.meleeWeapon.cost;}
-            if(card.rangeWeapon)
-            {cost=cost+card.rangeWeapon.cost;}
-        }
-        Deck.setCost(cost);
-        return cost;
-
+        return Deck.getCost();
     }
 });
 Template.Card.events({
