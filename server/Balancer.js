@@ -45,8 +45,7 @@ Meteor.startup(function()
                         name2:user.username,
                         state2:"reconnaissance",
                         BS:BS,
-                        battleID:path,
-                        TurnOrder:TO
+                        battleID:path
                     });
                     readyPlayers.remove({userId:user.userId});
                     readyPlayers.remove({userId:prevuser.userId});

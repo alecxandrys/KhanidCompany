@@ -70,11 +70,11 @@ Meteor.methods({
                 break;
             }
         }
-        var BS=battles.findOne({});
+        var battle=battles.findOne({});
 
-        if (BS.state1=="ready" && BS.state2=="ready")
+        if (battle.state1=="ready" && battle.state2=="ready")
         {
-            var orderLine=RunCircle(BS.orderLine);
+            var orderLine=RunCircle(battle.BS.orderLine);
             battles.update(_id,{$set:{'BS.orderLine':orderLine}});
             battles.update(_id,{$set:{state1:"battle"}});
             battles.update(_id,{$set:{state2:"battle"}});

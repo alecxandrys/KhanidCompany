@@ -45,6 +45,10 @@ function TurnOrderInit(deck1,deck2)
  */
 function RunCircle(orderLine)
 {
+    if(orderLine[0].curATB>=100)
+    {
+        return orderLine;
+    }
     while(true)
     {
         orderLine.forEach(function(item)
@@ -56,11 +60,11 @@ function RunCircle(orderLine)
         {
             if(a.curATB>=b.curATB)
             {
-                return 1;
+                return -1;
             }
             else
             {
-                return -1;
+                return 1;
             }
         });
 

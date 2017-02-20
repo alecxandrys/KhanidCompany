@@ -76,6 +76,7 @@ var reconnaissanceState=function(t)
 {
 };
 /**
+ * Some time BS is undetified here in first run
  * squad-consist all sprite of unit to bring them to top
  */
 reconnaissanceState.prototype={
