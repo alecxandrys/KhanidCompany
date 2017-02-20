@@ -418,6 +418,17 @@ Template.Battlefield.events({
     "click .leave":function(event)
     {
         event.preventDefault();
+        Meteor.call('LeaveBattle',battle._id,Meteor.userId(),function(error,result)
+        {
+            if (!error)
+            {
+                if (result)
+                {
+
+                }
+            }
+        })
+
     },
     "click .testFunc":function(event)
     {

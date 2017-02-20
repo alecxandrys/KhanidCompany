@@ -28,7 +28,7 @@ Meteor.methods({
 
         var deck;
         var deckName;
-        var BS=battles.findOne({}).BS;
+        var BS=battles.findOne({_id:id}).BS;
 
         if(player == 1)
         {
@@ -70,7 +70,7 @@ Meteor.methods({
                 break;
             }
         }
-        var battle=battles.findOne({});
+        var battle=battles.findOne({_id:id});
 
         if (battle.state1=="ready" && battle.state2=="ready")
         {
@@ -94,7 +94,7 @@ Meteor.methods({
      */
     PlacedAll:function(id,player)
     {
-        var BS=battles.findOne({}).BS;
+        var BS=battles.findOne({_id:id}).BS;
         var deckName;
         if(player == 1)
         {
@@ -113,5 +113,9 @@ Meteor.methods({
             }
         });
         return placed;
+    },
+    LeaveBattle:function(id,playerID)
+    {
+
     }
 });

@@ -24,7 +24,7 @@ Tracker.autorun(function()
     var y = battles.findOne({});
     if(x.count() === 1)
         {
-            var paramstring = "name1=" + y.name1 + "&name2=" + y.name2 + "&battleID=" + y.battleID;
+            var paramstring = "name1=" + y.name1 + "&name2=" + y.name2 + "&battleID=" + y._id;
             Router.go('battlefield', {}, {query: paramstring});
         }
     else if(x.count() > 1)
