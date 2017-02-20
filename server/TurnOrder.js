@@ -3,20 +3,72 @@
  * impossible pass function throw MongoDB (and JSON)
  * Have to create orderLine instantly and make some func, which change state
  */
-export {TurnOrder}
-function TurnOrder(BS)
+export {TurnOrderInit,RunCircle}
+/**
+ * init turnorder array
+ * @elem {deck-which deck (and player), index-place in deck, speed-unit current speed, curATB-current position in line}
+ * @param deck1
+ * @param deck2
+ * @returns {Array}
+ * @constructor
+ */
+function TurnOrderInit(deck1,deck2)
 {
-    for(let card in BS.deck1)
+    var orderLine=[];
+    deck1.forEach(function(item,index)
     {
-        card.startATB=Math.floor(Math.random()*11);
-    }
-    for(let card in BS.deck2)
+        var elem={
+            deck:'deck1',
+            index:index,
+            speed:item.speed,
+            curATB:Math.floor(Math.random()*11)//start position in line
+        };
+        orderLine.push(elem)
+    });
+    deck2.forEach(function(item,index)
     {
-        card.startATB=Math.floor(Math.random()*11);
-    }
-
-    this.orderLine=BS.deck1+BS.deck2;
-
-    return this;
+        var elem={
+            deck:'deck2',
+            index:index,
+            speed:item.speed,
+            curATB:Math.floor(Math.random()*11)
+        };
+        orderLine.push(elem)
+    });
+    return orderLine;
 }
+/**
+ *
+ * @param orderLine
+ * @returns {*}
+ * @constructor
+ */
+function RunCircle(orderLine)
+{
+    while(true)
+    {
+        orderLine.forEach(function(item)
+        {
+            item.curATB=item.curATB+item.speed;
+        });
 
+        orderLine.sort(function(a,b)
+        {
+            if(a.curATB>=b.curATB)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        });
+
+        //if at least one reach end of circle
+        if(orderLine[0].curATB>=100)
+        {
+            break;
+        }
+    }
+    return orderLine;
+}

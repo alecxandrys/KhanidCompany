@@ -5,6 +5,7 @@
  * control the correct and ability for turn
  * must return a boolean, or some result of dice
  */
+import {RunCircle} from "./TurnOrder"
 Meteor.methods({
     /**
      *
@@ -73,6 +74,8 @@ Meteor.methods({
 
         if (BS.state1=="ready" && BS.state2=="ready")
         {
+            var orderLine=RunCircle(BS.orderLine);
+            battles.update(_id,{$set:{'BS.orderLine':orderLine}});
             battles.update(_id,{$set:{state1:"battle"}});
             battles.update(_id,{$set:{state2:"battle"}});
         }

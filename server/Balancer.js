@@ -1,4 +1,3 @@
-import {TurnOrder} from "./TurnOrder"
 Meteor.methods({
     addPlayerInQueue:function(Deck)
     {
@@ -36,7 +35,6 @@ Meteor.startup(function()
                     //need async call for this shit
                     //Will keep in waitingCollection
                     var BS=new BattleState(12,20,prevuser.deck,user.deck);
-                    var TO=new TurnOrder(BS);
                     //var TurnOrder=new TurnOrder(BS);
                     console.log(path+" "+" ===1 "+" "+index);
                     battles.insert({
