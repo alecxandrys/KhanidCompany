@@ -11,20 +11,13 @@
             {{#if reconnaissance.state}}
                 {{#each cards}}
                     <div class="col-sm-4 col-xs-5 col-lg-2 col-md-3">
-                        <div id="bg-card" class="card panel panel-default br1"  data-toggle="tooltip" data-placement=" auto top" data-html="true"
+                        <div id="bg-card" class="card panel panel-default br1"  data-toggle="tooltip" data-placement=" auto bottom" data-html="true"
                         title="
-                        Rules:<wbr>{{rules}} <br>
-
-                        WeaponSkill:<wbr>{{weaponSkill}}<br>
-                        BallisticSkill:<wbr>{{ballisticSkill}}<br>
-                        Strength:<wbr>{{strength}}<br>
-                        Toughness:<wbr>{{toughness}}<br>
-                        Initiative:<wbr>{{initiative}}<br>
-                        Speed:<wbr>{{speed}}<br>
                         Wound:<wbr>{{wound}}<br>
-                        AttackCount:<wbr>{{attackCount}}<br>
-                        Leadership:<wbr>{{leadership}}<br>
-                        ArmorSave:<wbr>{{armorSave}}<br>
+                        {{#if placed}}
+                            Row:{{row}}
+                            Column:{{column}}
+                        {{/if}}<br>
                         Selected Weapons:
                         {{#if card.meleeWeapon}}
                             <br>Name:<wbr>{{card.meleeWeapon.name}}<br>
@@ -34,14 +27,11 @@
                             <br>Name:{{card.rangeWeapon.name}}<br>
                             Description:{{card.rangeWeapon.description}}
                         {{/if}}
+
                         ">
                             <a class="id">{{@index}}</a>
                             <div class="panel-body" id="battlecardview">
-                                {{name}}<wbr>
-                                {{#if placed}}
-                                    {{row}}
-                                    {{column}}
-                                {{/if}}
+                                {{name}}
                             </div>
                         </div>
                     </div>
