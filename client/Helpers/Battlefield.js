@@ -246,7 +246,7 @@ battleState.prototype={
             {
                 game.deck1[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
                 game.deck1[index].inputEnable=true;
-                game.deck1[index].events.onInputDown.add(battleState.prototype.selectSquad,this);
+                game.deck1[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
                 game.squads.add(game.deck1[index]);
             }
         });
@@ -256,15 +256,16 @@ battleState.prototype={
             {
                 game.deck2[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
                 game.deck1[index].inputEnable=true;
-                game.deck2[index].events.onInputDown.add(battleState.prototype.selectSquad,this);
+                game.deck2[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
                 game.squads.add(game.deck2[index]);
             }
         });
         game.world.bringToTop(game.squads);
     },
-    selectSquad:function(model)
+    selectUnit:function(model)
     {
         //TODO:: make a check for turn (and add the initiative table)
+        log.push('Unit was chosed');
         if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
             game.chosenCardId=model;
@@ -398,7 +399,8 @@ Template.Battlefield.helpers({
     {
         _logDep.depend();
         return log;
-    }
+    },
+
 });
 
 Template.Battlefield.events({
@@ -548,7 +550,7 @@ Deps.autorun(function()
             //reconnaissanceState.RenderSquad();//this is NOT A FUNCTION!
             //location.reload();//eternal circle
             //after it all dead, so we need fully render again
-            log.push("Now your at in battle now");
+            log.push("Now your are in battle now");
             _logDep.changed();
             game.state.start('battle');
             game.curState='battle';
