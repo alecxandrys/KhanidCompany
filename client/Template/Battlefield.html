@@ -2,7 +2,10 @@
     <script>
         $(document).prop('title', 'Battle between {{name1}} and  {{name2}}');
     </script>
-    <div id="field"></div>
+    <div class="row">
+        <div id="field" class="col-xs-10"></div>
+        <div class="col-xs-2">{{curATB.name}} {{curATB.row}} {{curATB.column}}</div>
+    </div>
     <div class="container row" id="bf-bottom-bar">
         <div class="left-panel col-xs-8">
             {{#if reconnaissance.state}}

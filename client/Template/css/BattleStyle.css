@@ -8,10 +8,8 @@
     margin     : 0;
 }
 
-#field
-{
-    width  : 100%;
-    height : 80vh;
+#field{
+    height: 80vh;
 }
 .left-panel
 {

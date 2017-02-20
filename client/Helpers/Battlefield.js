@@ -400,6 +400,10 @@ Template.Battlefield.helpers({
         _logDep.depend();
         return log;
     },
+    curATB:function()
+    {
+        return battle.BS[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index];
+    }
 
 });
 
