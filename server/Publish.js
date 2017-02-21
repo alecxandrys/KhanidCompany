@@ -9,7 +9,7 @@ Meteor.publish("userData",function()
     {
         return Meteor.users.find({_id:this.userId},{
             fields:{
-                createdAt:1,rateELO:1,rateCombine:1,battleCount:1,winPercent:1
+                createdAt:1,rateELO:1,gameCount:1,gameWinCount:1
             }
         });
     }
@@ -54,10 +54,10 @@ Accounts.onCreateUser(function(options,user)
         {
             user.profile=options.profile;
         }
-        user.rateELO=100;
+        user.rateELO=1000;
         user.rateCombine=1;
-        user.battleCount=0;
-        user.winPercent=0.00;
+        user.gameCount=0;
+        user.gameWinCount=0;
     }
     return user;
 });

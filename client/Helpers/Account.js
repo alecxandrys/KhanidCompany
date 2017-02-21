@@ -21,3 +21,16 @@ Accounts.onLogin(function()
 {
     Meteor.logoutOtherClients();
 });
+Template.PrivateOffice.helpers({
+    winPercent:function()
+    {
+        var data=Meteor.user();
+        if (data.gameCount!=0)
+        {
+            return (data.gameWinCount/data.gameCount)*100;
+        }
+        else {
+            return 0;
+        }
+    }
+});

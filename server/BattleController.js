@@ -33,12 +33,14 @@ Meteor.methods({
         if(player == 1)
         {
             deckName='deck1';
-            if (row>1) {return false;}
+            if(row>1)
+            {return false;}
         }
         else
         {
             deckName='deck2';
-            if (row<(BS.xSize-2)) {return false;}
+            if(row<(BS.xSize-2))
+            {return false;}
         }
 
         deck=BS[deckName];
@@ -46,9 +48,15 @@ Meteor.methods({
         deck[card].row=row;
         deck[card].placed=true;
         if(player == 1)
-        {battles.update(id,{$set:{'BS.deck1':deck}});return true;}
+        {
+            battles.update(id,{$set:{'BS.deck1':deck}});
+            return true;
+        }
         else
-        {battles.update(id,{$set:{'BS.deck2':deck}});return true;}
+        {
+            battles.update(id,{$set:{'BS.deck2':deck}});
+            return true;
+        }
     },
     Status_ready:function(_id,player)
     {
@@ -72,7 +80,7 @@ Meteor.methods({
         }
         var battle=battles.findOne({_id:id});
 
-        if (battle.state1=="ready" && battle.state2=="ready")
+        if(battle.state1 == "ready" && battle.state2 == "ready")
         {
             var orderLine=RunCircle(battle.BS.orderLine);
             battles.update(_id,{$set:{'BS.orderLine':orderLine}});
@@ -105,8 +113,9 @@ Meteor.methods({
             deckName='deck2';
         }
         var placed=true;
-        BS[deckName].every(function (unit){
-            if (!unit.placed)
+        BS[deckName].every(function(unit)
+        {
+            if(!unit.placed)
             {
                 placed=false;
                 return false;
@@ -114,8 +123,26 @@ Meteor.methods({
         });
         return placed;
     },
+    /**
+     * @return {boolean}
+     */
     LeaveBattle:function(id,playerID)
     {
 
+        var battle=battles.findOne({_id:id});
+        switch(playerID)
+        {
+            case battle.ID1:
+            {
+
+                break;
+            }
+            case battle.ID2:
+            {
+                break;
+            }
+            default:
+            {return false;}
+        }
     }
 });
