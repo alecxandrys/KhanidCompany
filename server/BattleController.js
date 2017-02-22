@@ -130,19 +130,40 @@ Meteor.methods({
     {
 
         var battle=battles.findOne({_id:id});
+        if (!battle) {return false;}
+        //increment count of battle
+        Meteor.users.update(battle.ID1,{$inc:{gameCount:1}});
+        Meteor.users.update(battle.ID2,{$inc:{gameCount:1}});
+        //change ELO
+        var rateELO1=Meteor.users.findOne(battle.ID1).rateELO;
+        var rateELO2=Meteor.users.findOne(battle.ID2).rateELO;
+        var K=20;//special rate, see ELO formula for detail
+        var E=1/(1+Math.pow(10,Math.abs((rateELO1-rateELO2)/400)));
+        var newRate;
+        //increment for winner count of wins and set new rateELO
         switch(playerID)
         {
             case battle.ID1:
             {
-
+                newRate=rateELO1+K*(1-E);
+                Meteor.users.update(battle.ID1,{$inc:{gameWinCount:1},$set:{rateELO:newRate}});
+                newRate=rateELO2+K*(0-E);
+                Meteor.users.update(battle.ID2,{$set:{rateELO:newRate}});
                 break;
             }
             case battle.ID2:
             {
+                newRate=rateELO2+K*(1-E);
+                Meteor.users.update(battle.ID2,{$inc:{gameWinCount:1},$set:{rateELO:newRate}});
+                newRate=rateELO1+K*(0-E);
+                Meteor.users.update(battle.ID1,{$set:{rateELO:newRate}});
                 break;
             }
             default:
             {return false;}
         }
+        //end this battle
+        battles.remove({_id:id});
+        return true;
     }
 });

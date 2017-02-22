@@ -420,13 +420,23 @@ Template.Battlefield.events({
         event.preventDefault();
         Meteor.call('LeaveBattle',battle._id,Meteor.userId(),function(error,result)
         {
-            if (!error)
+            if(!error)
             {
-                if (result)
+                if(result)
                 {
-
+                    log.push('You leave the battle');
+                }
+                else
+                {
+                    log.push('Battle usn\'t exist or you are not a player');
                 }
             }
+            else
+            {
+                log.push('error rise from server code');
+            }
+            _logDep.changed();
+            location.reload();//try to GET OUT OF HERE!!!!!!
         })
 
     },
