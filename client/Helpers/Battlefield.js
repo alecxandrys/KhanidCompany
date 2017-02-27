@@ -110,7 +110,7 @@ reconnaissanceState.prototype={
         }
         game.squads=game.add.group();
         game.tiles=game.add.group();
-        RenderField(this.AddPart,1);
+        RenderField(this.AddPart);
     },
     update:function()
     {
@@ -222,7 +222,7 @@ battleState.prototype={
         game.tiles.destroy();
         game.squads=game.add.group();
         game.tiles=game.add.group();
-        RenderField(this.AddPart,2);//render start disposition
+        RenderField(this.AddPart);//render start disposition
         this.RenderSquad();
     },
     /**
@@ -244,20 +244,22 @@ battleState.prototype={
         {
             if(squad.placed)
             {
-                game.deck1[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                game.deck1[index].inputEnable=true;
+                game.deck1[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                game.deck1[index].inputEnabled=true;
+                game.deck1[index].deck='deck1';
+                game.deck1[index].index=index;
                 game.deck1[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
-                game.squads.add(game.deck1[index]);
             }
         });
         battle.BS.deck2.forEach(function(squad,index)
         {
             if(squad.placed)
             {
-                game.deck2[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
-                game.deck1[index].inputEnable=true;
+                game.deck2[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                game.deck2[index].inputEnabled=true;
+                game.deck2[index].deck='deck1';
+                game.deck2[index].index=index;
                 game.deck2[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
-                game.squads.add(game.deck2[index]);
             }
         });
         game.world.bringToTop(game.squads);
@@ -265,16 +267,19 @@ battleState.prototype={
     selectUnit:function(model)
     {
         //TODO:: make a check for turn (and add the initiative table)
-        log.push('Unit was chosed');
-        if(game.chosenCardId != undefined || game.chosenCardId != null)
+        log.push('Click on model');
+        if(game.chosenCardId == undefined || game.chosenCardId == null)
         {
             game.chosenCardId=model;
+            log.push('Model was selected');
         }
         else
         {
-            Meteor.call('ClickOnSquad');
+            //Meteor.call('ClickOnSquad');
+            log.push('Another model was selected');
             game.chosenCardId=null;
         }
+        _logDep.changed();
     },
     selectCell:function(cell)
     {
@@ -476,7 +481,7 @@ Template.Battlefield.events({
     }
 });
 
-function RenderField(addPart,point)
+function RenderField(addPart)
 {
     var context={};
     for(var x=(battle.BS.xSize-1); x>=0; x--)
@@ -493,7 +498,7 @@ function RenderField(addPart,point)
 
                 //for changeable field and different first shift
                 //this part from lab, where A* pathfinder was realised
-                //only removed horisontal offset (now idea why) and add vertical shift
+                //only removed horisontal offset (have no idea why) and add vertical shift
                 if(battle.BS.xSize%2 == 1)
                 {
                     xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
@@ -537,12 +542,8 @@ function RenderField(addPart,point)
                 context.x=x;
                 context.y=y;
 
-
-                if((point == 1) || (point == 2))
-                {
                     var f=addPart.bind(context);
                     f();
-                }
 
             }
         }
