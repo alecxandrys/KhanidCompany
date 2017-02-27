@@ -78,7 +78,7 @@ Meteor.methods({
                 break;
             }
         }
-        var battle=battles.findOne({_id:id});
+        var battle=battles.findOne({_id:_id});
 
         if(battle.state1 == "ready" && battle.state2 == "ready")
         {
@@ -124,11 +124,11 @@ Meteor.methods({
         return placed;
     },
     /**
+     * player with this ID lose battle
      * @return {boolean}
      */
     LeaveBattle:function(id,playerID)
     {
-
         var battle=battles.findOne({_id:id});
         if (!battle) {return false;}
         //increment count of battle
@@ -143,17 +143,19 @@ Meteor.methods({
         //increment for winner count of wins and set new rateELO
         switch(playerID)
         {
-            case battle.ID1:
+            case battle.ID2:
             {
                 newRate=rateELO1+K*(1-E);
+                if (newRate<0) {newRate=0;}
                 Meteor.users.update(battle.ID1,{$inc:{gameWinCount:1},$set:{rateELO:newRate}});
                 newRate=rateELO2+K*(0-E);
                 Meteor.users.update(battle.ID2,{$set:{rateELO:newRate}});
                 break;
             }
-            case battle.ID2:
+            case battle.ID1:
             {
                 newRate=rateELO2+K*(1-E);
+                if (newRate<0) {newRate=0;}
                 Meteor.users.update(battle.ID2,{$inc:{gameWinCount:1},$set:{rateELO:newRate}});
                 newRate=rateELO1+K*(0-E);
                 Meteor.users.update(battle.ID1,{$set:{rateELO:newRate}});
