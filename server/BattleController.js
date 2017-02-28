@@ -89,11 +89,11 @@ Meteor.methods({
         }
 
     },
-    ClickOnSquad:function()
+    ClickOnSquad:function(who,target)
     {
 
     },
-    MoveTo:function()
+    MoveTo:function(who,whither)
     {
 
     },

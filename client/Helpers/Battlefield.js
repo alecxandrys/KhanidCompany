@@ -226,6 +226,34 @@ battleState.prototype={
         this.RenderSquad();
     },
     /**
+     * when something replaced (and other changes)
+     */
+    update:function()
+    {
+        battle.BS.deck1.forEach(function(squad,index)
+        {
+            if (squad.placed)
+            {
+                if(game.deck1[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                {
+                    game.deck1[index].position.x=game.map[squad.row][squad.column].xCoordinate;
+                    game.deck1[index].position.y=game.map[squad.row][squad.column].yCoordinate;
+                }
+            }
+        });
+        battle.BS.deck2.forEach(function(squad,index)
+        {
+            if (squad.placed)
+            {
+                if(game.deck2[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                {
+                    game.deck2[index].position.x=game.map[squad.row][squad.column].xCoordinate;
+                    game.deck2[index].position.y=game.map[squad.row][squad.column].yCoordinate;
+                }
+            }
+        });
+    },
+    /**
      * uses with context from RenderField
      * @constructor
      */
@@ -257,7 +285,7 @@ battleState.prototype={
             {
                 game.deck2[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
                 game.deck2[index].inputEnabled=true;
-                game.deck2[index].deck='deck1';
+                game.deck2[index].deck='deck2';
                 game.deck2[index].index=index;
                 game.deck2[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
             }
@@ -270,13 +298,27 @@ battleState.prototype={
         log.push('Click on model');
         if(game.chosenCardId == undefined || game.chosenCardId == null)
         {
-            game.chosenCardId=model;
-            log.push('Model was selected');
+            if (model.deck==('deck'+game.side))
+            {
+                game.chosenCardId=model;
+                log.push('Model was selected');
+            }
+            else
+            {
+                log.push('You try to select enemy\'s model');
+                log.push('Please select first you model');
+            }
         }
         else
         {
-            //Meteor.call('ClickOnSquad');
             log.push('Another model was selected');
+            Meteor.call('ClickOnSquad',game.chosenCardId,model,function (error,result)
+            {
+                if (!error)
+                {
+
+                }
+            });
             game.chosenCardId=null;
         }
         _logDep.changed();
@@ -291,16 +333,24 @@ battleState.prototype={
         else if(cell)
         {
             var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.collomn,cell.row,cell.collomn,battle.BS);
-            log.push(result.message);
-            _logDep.changed();
+            log.push(result.message+' with next difficulty level:'+result.cost);
+
             game.chosenCell=null;
         }
         else if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
-            Meteor.call('MoveTo');
-            game.chosenCardId=null;
-        }
+            log.push('Trying to move unit');
+            Meteor.call('MoveTo',game.chosenCardId,cell,function (error,result)
+            {
+                if (!error)
+                {
 
+                }
+            });
+            game.chosenCardId=null;
+            game.chosenCell=null;
+        }
+        _logDep.changed();
     }
 };
 
