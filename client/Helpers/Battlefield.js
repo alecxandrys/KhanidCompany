@@ -8,9 +8,9 @@ battle={};//this is variable which rewrite always when change BattleState
 log=[];
 
 var _logDep=new Deps.Dependency();
-var _stateDep=new Deps.Dependency();
 var _turnDep=new Deps.Dependency();
 var _posDep=new Deps.Dependency();
+var _selectDep=new Deps.Dependency()
 /**
  * Basic image height=80
  * Basic image width=60
@@ -232,7 +232,7 @@ battleState.prototype={
     {
         battle.BS.deck1.forEach(function(squad,index)
         {
-            if (squad.placed)
+            if(squad.placed)
             {
                 if(game.deck1[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
@@ -243,7 +243,7 @@ battleState.prototype={
         });
         battle.BS.deck2.forEach(function(squad,index)
         {
-            if (squad.placed)
+            if(squad.placed)
             {
                 if(game.deck2[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
@@ -294,11 +294,12 @@ battleState.prototype={
     },
     selectUnit:function(model)
     {
+
         //TODO:: make a check for turn (and add the initiative table)
         log.push('Click on model');
         if(game.chosenCardId == undefined || game.chosenCardId == null)
         {
-            if (model.deck==('deck'+game.side))
+            if(model.deck == ('deck'+game.side))
             {
                 game.chosenCardId=model;
                 log.push('Model was selected');
@@ -312,16 +313,30 @@ battleState.prototype={
         else
         {
             log.push('Another model was selected');
-            Meteor.call('ClickOnSquad',game.chosenCardId,model,function (error,result)
+            Meteor.call('ClickOnSquad',{
+                deck:game.chosenCardId.deck,
+                index:game.chosenCardId.deck.index
+            },{
+                deck:model.deck,
+                index:model.index},function(error,result)
             {
-                if (!error)
+                if(!error)
                 {
 
+                }
+                else if(error.error == "battle_exist_error")
+                {
+                    log.push("ID check unsuccesfull");
+                }
+                else
+                {
+                    log.push("error rise from server code");
                 }
             });
             game.chosenCardId=null;
         }
         _logDep.changed();
+        _selectDep.changed();
     },
     selectCell:function(cell)
     {
@@ -335,16 +350,28 @@ battleState.prototype={
             var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.collomn,cell.row,cell.collomn,battle.BS);
             log.push(result.message+' with next difficulty level:'+result.cost);
 
-            game.chosenCell=null;
         }
-        else if(game.chosenCardId != undefined || game.chosenCardId != null)
+        if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
             log.push('Trying to move unit');
-            Meteor.call('MoveTo',game.chosenCardId,cell,function (error,result)
+            Meteor.call('MoveTo',{
+                deck:game.chosenCardId.deck,
+                index:game.chosenCardId.deck.index
+            },{
+                row:game.chosenCell.row,
+                collomn:game.chosenCell.collomn},function(error,result)
             {
-                if (!error)
+                if(!error)
                 {
 
+                }
+                else if(error.error == "battle_exist_error")
+                {
+                    log.push("ID check unsuccesfull");
+                }
+                else
+                {
+                    log.push("error rise from server code");
                 }
             });
             game.chosenCardId=null;
@@ -435,7 +462,6 @@ Template.Battlefield.helpers({
      */
     reconnaissance:function()
     {
-        _stateDep.depend();
         var isTrue;
         isTrue=game.state.current == '' || game.state.current == "reconnaissance";
         return {
@@ -457,7 +483,13 @@ Template.Battlefield.helpers({
     },
     curATB:function()
     {
+        _turnDep.depend();
         return battle.BS[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index];
+    },
+    curSelect:function()
+    {
+        _selectDep.depend();
+        return battle.BS[game.chosenCardId.deck][game.chosenCardId.index];
     }
 
 });
@@ -592,8 +624,8 @@ function RenderField(addPart)
                 context.x=x;
                 context.y=y;
 
-                    var f=addPart.bind(context);
-                    f();
+                var f=addPart.bind(context);
+                f();
 
             }
         }

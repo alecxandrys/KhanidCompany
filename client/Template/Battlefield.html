@@ -4,7 +4,22 @@
     </script>
     <div class="row">
         <div id="field" class="col-xs-10"></div>
-        <div class="col-xs-2">{{curATB.name}} {{curATB.row}} {{curATB.column}}</div>
+        <div class="col-xs-2">
+            <div class="panel panel-info br1 col-xs-12">
+                Turn order:
+                <div class="page-title">{{curATB.name}} </div>
+                <div class="panel-body">
+                    {{curATB.row}} {{curATB.column}}
+                </div>
+            </div>
+            <div class="panel panel-info br1 col-xs-12">
+                Currently select:
+                <div class="page-title"> {{curSelect.name}} </div>
+                <div class="panel-body">
+                {{curSelect.row}} {{curSelect.column}}
+            </div>
+        </div>
+        </div>
     </div>
     <div class="container row" id="bf-bottom-bar">
         <div class="left-panel col-xs-8">

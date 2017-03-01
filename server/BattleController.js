@@ -93,9 +93,27 @@ Meteor.methods({
     {
 
     },
+    /**
+     * @return {string}
+     */
     MoveTo:function(who,whither)
     {
+        var userID2=Meteor.userId();//use id from caller, so used to understand who
+        var battle=battles.findOne({$or:[{ID1:userID2},{ID2:userID2}]}).BS;//check battle
+        if(battle == null || battle == undefined)
+        {
+            var TO=battle.orderLine;
+            if(TO[0].deck==who.deck && TO[0].index)
+            {}
+            else
+            {
 
+            }
+
+        }
+        else
+        {Meteor.Error("battle_exist_error");}
+        return userID2;
     },
     /**
      * @return {boolean}
@@ -130,7 +148,8 @@ Meteor.methods({
     LeaveBattle:function(id,playerID)
     {
         var battle=battles.findOne({_id:id});
-        if (!battle) {return false;}
+        if(!battle)
+        {return false;}
         //increment count of battle
         Meteor.users.update(battle.ID1,{$inc:{gameCount:1}});
         Meteor.users.update(battle.ID2,{$inc:{gameCount:1}});
@@ -146,7 +165,8 @@ Meteor.methods({
             case battle.ID2:
             {
                 newRate=rateELO1+K*(1-E);
-                if (newRate<0) {newRate=0;}
+                if(newRate<0)
+                {newRate=0;}
                 Meteor.users.update(battle.ID1,{$inc:{gameWinCount:1},$set:{rateELO:newRate}});
                 newRate=rateELO2+K*(0-E);
                 Meteor.users.update(battle.ID2,{$set:{rateELO:newRate}});
@@ -155,7 +175,8 @@ Meteor.methods({
             case battle.ID1:
             {
                 newRate=rateELO2+K*(1-E);
-                if (newRate<0) {newRate=0;}
+                if(newRate<0)
+                {newRate=0;}
                 Meteor.users.update(battle.ID2,{$inc:{gameWinCount:1},$set:{rateELO:newRate}});
                 newRate=rateELO1+K*(0-E);
                 Meteor.users.update(battle.ID1,{$set:{rateELO:newRate}});
@@ -169,3 +190,7 @@ Meteor.methods({
         return true;
     }
 });
+/*throw new Meteor.Error("battle_exist_error",
+    "Battle with you userID don't exist");
+throw new Meteor.Error("disorder_line",
+    "Another unit make turn now");*/
