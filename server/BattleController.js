@@ -6,6 +6,7 @@
  * must return a boolean, or some result of dice
  */
 import {RunCircle} from "./TurnOrder"
+
 Meteor.methods({
     /**
      *
@@ -82,7 +83,7 @@ Meteor.methods({
 
         if(battle.state1 == "ready" && battle.state2 == "ready")
         {
-            var orderLine=RunCircle(battle.BS.orderLine);
+            var orderLine=RunCircle(battle.BS.orderLine);//start ATB-circle
             battles.update(_id,{$set:{'BS.orderLine':orderLine}});
             battles.update(_id,{$set:{state1:"battle"}});
             battles.update(_id,{$set:{state2:"battle"}});
@@ -94,26 +95,60 @@ Meteor.methods({
 
     },
     /**
-     * @return {string}
+     * @return {{success: boolean, mess: string}}
      */
     MoveTo:function(who,whither)
     {
         var userID2=Meteor.userId();//use id from caller, so used to understand who
-        var battle=battles.findOne({$or:[{ID1:userID2},{ID2:userID2}]}).BS;//check battle
-        if(battle == null || battle == undefined)
+        var BS=battles.findOne({$or:[{ID1:userID2},{ID2:userID2}]}).BS;//check battle
+        if(BS == null || BS == undefined)
         {
-            var TO=battle.orderLine;
-            if(TO[0].deck==who.deck && TO[0].index)
-            {}
+            var order=BS.orderLine[0];//possibility
+            if(order.deck == who.deck && order.index == who.index)//check order line
+            {
+                if(!order.canMove)//stationary
+                {
+                    throw new Meteor.Error('immovable','This model can\'t move');
+                }
+                //Reset to base state
+                order=ResetState(order);
+                var model=BS[who.deck][who.index];
+                var resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);
+                var Result={success:false,mess:''};
+                if(resultPF.success)//unreachable
+                {
+                    if(resultPF.route.length<=WalkDistance(order,model))//walk/run distance check
+                    {
+
+                    }
+                    else if(resultPF.route.length<=RunDistance(order,model))
+                    {
+
+                    }
+                    else
+                    {
+                        Result.success=false;
+                        Result.mess="Distance too long";
+                        return Result;
+                    }
+                }
+                else
+                {
+                    Result.success=false;
+                    Result.mess="Target unreachable";
+                    return Result;
+                }
+            }
             else
             {
-
+                throw new Meteor.Error('order_error','Another model turning now');
             }
 
         }
         else
-        {Meteor.Error("battle_exist_error");}
-        return userID2;
+        {
+            throw new Meteor.Error("battle_exist_error","Battle with you userID don't exist");
+        }
     },
     /**
      * @return {boolean}
@@ -190,7 +225,45 @@ Meteor.methods({
         return true;
     }
 });
-/*throw new Meteor.Error("battle_exist_error",
-    "Battle with you userID don't exist");
-throw new Meteor.Error("disorder_line",
-    "Another unit make turn now");*/
+/**
+ * very hard realisation
+ * @return {number}
+ */
+function WalkDistance(order,model)
+{
+    return 6*order.move;
+}
+/**
+ * very hard realisation
+ * @return {number}
+ */
+function RunDistance(order,model)
+{
+    return 6*order.move+6*order.canRun;
+}
+/**
+ * Because need in MoveTo and ClickOnSquad this is outside function to reuse code
+ * @param order
+ * @returns {*}
+ * @constructor
+ */
+function ResetState(order)
+{
+    if(order.canMove)
+    {
+        order.move=true;
+    }
+    if(order.snapshot)
+    {
+        order.snapshot=false;
+    }
+    if(order.canShoot)
+    {
+        order.shoot=true;
+    }
+    if(order.canCharge)
+    {
+        order.charge=true;
+    }
+    return order;
+}

@@ -9,7 +9,11 @@
                 Turn order:
                 <div class="page-title">{{curATB.name}} </div>
                 <div class="panel-body">
-                    {{curATB.row}} {{curATB.column}}
+                    {{curATB.row}} {{curATB.column}}<br>
+                    Move: {{#if curATB.move}}Ready{{else}}Immovable{{/if}}<br>
+                    Run: {{#if curATB.canRun}}Possible{{else}}Can't run{{/if}}<br>
+                    Shoot: {{#if curATB.shoot}}Ready{{#if curATB.snapshot}}:Full BS{{else}}:Snapshot{{/if}}{{else}}Impossible{{/if}}<br>
+                    Charge: {{#if curATB.charge}}Ready{{else}}Can't charge{{/if}}<br>
                 </div>
             </div>
             <div class="panel panel-info br1 col-xs-12">

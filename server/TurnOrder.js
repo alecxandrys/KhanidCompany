@@ -71,10 +71,6 @@ function RunCircle(orderLine)
         //if at least one reach end of circle
         if(orderLine[0].curATB>=100)
         {
-            if (orderLine[0].canMove) {orderLine[0].move=true;}
-            if (orderLine[0].canRun) {orderLine[0].run=true;}
-            if (orderLine[0].canShoot) {orderLine[0].shoot=true;}
-            if (orderLine[0].canMove) {orderLine[0].charge=true;}
             break;
         }
     }
@@ -86,13 +82,12 @@ function Element(options)
     this.index=options.index||-1;
     this.speed=options.speed||0;
     this.curATB=options.curATB;
-    this.canMove=options.canMove||true;//
+    this.canMove=options.canMove||false;//
     this.move=false;
-    this.canRun=options.canRun||true;
-    this.run=false;
-    this.canShoot=options.canShoot||true;
+    this.canRun=options.canRun||false;
     this.snapshot=false;
+    this.canShoot=options.canShoot||false;
     this.shoot=false;
-    this.canCharge=options.canCharge||true;
+    this.canCharge=options.canCharge||false;
     this.charge=false;
 }

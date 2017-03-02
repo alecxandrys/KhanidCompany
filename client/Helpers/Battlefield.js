@@ -10,7 +10,7 @@ log=[];
 var _logDep=new Deps.Dependency();
 var _turnDep=new Deps.Dependency();
 var _posDep=new Deps.Dependency();
-var _selectDep=new Deps.Dependency()
+var _selectDep=new Deps.Dependency();
 /**
  * Basic image height=80
  * Basic image width=60
@@ -175,7 +175,7 @@ reconnaissanceState.prototype={
         {
             if(game.curState == 'reconnaissance')
             {
-                Meteor.call('SetPosition',battle._id,game.side,game.chosenCardId,cell.collomn,cell.row,function(error,result)
+                Meteor.call('SetPosition',battle._id,game.side,game.chosenCardId,cell.column,cell.row,function(error,result)
                 {
                     if(!error)
                     {
@@ -318,19 +318,35 @@ battleState.prototype={
                 index:game.chosenCardId.deck.index
             },{
                 deck:model.deck,
-                index:model.index},function(error,result)
+                index:model.index
+            },function(error,result)
             {
                 if(!error)
                 {
+                    if (result.success)
+                    {
 
+                    }
+                    else
+                    {
+                        log.push(result.mess);
+                    }
                 }
                 else if(error.error == "battle_exist_error")
                 {
                     log.push("ID check unsuccesfull");
                 }
+                else if(error.error == 'order_error')
+                {
+                    log.push("This model can't turning now, because another have priority");
+                }
+                else if (error.error=='immovable')
+                {
+                    log.push("Model is immovable");
+                }
                 else
                 {
-                    log.push("error rise from server code");
+                    log.push("Unidentified error rise from server");
                 }
             });
             game.chosenCardId=null;
@@ -347,7 +363,7 @@ battleState.prototype={
         }
         else if(cell)
         {
-            var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.collomn,cell.row,cell.collomn,battle.BS);
+            var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.column,cell.row,cell.column,battle.BS);
             log.push(result.message+' with next difficulty level:'+result.cost);
 
         }
@@ -359,11 +375,19 @@ battleState.prototype={
                 index:game.chosenCardId.deck.index
             },{
                 row:game.chosenCell.row,
-                collomn:game.chosenCell.collomn},function(error,result)
+                column:game.chosenCell.column
+            },function(error,result)
             {
                 if(!error)
                 {
+                    if(result)
+                    {
 
+                    }
+                    else
+                    {
+                        log.push("You movement is invalid");
+                    }
                 }
                 else if(error.error == "battle_exist_error")
                 {
@@ -371,7 +395,7 @@ battleState.prototype={
                 }
                 else
                 {
-                    log.push("error rise from server code");
+                    log.push("Unidentified error rise from server");
                 }
             });
             game.chosenCardId=null;
@@ -473,7 +497,7 @@ Template.Battlefield.helpers({
         _posDep.depend();
         if(game.chosenCell)
         {
-            return game.chosenCell.row+' '+game.chosenCell.collomn;
+            return game.chosenCell.row+' '+game.chosenCell.column;
         }
     },
     log:function()
@@ -520,7 +544,7 @@ Template.Battlefield.events({
             }
             else
             {
-                log.push('error rise from server code');
+                log.push('Unidentified error rise from server');
             }
             _logDep.changed();
             location.reload();//try to GET OUT OF HERE!!!!!!
@@ -616,7 +640,7 @@ function RenderField(addPart)
                         break;
                 }
                 cell.row=x;
-                cell.collomn=y;
+                cell.column=y;
 
                 context.xCoordinate=xCoordinate;
                 context.yCoordinate=yCoordinate;
