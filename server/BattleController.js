@@ -90,7 +90,7 @@ Meteor.methods({
         }
 
     },
-    ClickOnSquad:function(who,target)
+    ActionOn:function(who,target)
     {
 
     },
@@ -119,11 +119,16 @@ Meteor.methods({
                 {
                     if(resultPF.route.length<=WalkDistance(order,model))//walk/run distance check
                     {
-
+                        model.row=whither.row;
+                        model.column=whither.column;
+                        order.move=false;
                     }
                     else if(resultPF.route.length<=RunDistance(order,model))
                     {
-
+                        model.row=whither.row;
+                        model.column=whither.column;
+                        order.move=false;
+                        order.snapshoot=true;
                     }
                     else
                     {
@@ -242,7 +247,7 @@ function RunDistance(order,model)
     return 6*order.move+6*order.canRun;
 }
 /**
- * Because need in MoveTo and ClickOnSquad this is outside function to reuse code
+ * Because need in MoveTo and ActionOn this is outside function to reuse code
  * @param order
  * @returns {*}
  * @constructor

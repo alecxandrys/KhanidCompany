@@ -313,7 +313,7 @@ battleState.prototype={
         else
         {
             log.push('Another model was selected');
-            Meteor.call('ClickOnSquad',{
+            Meteor.call('ActionOn',{
                 deck:game.chosenCardId.deck,
                 index:game.chosenCardId.deck.index
             },{
