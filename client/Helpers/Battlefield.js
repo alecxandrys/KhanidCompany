@@ -323,13 +323,11 @@ battleState.prototype={
             {
                 if(!error)
                 {
-                    if(result == "Successed")
-                    {
-
-
-                    }
-
                     log.push(result);
+                    if(result == "Successes")
+                    {
+                        log.push("Model was moved");
+                    }
                 }
                 else if(error.error == "battle_exist_error")
                 {

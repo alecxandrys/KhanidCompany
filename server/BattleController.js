@@ -99,8 +99,8 @@ Meteor.methods({
      */
     MoveTo:function(who,whither)
     {
-        var userID2=Meteor.userId();//use id from caller, so used to understand who
-        var BS=battles.findOne({$or:[{ID1:userID2},{ID2:userID2}]}).BS;//check battle
+        var userID=Meteor.userId();//use id from caller, so used to understand who
+        var BS=battles.findOne({$or:[{ID1:userID},{ID2:userID}]}).BS;//check battle
         if(BS == null || BS == undefined)
         {
             var order=BS.orderLine[0];//possibility
@@ -118,24 +118,27 @@ Meteor.methods({
                 {
                     if(resultPF.route.length<=WalkDistance(order,model))//walk/run distance check
                     {
-                        model.row=whither.row;
-                        model.column=whither.column;
-                        order.move=false;
                         order.snapshoot=false;
                     }
                     else if(resultPF.route.length<=RunDistance(order,model))
                     {
-                        model.row=whither.row;
-                        model.column=whither.column;
-                        order.move=false;
                         order.snapshoot=true;
+                        order.charge=false;
                     }
                     else
                     {
                         return "Distance too long";
                     }
                     //Save new position in battle
-
+                    model.row=whither.row;
+                    model.column=whither.column;
+                    order.move=false;
+                    order.curATB=order.curATB-resultPF.cost;//new curATB
+                    BS.orderLine[0]=order;
+                    BS.orderLine=RunCircle(BS.orderLine);
+                    BS[who.deck][who.index]=model;
+                    battles.update(id,{$set:{'BS':BS}});
+                    return "Successes"
                 }
                 else
                 {
