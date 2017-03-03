@@ -95,7 +95,7 @@ Meteor.methods({
 
     },
     /**
-     * @return {{success: boolean, mess: string}}
+     * @return {string}
      */
     MoveTo:function(who,whither)
     {
@@ -114,7 +114,6 @@ Meteor.methods({
                 order=ResetState(order);
                 var model=BS[who.deck][who.index];
                 var resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);
-                var Result={success:false,mess:''};
                 if(resultPF.success)//unreachable
                 {
                     if(resultPF.route.length<=WalkDistance(order,model))//walk/run distance check
@@ -122,6 +121,7 @@ Meteor.methods({
                         model.row=whither.row;
                         model.column=whither.column;
                         order.move=false;
+                        order.snapshoot=false;
                     }
                     else if(resultPF.route.length<=RunDistance(order,model))
                     {
@@ -132,16 +132,14 @@ Meteor.methods({
                     }
                     else
                     {
-                        Result.success=false;
-                        Result.mess="Distance too long";
-                        return Result;
+                        return "Distance too long";
                     }
+                    //Save new position in battle
+
                 }
                 else
                 {
-                    Result.success=false;
-                    Result.mess="Target unreachable";
-                    return Result;
+                    return "Target unreachable";
                 }
             }
             else
@@ -257,10 +255,6 @@ function ResetState(order)
     if(order.canMove)
     {
         order.move=true;
-    }
-    if(order.snapshot)//after run?
-    {
-        order.snapshot=false;
     }
     if(order.canShoot)
     {

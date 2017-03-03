@@ -51,6 +51,8 @@ function RunCircle(orderLine)
         //if at least one reach end of circle
         if(orderLine[0].curATB>=100)
         {
+            orderLine[0].walkDistance=6;
+            orderLine[0].runDistance=Math.floor(Math.random() * 5)+1;
             break;
         }
         orderLine.forEach(function(item)
@@ -86,4 +88,5 @@ function Element(options)
     this.shoot=false;
     this.canCharge=options.canCharge || false;
     this.charge=false;
+    this.rules=options.rules||null;
 }

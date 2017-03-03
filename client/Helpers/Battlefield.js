@@ -323,14 +323,13 @@ battleState.prototype={
             {
                 if(!error)
                 {
-                    if (result.success)
+                    if(result == "Successed")
                     {
 
+
                     }
-                    else
-                    {
-                        log.push(result.mess);
-                    }
+
+                    log.push(result);
                 }
                 else if(error.error == "battle_exist_error")
                 {
@@ -340,7 +339,7 @@ battleState.prototype={
                 {
                     log.push("This model can't turning now, because another have priority");
                 }
-                else if (error.error=='immovable')
+                else if(error.error == 'immovable')
                 {
                     log.push("Model is immovable");
                 }
