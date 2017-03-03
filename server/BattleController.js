@@ -258,7 +258,7 @@ function ResetState(order)
     {
         order.move=true;
     }
-    if(order.snapshot)
+    if(order.snapshot)//after run?
     {
         order.snapshot=false;
     }

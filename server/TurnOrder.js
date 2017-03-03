@@ -45,12 +45,14 @@ function TurnOrderInit(deck1,deck2)
  */
 function RunCircle(orderLine)
 {
-    if(orderLine[0].curATB>=100)
-    {
-        return orderLine;
-    }
+
     while(true)
     {
+        //if at least one reach end of circle
+        if(orderLine[0].curATB>=100)
+        {
+            break;
+        }
         orderLine.forEach(function(item)
         {
             item.curATB=item.curATB+item.speed;
@@ -67,27 +69,21 @@ function RunCircle(orderLine)
                 return 1;
             }
         });
-
-        //if at least one reach end of circle
-        if(orderLine[0].curATB>=100)
-        {
-            break;
-        }
     }
     return orderLine;
 }
 function Element(options)
 {
-    this.deck=options.deck||'deck0';
-    this.index=options.index||-1;
-    this.speed=options.speed||0;
+    this.deck=options.deck || 'deck0';
+    this.index=options.index || -1;
+    this.speed=options.speed || 0;
     this.curATB=options.curATB;
-    this.canMove=options.canMove||false;//
+    this.canMove=options.canMove || false;//
     this.move=false;
-    this.canRun=options.canRun||false;
+    this.canRun=options.canRun || false;
     this.snapshot=false;
-    this.canShoot=options.canShoot||false;
+    this.canShoot=options.canShoot || false;
     this.shoot=false;
-    this.canCharge=options.canCharge||false;
+    this.canCharge=options.canCharge || false;
     this.charge=false;
 }
