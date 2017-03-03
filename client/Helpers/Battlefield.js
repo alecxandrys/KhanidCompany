@@ -402,17 +402,6 @@ battleState.prototype={
     }
 };
 
-var finalState=function(t)
-{
-};
-finalState.prototype={
-    preload:function()
-    {
-    },
-    create:function()
-    {
-    }
-};
 /**
  * Template always after all other code
  */
@@ -420,7 +409,6 @@ Template.Battlefield.onCreated(function()
 {
     game=new Phaser.Game(1200,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
     game.global={}, game.state.add('boot',bootState), game.state.add('preload',preloadState), game.state.add('reconnaissance',reconnaissanceState), game.state.add('battle',battleState);
-    game.state.add('final',finalState);
     game.state.start('boot');
 
     if(Meteor.user().username == battle.name1)
