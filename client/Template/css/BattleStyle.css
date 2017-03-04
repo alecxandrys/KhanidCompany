@@ -40,3 +40,13 @@
     padding-top: 0;
     padding-bottom: 0;
 }
+#bg-move-now{
+    height: 20%;
+}
+#bg-timeline{
+    height: 70%;
+}
+
+#bg-selected-unit{
+    height: 10%;
+}
