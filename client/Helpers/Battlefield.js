@@ -353,7 +353,6 @@ battleState.prototype={
     },
     selectCell:function(cell)
     {
-        _posDep.changed();
         if(!game.chosenCell)
         {
             game.chosenCell=cell;
@@ -399,6 +398,7 @@ battleState.prototype={
             game.chosenCell=null;
         }
         _logDep.changed();
+        _posDep.changed();
     }
 };
 
@@ -495,12 +495,12 @@ Template.Battlefield.helpers({
     simulation:function()
     {
         _turnDep.depend();
-        var simulation=SimulationRun(battle.BS.orderLine);
+        //var simulation=SimulationRun(battle.BS.orderLine);
         var line=[];
-        simulation.forEach(function(elem)
+        /*simulation.forEach(function(elem)
         {
             line.push(battle.BS[elem.deck][elem.index]);
-        })
+        });*/
         return line;
     }
 
@@ -535,13 +535,9 @@ Template.Battlefield.events({
                 log.push('Unidentified error rise from server');
             }
             _logDep.changed();
-            location.reload();//try to GET OUT OF HERE!!!!!!
+            //location.reload();//try to GET OUT OF HERE!!!!!!
         })
 
-    },
-    "click .testFunc":function(event)
-    {
-        event.preventDefault();
     },
     "click .ready":function()
     {
@@ -563,14 +559,14 @@ Template.Battlefield.events({
                         log.push("Your are alredy waiting opponent");
 
                     }
-                    _logDep.changed();
                 }
                 else
                 {
                     log.push("Your must place all you unit until begin");
-                    _logDep.changed();
+
                 }
             }
+            _logDep.changed();
         });
     }
 });
@@ -670,10 +666,10 @@ Deps.autorun(function()
             //reconnaissanceState.RenderSquad();//this is NOT A FUNCTION!
             //location.reload();//eternal circle
             //after it all dead, so we need fully render again
-            log.push("Now your are in battle now");
-            _logDep.changed();
+            log.push("Now your are in battle now")
             game.state.start('battle');
             game.curState='battle';
+            _logDep.changed();
         }
     }
     _turnDep.changed();

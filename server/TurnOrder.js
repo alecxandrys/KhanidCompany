@@ -21,6 +21,9 @@ function TurnOrderInit(deck1,deck2)
             deck:'deck1',
             index:index,
             speed:item.speed,
+            canMove:true,
+            canRun:true,
+            canCharge:true,
             curATB:Math.floor(Math.random()*11)//start position in line
         });
         orderLine.push(elem)
@@ -31,6 +34,9 @@ function TurnOrderInit(deck1,deck2)
             deck:'deck2',
             index:index,
             speed:item.speed,
+            canMove:true,
+            canRun:true,
+            canCharge:true,
             curATB:Math.floor(Math.random()*11)
         });
         orderLine.push(elem)
@@ -51,6 +57,7 @@ function RunCircle(orderLine)
         //if at least one reach end of circle
         if(orderLine[0].curATB>=100)
         {
+            orderLine[0]=ResetState(orderLine[0]);
             orderLine[0].walkDistance=6;
             orderLine[0].runDistance=Math.floor(Math.random() * 5)+1;
             break;
@@ -77,9 +84,9 @@ function RunCircle(orderLine)
 function Element(options)
 {
     this.deck=options.deck || 'deck0';
-    this.index=options.index || -1;
+    this.index=options.index || -1;// if default was -1 or less make -1 for each zero index. Also make -1 as default destroy all orderLine
     this.speed=options.speed || 0;
-    this.curATB=options.curATB;
+    this.curATB=options.curATB || 0;
     this.canMove=options.canMove || false;//
     this.move=false;
     this.canRun=options.canRun || false;
@@ -89,4 +96,20 @@ function Element(options)
     this.canCharge=options.canCharge || false;
     this.charge=false;
     this.rules=options.rules||null;
+}
+function ResetState(order)
+{
+    if(order.canMove)
+    {
+        order.move=true;
+    }
+    if(order.canShoot)
+    {
+        order.shoot=true;
+    }
+    if(order.canCharge)
+    {
+        order.charge=true;
+    }
+    return order;
 }

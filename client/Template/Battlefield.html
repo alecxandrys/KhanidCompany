@@ -1,70 +1,83 @@
 <template name="Battlefield">
     <script>
-        $(document).prop('title', 'Battle between {{name1}} and  {{name2}}');
+        $(document)
+                .prop('title','Battle between {{name1}} and  {{name2}}');
     </script>
     <div class="row">
         <div id="field" class="col-xs-10"></div>
         <div class="col-xs-2">
-            <div class="panel panel-info br1 col-xs-12" id="bg-move-now" data-toggle="tooltip" data-placement=" auto bottom" data-html="true"
-            title=" {{curATB.row}} {{curATB.column}}<br>
+            {{#if curATB}}
+                Turn order:
+                <div class="panel panel-info br1 col-xs-12" id="bg-move-now" data-toggle="tooltip"
+                     data-placement=" auto bottom" data-html="true"
+                     title=" {{curATB.row}} {{curATB.column}}<br>
                     Move: {{#if curATB.move}}Ready{{else}}Immovable{{/if}}<br>
                     Run: {{#if curATB.canRun}}Possible{{else}}Can't run{{/if}}<br>
-                    Shoot: {{#if curATB.shoot}}Ready{{#if curATB.snapshot}}:Full BS{{else}}:Snapshot{{/if}}{{else}}Impossible{{/if}}<br>
+                    Shoot: {{#if curATB.shoot}}
+                    Ready{{#if curATB.snapshot}}:Full BS{{else}}:Snapshot{{/if}}{{else}}Impossible{{/if}}<br>
                     Charge: {{#if curATB.charge}}Ready{{else}}Can't charge{{/if}}<br>
             ">
 
-                <div class="page-title">Turn order:</div>
-                <div class="panel-body">
-                    {{curATB.name}}
+                    <div class="page-title">Turn order:</div>
+                    <div class="panel-body">
+                        {{curATB.name}}
+                    </div>
                 </div>
-            </div>
-            <div class="pre-scrollable col-xs-12" id ="bg-timeline">
-                {{#each simulation}}
-                <div class="panel panel-default br1 availableWeapon panel-body">
-                    {{simulation.name}}
-                    {{simulation.row}}
-                    {{simulation.column}}
+            {{/if}}
+            {{#if simulation}}
+                <div class="pre-scrollable col-xs-12" id="bg-timeline">
+                    {{#each simulation}}
+                        <div class="panel panel-default br1 availableWeapon panel-body">
+                            {{simulation.name}}
+                            {{simulation.row}}
+                            {{simulation.column}}
+                        </div>
+                    {{/each}}
+
                 </div>
-                {{/each}}
-            </div>
-            <div class="panel panel-info br1 col-xs-12" id="bg-selected-unit">
-                Currently select:
-                <div class="page-title"> {{curSelect.name}} </div>
-                <div class="panel-body">
-                {{curSelect.row}} {{curSelect.column}}
-            </div>
-        </div>
+            {{/if}}
+            {{#if curSelect}}
+                <div class="panel panel-info br1 col-xs-12" id="bg-selected-unit">
+
+                    Currently select:
+                    <div class="page-title"> {{curSelect.name}} </div>
+                    <div class="panel-body">
+                        {{curSelect.row}} {{curSelect.column}}
+                    </div>
+                </div>
+            {{/if}}
         </div>
     </div>
     <div class="container row" id="bf-bottom-bar">
         <div class="left-panel col-xs-8">
-                {{#each cards}}
-                    <div class="col-sm-4 col-xs-5 col-lg-2 col-md-3">
-                        <div id="bg-card" class="card panel panel-default br1"  data-toggle="tooltip" data-placement=" auto bottom" data-html="true"
-                        title="
+            {{#each cards}}
+                <div class="col-sm-4 col-xs-5 col-lg-2 col-md-3">
+                    <div id="bg-card" class="card panel panel-default br1" data-toggle="tooltip"
+                         data-placement=" auto bottom" data-html="true"
+                         title="
                         Wound:<wbr>{{wound}}<br>
                         {{#if placed}}
                             Row:{{row}}
                             Column:{{column}}
-                        {{/if}}<br>
+                         {{/if}}<br>
                         Selected Weapons:
                         {{#if card.meleeWeapon}}
                             <br>Name:<wbr>{{card.meleeWeapon.name}}<br>
                             Description:<wbr>{{card.meleeWeapon.description}}
-                        {{/if}}
-                        {{#if card.rangeWeapon}}
+                         {{/if}}
+                             {{#if card.rangeWeapon}}
                             <br>Name:{{card.rangeWeapon.name}}<br>
                             Description:{{card.rangeWeapon.description}}
-                        {{/if}}
+                             {{/if}}
 
                         ">
-                            <a class="id">{{@index}}</a>
-                            <div class="panel-body" id="battlecardview">
-                                {{name}}
-                            </div>
+                        <a class="id">{{@index}}</a>
+                        <div class="panel-body" id="battlecardview">
+                            {{name}}
                         </div>
                     </div>
-                {{/each}}
+                </div>
+            {{/each}}
         </div>
         <div class="right-panel col-xs-4">
             <div class="row" id="bg-bt-row">
@@ -72,9 +85,10 @@
                 <a class="leave btn btn-default col-xs-4" id="bg-bt-row">Leave</a>
                 <div class="col-xs-4" id="bg-bt-row">{{position}}</div>
             </div>
-            <div class="bg-log-panel panel panel-info pre-scrollable br1 col-xs-12">
+            <div class="bg-log-panel panel panel-info pre-scrollable col-xs-12">
                 <div class="panel-body">
-                    Log:<wbr>
+                    Log:
+                    <wbr>
                     {{#each mess in log}}
                         {{mess}}<br>
                     {{/each}}

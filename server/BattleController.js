@@ -110,8 +110,6 @@ Meteor.methods({
                 {
                     throw new Meteor.Error('immovable','This model can\'t move');
                 }
-                //Reset to base state
-                order=ResetState(order);
                 var model=BS[who.deck][who.index];
                 var resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);
                 if(resultPF.success)//unreachable
@@ -253,19 +251,3 @@ function RunDistance(order,model)
  * @returns {*}
  * @constructor
  */
-function ResetState(order)
-{
-    if(order.canMove)
-    {
-        order.move=true;
-    }
-    if(order.canShoot)
-    {
-        order.shoot=true;
-    }
-    if(order.canCharge)
-    {
-        order.charge=true;
-    }
-    return order;
-}
