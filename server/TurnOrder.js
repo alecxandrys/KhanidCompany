@@ -84,7 +84,7 @@ function RunCircle(orderLine)
 function Element(options)
 {
     this.deck=options.deck || 'deck0';
-    this.index=options.index || -1;// if default was -1 or less make -1 for each zero index. Also make -1 as default destroy all orderLine
+    this.index=options.index || 0;// if default was -1 or less make -1 for each zero index. Also make -1 as default destroy all orderLine
     this.speed=options.speed || 0;
     this.curATB=options.curATB || 0;
     this.canMove=options.canMove || false;//
