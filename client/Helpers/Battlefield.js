@@ -323,11 +323,7 @@ battleState.prototype={
             {
                 if(!error)
                 {
-                    log.push(result);
-                    if(result == "Successes")
-                    {
-                        log.push("Model was moved");
-                    }
+
                 }
                 else if(error.error == "battle_exist_error")
                 {
@@ -368,7 +364,7 @@ battleState.prototype={
             log.push('Trying to move unit');
             Meteor.call('MoveTo',{
                 deck:game.chosenCardId.deck,
-                index:game.chosenCardId.deck.index
+                index:game.chosenCardId.index
             },{
                 row:game.chosenCell.row,
                 column:game.chosenCell.column
@@ -378,7 +374,11 @@ battleState.prototype={
                 {
                     if(result)
                     {
-
+                        log.push(result);
+                        if(result == "Successes")
+                        {
+                            log.push("Model was moved");
+                        }
                     }
                     else
                     {
@@ -388,6 +388,14 @@ battleState.prototype={
                 else if(error.error == "battle_exist_error")
                 {
                     log.push("ID check unsuccesfull");
+                }
+                else if(error.error == 'order_error')
+                {
+                    log.push("This model can't turning now, because another have priority");
+                }
+                else if(error.error == 'immovable')
+                {
+                    log.push("Model is immovable");
                 }
                 else
                 {
@@ -486,6 +494,10 @@ Template.Battlefield.helpers({
     {
         _turnDep.depend();
         return battle.BS[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index];
+    },
+    curOrder:function()
+    {
+      return battle.BS.orderLine[0];
     },
     curSelect:function()
     {

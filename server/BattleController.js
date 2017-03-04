@@ -101,7 +101,7 @@ Meteor.methods({
     {
         var userID=Meteor.userId();//use id from caller, so used to understand who
         var BS=battles.findOne({$or:[{ID1:userID},{ID2:userID}]}).BS;//check battle
-        if(BS == null || BS == undefined)
+        if(BS != null || BS != undefined)
         {
             var order=BS.orderLine[0];//possibility
             if(order.deck == who.deck && order.index == who.index)//check order line
@@ -111,7 +111,7 @@ Meteor.methods({
                     throw new Meteor.Error('immovable','This model can\'t move');
                 }
                 var model=BS[who.deck][who.index];
-                var resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);
+                var resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);//work fine, can see PathFinder in lib
                 if(resultPF.success)//unreachable
                 {
                     if(resultPF.route.length<=WalkDistance(order,model))//walk/run distance check

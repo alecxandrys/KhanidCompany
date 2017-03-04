@@ -23,6 +23,7 @@ function TurnOrderInit(deck1,deck2)
             speed:item.speed,
             canMove:true,
             canRun:true,
+            canShoot:true,
             canCharge:true,
             curATB:Math.floor(Math.random()*11)//start position in line
         });
@@ -36,6 +37,7 @@ function TurnOrderInit(deck1,deck2)
             speed:item.speed,
             canMove:true,
             canRun:true,
+            canShoot:true,
             canCharge:true,
             curATB:Math.floor(Math.random()*11)
         });

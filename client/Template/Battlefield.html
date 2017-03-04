@@ -10,11 +10,11 @@
                 <div class="panel panel-info br1 col-xs-12" id="bg-move-now" data-toggle="tooltip"
                      data-placement=" auto bottom" data-html="true"
                      title=" {{curATB.row}} {{curATB.column}}<br>
-                    Move: {{#if curATB.move}}Ready{{else}}Immovable{{/if}}<br>
-                    Run: {{#if curATB.canRun}}Possible{{else}}Can't run{{/if}}<br>
-                    Shoot: {{#if curATB.shoot}}
-                    Ready{{#if curATB.snapshot}}:Full BS{{else}}:Snapshot{{/if}}{{else}}Impossible{{/if}}<br>
-                    Charge: {{#if curATB.charge}}Ready{{else}}Can't charge{{/if}}<br>
+                    Move: {{#if curOrder.move}}Ready{{else}}Immovable{{/if}}<br>
+                    Run: {{#if curOrder.canRun}}Possible{{else}}Can't run{{/if}}<br>
+                    Shoot: {{#if curOrder.shoot}}
+                    Ready{{#if curOrder.snapshot}}:Full BS{{else}}:Snapshot{{/if}}{{else}}Impossible{{/if}}<br>
+                    Charge: {{#if curOrder.charge}}Ready{{else}}Can't charge{{/if}}<br>
             ">
 
                     <div class="page-title">Turn order:</div>
