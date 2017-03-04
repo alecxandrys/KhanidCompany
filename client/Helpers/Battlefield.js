@@ -469,14 +469,6 @@ Template.Battlefield.helpers({
     /**
      *Deps.Dependency was added, work correctly
      */
-    reconnaissance:function()
-    {
-        var isTrue;
-        isTrue=game.state.current == '' || game.state.current == "reconnaissance";
-        return {
-            state:isTrue
-        }
-    },
     position:function()
     {
         _posDep.depend();
@@ -499,6 +491,17 @@ Template.Battlefield.helpers({
     {
         _selectDep.depend();
         return battle.BS[game.chosenCardId.deck][game.chosenCardId.index];
+    },
+    simulation:function()
+    {
+        _turnDep.depend();
+        var simulation=SimulationRun(battle.BS.orderLine);
+        var line=[];
+        simulation.forEach(function(elem)
+        {
+            line.push(battle.BS[elem.deck][elem.index]);
+        })
+        return line;
     }
 
 });
