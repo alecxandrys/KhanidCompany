@@ -8,7 +8,7 @@ battle={};//this is variable which rewrite always when change BattleState
 log=[];
 
 var _logDep=new Deps.Dependency();
-var _turnDep=new Deps.Dependency();
+ _turnDep=new Deps.Dependency();
 var _posDep=new Deps.Dependency();
 var _selectDep=new Deps.Dependency();
 /**
@@ -349,15 +349,17 @@ battleState.prototype={
     },
     selectCell:function(cell)
     {
-        if(!game.chosenCell)
+        if(!game.chosenCell || game.chosenCell==null)
         {
             game.chosenCell=cell;
         }
         else if(cell)
         {
-            var result=PathFinder.FindPath(game.chosenCell.row,game.chosenCell.column,cell.row,cell.column,battle.BS);
-            log.push(result.message+' with next difficulty level:'+result.cost);
-
+            var tempCell=game.chosenCell;//this need because position depend from game.chosenCell, so it must show actual cell
+            game.chosenCell=cell;//so now game.chosenCell show last clicked cell
+            var result=PathFinder.FindPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
+            log.push(result.message+' between point start point:'+tempCell.row+', column:'+tempCell.column+' and final point row:'+game.chosenCell.row+', column:'+game.chosenCell.column+' with next difficulty level:'+result.cost+' in '+result.route.length+' step');
+            game.chosenCardId=null;
         }
         if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
@@ -507,13 +509,15 @@ Template.Battlefield.helpers({
     simulation:function()
     {
         _turnDep.depend();
-        //var simulation=SimulationRun(battle.BS.orderLine);
-        var line=[];
-        /*simulation.forEach(function(elem)
+        var cloneOfA = JSON.parse(JSON.stringify(battle.BS.orderLine));//full independence clone object's clone
+        var line=SimulationRun(cloneOfA);
+        var simulation=[];
+        line.forEach(function(elem)
         {
-            line.push(battle.BS[elem.deck][elem.index]);
-        });*/
-        return line;
+            simulation.push(battle.BS[elem.deck][elem.index]);
+        });
+        game.line=simulation;
+        return simulation;
     }
 
 });

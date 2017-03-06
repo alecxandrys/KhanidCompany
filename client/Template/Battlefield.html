@@ -9,12 +9,13 @@
             {{#if curATB}}
                 <div class="panel panel-info br1 col-xs-12" id="bg-move-now" data-toggle="tooltip"
                      data-placement=" auto bottom" data-html="true"
-                     title=" {{curATB.row}} {{curATB.column}}<br>
+                     title=" Row:{{curATB.row}} Column:{{curATB.column}}<br>
                     Move: {{#if curOrder.move}}Ready{{else}}Immovable{{/if}}<br>
                     Run: {{#if curOrder.canRun}}Possible{{else}}Can't run{{/if}}<br>
                     Shoot: {{#if curOrder.shoot}}
-                    Ready{{#if curOrder.snapshot}}:Full BS{{else}}:Snapshot{{/if}}{{else}}Impossible{{/if}}<br>
+                    Possible-{{#if curOrder.snapshot}}Snapshot{{else}}Full BS{{/if}}{{else}}Impossible{{/if}}<br>
                     Charge: {{#if curOrder.charge}}Ready{{else}}Can't charge{{/if}}<br>
+                    Walk:{{curOrder.walkDistance}} Run:{{curOrder.runDistance}}<br>
             ">
 
                     <div class="page-title">Turn order:</div>
@@ -27,17 +28,15 @@
                 <div class="pre-scrollable col-xs-12" id="bg-timeline">
                     {{#each simulation}}
                         <div class="panel panel-default br1 availableWeapon panel-body">
-                            {{simulation.name}}
-                            {{simulation.row}}
-                            {{simulation.column}}
+                            {{name}}<br>
+                            {{row}}
+                            {{column}}
                         </div>
                     {{/each}}
-
                 </div>
             {{/if}}
             {{#if curSelect}}
                 <div class="panel panel-info br1 col-xs-12" id="bg-selected-unit">
-
                     Currently select:
                     <div class="page-title"> {{curSelect.name}} </div>
                     <div class="panel-body">
