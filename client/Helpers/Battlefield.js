@@ -341,6 +341,8 @@ battleState.prototype={
                 {
                     log.push("Unidentified error rise from server");
                 }
+                _logDep.changed();
+                _turnDep.changed();
             });
             game.chosenCardId=null;
         }
@@ -403,6 +405,8 @@ battleState.prototype={
                 {
                     log.push("Unidentified error rise from server");
                 }
+                _logDep.changed();
+                _turnDep.changed();
             });
             game.chosenCardId=null;
             game.chosenCell=null;

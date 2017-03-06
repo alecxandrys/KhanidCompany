@@ -100,7 +100,9 @@ Meteor.methods({
     MoveTo:function(who,whither)
     {
         var userID=Meteor.userId();//use id from caller, so used to understand who
-        var BS=battles.findOne({$or:[{ID1:userID},{ID2:userID}]}).BS;//check battle
+        var battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
+        var id=battle._id;
+        var BS=battle.BS;//check battle
         if(BS != null || BS != undefined)
         {
             var order=BS.orderLine[0];//possibility
