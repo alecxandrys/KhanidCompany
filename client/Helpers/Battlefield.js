@@ -8,7 +8,7 @@ battle={};//this is variable which rewrite always when change BattleState
 log=[];
 
 var _logDep=new Deps.Dependency();
- _turnDep=new Deps.Dependency();
+var _turnDep=new Deps.Dependency();
 var _posDep=new Deps.Dependency();
 var _selectDep=new Deps.Dependency();
 /**
@@ -359,7 +359,7 @@ battleState.prototype={
             game.chosenCell=cell;//so now game.chosenCell show last clicked cell
             var result=PathFinder.FindPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
             log.push(result.message+' between point start point:'+tempCell.row+', column:'+tempCell.column+' and final point row:'+game.chosenCell.row+', column:'+game.chosenCell.column+' with next difficulty level:'+result.cost+' in '+result.route.length+' step');
-            game.chosenCardId=null;
+            game.chosenCell=null;
         }
         if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
@@ -516,7 +516,6 @@ Template.Battlefield.helpers({
         {
             simulation.push(battle.BS[elem.deck][elem.index]);
         });
-        game.line=simulation;
         return simulation;
     }
 
