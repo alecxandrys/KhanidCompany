@@ -90,9 +90,72 @@ Meteor.methods({
         }
 
     },
-    ActionOn:function(who,target)
+    /**
+     * @return {string}
+     */
+    ActionOn:function(who,target,type)
     {
+        var userID=Meteor.userId();//use id from caller, so used to understand who
+        var battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
+        var id=battle._id;
+        var BS=battle.BS;//check battle
+        if(BS != null || BS != undefined)
+        {
+            var order=BS.orderLine[0];//possibility
+            if(order.deck == who.deck && order.index == who.index)//check order line
+            {
+                if(!order.canMove)//stationary
+                {
+                    throw new Meteor.Error('immovable','This model can\'t move');
+                }
+                var model=BS[who.deck][who.index];
+                switch(type)
+                {
+                    case 'range':
+                    {
+                        if(order.shoot)//can shot now?
+                        {
+                            if(model.rangeWeapon)//have weapon?
+                            {
 
+                            }
+                            else
+                            {
+                                return "You don't have ranged weapon";
+                            }
+                        }
+                        else
+                        {
+                            return "You can't shoot now";
+                        }
+                        break;
+                    }
+                    case 'charge':
+                    {
+                        if(order.charge)
+                        {
+
+                        }
+                        else
+                        {
+                            return "You can't charge now";
+                        }
+                        break;
+                    }
+                    default:
+                    {throw new Meteor.Error('type_unidentified','type of activity isn\'t implemented');}
+                }
+            }
+            else
+            {
+                throw new Meteor.Error('order_error','Another model turning now');
+            }
+
+        }
+        else
+        {
+            throw new Meteor.Error("battle_exist_error","Battle with you userID don't exist");
+        }
     },
     /**
      * @return {string}
@@ -116,7 +179,11 @@ Meteor.methods({
                 var resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);//work fine, can see PathFinder in lib
                 if(resultPF.success)//unreachable
                 {
-                    if(resultPF.route.length<=WalkDistance(order,model))//walk/run distance check
+                    if(resultPF.route.length == 1)
+                    {
+                        return "You already in final point";
+                    }
+                    else if(resultPF.route.length<=WalkDistance(order,model))//walk/run distance check
                     {
                         order.snapshoot=false;
                     }
@@ -237,7 +304,7 @@ Meteor.methods({
  */
 function WalkDistance(order,model)
 {
-    return 6*order.move;
+    return 6*order.move+1;//1 by start point in path
 }
 /**
  * very hard realisation
@@ -245,7 +312,7 @@ function WalkDistance(order,model)
  */
 function RunDistance(order,model)
 {
-    return 6*order.move+6*order.canRun;
+    return 6*order.move+6*order.canRun+1;//1 by start point in path
 }
 /**
  * Because need in MoveTo and ActionOn this is outside function to reuse code

@@ -2,8 +2,9 @@
  * Created by Alecxandrys on 10.11.2015.
  * Remember, that game and BS in debug mod only without var
  */
-game={};//this is local variable, which consist graphic (like sprite) and other param
+game={};//this is local variable, which consist graphic (like sprite)
 battle={};//this is variable which rewrite always when change BattleState
+state={}//this is local variable, which consist param and state exclude graphic
 
 log=[];
 
@@ -319,7 +320,7 @@ battleState.prototype={
             },{
                 deck:model.deck,
                 index:model.index
-            },function(error,result)
+            },state.type,function(error,result)
             {
                 if(!error)
                 {
@@ -336,6 +337,10 @@ battleState.prototype={
                 else if(error.error == 'immovable')
                 {
                     log.push("Model is immovable");
+                }
+                else if(error.error == 'type_unidentified')
+                {
+                    log.push("This type of action isn't supported");
                 }
                 else
                 {
@@ -424,6 +429,7 @@ Template.Battlefield.onCreated(function()
     game=new Phaser.Game(1200,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
     game.global={}, game.state.add('boot',bootState), game.state.add('preload',preloadState), game.state.add('reconnaissance',reconnaissanceState), game.state.add('battle',battleState);
     game.state.start('boot');
+    state.type='range'//attack type by default
 
     if(Meteor.user().username == battle.name1)
     {
@@ -532,6 +538,20 @@ Template.Battlefield.events({
         game.chosenCardId=parseInt($(event.currentTarget)
             .children('a')
             .text());
+    },
+    "change #optionCharge":function(event)
+    {
+        event.preventDefault();
+        log.push("Select melee mode");
+        state.type='charge';
+        _logDep.changed();
+    },
+    "change #optionFire":function(event)
+    {
+        event.preventDefault();
+        log.push("Select range mode");
+        state.type='range';
+        _logDep.changed();
     },
     "click .leave":function(event)
     {
@@ -660,7 +680,7 @@ function RenderField(addPart)
 }
 /**
  * Template always after all other code
- * Holy fuck after refresh (client think that state did.t change< so battle on server, recon on  clients
+ * Holy fuck after refresh (client think that state did.t change< so battle on server, recon on  clients)
  */
 Deps.autorun(function()
 {

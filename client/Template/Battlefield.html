@@ -20,6 +20,14 @@
                     <div class="page-title">Turn order:</div>
                     <div class="panel-body">
                         {{curATB.name}}
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary active">
+                                <input type="radio" name="options" id="optionCharge" autocomplete="off" > Charge
+                            </label>
+                            <label class="btn btn-primary">
+                                <input type="radio" name="options" id="optionFire" autocomplete="off" checked> Range
+                            </label>
+                        </div>
                     </div>
                 </div>
             {{/if}}
