@@ -364,9 +364,11 @@ battleState.prototype={
         {
             var tempCell=game.chosenCell;//this need because position depend from game.chosenCell, so it must show actual cell
             game.chosenCell=cell;//so now game.chosenCell show last clicked cell
-            var result=PathFinder.FindPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
-            log.push(result.message+' between point start point:'+tempCell.row+', column:'+tempCell.column+' and final point row:'+game.chosenCell.row+', column:'+game.chosenCell.column+' with next difficulty level:'+result.cost+' in '+result.route.length+' step');
-            game.chosenCell=null;
+            var resultLOS=PathFinder.LOS(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
+            log.push(resultLOS.message+' between point start point:'+tempCell.row+', column:'+tempCell.column+' and final point row:'+game.chosenCell.row+', column:'+' in '+resultLOS.route.length+' step');
+            var resultPF=PathFinder.FindPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
+            log.push(resultPF.message+' between point start point:'+tempCell.row+', column:'+tempCell.column+' and final point row:'+game.chosenCell.row+', column:'+game.chosenCell.column+' with difficulty:'+resultPF.cost+' in '+resultPF.route.length+' step');
+           game.chosenCell=null;
         }
         if(game.chosenCardId != undefined || game.chosenCardId != null)
         {

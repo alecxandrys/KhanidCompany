@@ -93,7 +93,7 @@ Meteor.methods({
     /**
      * @return {string}
      */
-    ActionOn:function(who,target,type)
+    ActionOn:function(who,whom,type)
     {
         var userID=Meteor.userId();//use id from caller, so used to understand who
         var battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
@@ -104,35 +104,55 @@ Meteor.methods({
             var order=BS.orderLine[0];//possibility
             if(order.deck == who.deck && order.index == who.index)//check order line
             {
-                if(!order.canMove)//stationary
-                {
-                    throw new Meteor.Error('immovable','This model can\'t move');
-                }
                 var model=BS[who.deck][who.index];
+                var target=BS[whom.deck][whom.index];
                 switch(type)
                 {
                     case 'range':
                     {
-                        if(order.shoot)//can shot now?
+                        if(who.deck != whom.deck)
                         {
-                            if(model.rangeWeapon)//have weapon?
+                            if(order.shoot)//can shot now?
                             {
+                                if(model.rangeWeapon)//have weapon?
+                                {
+                                    var resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);//check LOS
+                                    if(resultLOS.message != 'Success')
+                                    {
+                                        return "LOS isn't exist, you can't fire";
+                                    }
+                                    else
+                                    {
+                                        if (model.rangeWeapon>=(resultLOS.route-1))//check distance (-1 for start point in route). Last check for possibility
+                                        {
 
+                                        }
+                                        else
+                                        {
+                                            return "Target too far fpr you weapon";
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    return "You don't have ranged weapon";
+                                }
                             }
                             else
                             {
-                                return "You don't have ranged weapon";
+                                return "You can't shoot now";
                             }
                         }
                         else
                         {
-                            return "You can't shoot now";
+                            return 'You can\'t shoot in your model';
                         }
                         break;
                     }
                     case 'charge':
                     {
-                        if(order.charge)
+                        if(order.charge)//can charge now? All model can fight in melee combat, if they don't have ccw, use basic profile(S:user; AP:-)
                         {
 
                         }
