@@ -4,63 +4,53 @@
 /**
  * @return {{}}
  */
-FullRandomSignature=function(attackCount,toHit,toWound,coverSave,armorSave,woundCount,afterEffect)
+attackSignature=function(attackCount,toHit,toWound,coverSave,armorSave,woundCount,afterEffect,rules)
 {
-
     new SimpleSchema({
         attackCount:{type:Number},
         toHit:{type:Number,min:2,max:6},
         toWound:{type:Number,min:2,max:6},
         coverSave:{type:Number,min:2,max:7},//7-model can't use this
-        armorSave:{type:Number,min:2,max:7},//7-model can't use this
+        armorSave:{type:Number,min:2,max:7},//7-model can't use this, also invulnerable field if AP>ArmSv
         woundCount:{type:Number,min:1},
         afterEffect:{type:Number,min:1,max:7}//7-model can't use this
-    }).validate({attackCount:attackCount,toHit:toHit,toWound:toWound,coverSave:coverSave,armorSave:armorSave,woundCount:woundCount,afterEffect:afterEffect});
+    }).validate({
+        attackCount:attackCount,
+        toHit:toHit,
+        toWound:toWound,
+        coverSave:coverSave,
+        armorSave:armorSave,
+        woundCount:woundCount,
+        afterEffect:afterEffect
+    });
 
-    var result={};
-    var success=0;
-    var x;
-    var i=0;
+    var result={toHit:[],toWound:[],coverSave:[],armorSave:[],woundCount:0,afterEffect:[]};
 
-    for(i=0; i<attackCount; i++)
+    //Math.floor(Math.random() * (max - min + 1)) + min
+    for(let i=0; i<attackCount; i++)
     {
-        x=Math.floor(Math.random()*(6-1+1))+1;
+        let x=Math.floor(Math.random()*(6-1+1))+1;
+        result.toHit.push(x);
         if(x>=toHit)
-        {success++}
-    }
-    attackCount=success;
-    success=0;
-    for(i=0; i<attackCount; i++)
-    {
-        x=Math.floor(Math.random()*(6-1+1))+1;
-        if(x>=toWound)
-        {success++}
-    }
-
-    if(woundCount != 1)
-    {
-        attackCount=success;
-        success=0;
-        for(i=0; i<attackCount; i++)
         {
             x=Math.floor(Math.random()*(6-1+1))+1;
-            if(x>=woundCount)
-            {success++}
+            result.toWound.push(x);
+            if (x>=toWound)//penetrate, now use saves
+            {
+                x=Math.floor(Math.random()*(6-1+1))+1;
+                if (coverSave!=7) {result.coverSave.push(x);}
+                if (x<coverSave || coverSave==7)
+                {
+                    x=Math.floor(Math.random()*(6-1+1))+1;
+                    if (armorSave!=7) {result.armorSave.push(x);}
+                    if (x<armorSave ||armorSave==7)
+                    {
+                        woundCount++;
+                        x=Math.floor(Math.random()*(6-1+1))+1;
+                        if (afterEffect!=7) {result.afterEffect.push(x);}
+                    }
+                }
+            }
         }
     }
-    result.success=success;
-    if(afterEffect != 1)
-    {
-        attackCount=success;
-        success=0;
-        for(i=0; i<attackCount; i++)
-        {
-
-            x=Math.floor(Math.random()*(6-1+1))+1;
-            if(x>=afterEffect)
-            {success++}
-        }
-    }
-    result.afterEffect=success;
-    return result;
 };
