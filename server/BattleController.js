@@ -136,16 +136,16 @@ Meteor.methods({
                                             /**
                                              * this is right all this transfer to attackSignature
                                              */
+                                            order.move=false;
+                                            order.curATB=0;
+                                            BS.orderLine[0]=order;
+                                            BS.orderLine=RunCircle(BS.orderLine);
                                             if(result.sucesses == false)
                                             {
                                                 return "Shooting did not bring results"
                                             }
                                             else
                                             {
-                                                order.move=false;
-                                                order.curATB=0;
-                                                BS.orderLine[0]=order;
-                                                BS.orderLine=RunCircle(BS.orderLine);
                                                 BS[who.deck][who.index]=model;
                                                 BS[whom.deck][whom.index]=target;
                                                 battles.update(id,{$set:{'BS':BS}});
