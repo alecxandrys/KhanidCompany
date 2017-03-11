@@ -295,8 +295,6 @@ battleState.prototype={
     },
     selectUnit:function(model)
     {
-
-        //TODO:: make a check for turn (and add the initiative table)
         log.push('Click on model');
         if(game.chosenCardId == undefined || game.chosenCardId == null)
         {
@@ -324,7 +322,18 @@ battleState.prototype={
             {
                 if(!error)
                 {
-
+                    if(result)
+                    {
+                        log.push(result);
+                        if(result == "Success")
+                        {
+                            log.push("Model successfully shoot");
+                        }
+                    }
+                    else
+                    {
+                        log.push("Status of shooting unknown");
+                    }
                 }
                 else if(error.error == "battle_exist_error")
                 {

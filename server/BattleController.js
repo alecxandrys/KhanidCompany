@@ -123,13 +123,38 @@ Meteor.methods({
                                     }
                                     else
                                     {
-                                        if (model.rangeWeapon>=(resultLOS.route-1))//check distance (-1 for start point in route). Last check for possibility
+                                        if(model.rangeWeapon>=(resultLOS.route-1))//check distance (-1 for start point in route). Last check for possibility
                                         {
+                                            let rules=[];
 
+                                            if((target.toughness-model.rangeWeapon.strength)>3)//weak check
+                                            {
+                                                return "You weapon too weak to wounded target"
+                                            }
+
+                                            let result=attackSignature(model,target,order,'range');
+                                            /**
+                                             * this is right all this transfer to attackSignature
+                                             */
+                                            if(result.sucesses == false)
+                                            {
+                                                return "Shooting did not bring results"
+                                            }
+                                            else
+                                            {
+                                                order.move=false;
+                                                order.curATB=0;
+                                                BS.orderLine[0]=order;
+                                                BS.orderLine=RunCircle(BS.orderLine);
+                                                BS[who.deck][who.index]=model;
+                                                BS[whom.deck][whom.index]=target;
+                                                battles.update(id,{$set:{'BS':BS}});
+                                                return "Success"
+                                            }
                                         }
                                         else
                                         {
-                                            return "Target too far fpr you weapon";
+                                            return "Target too far for you weapon";
                                         }
                                     }
 
@@ -154,6 +179,26 @@ Meteor.methods({
                     {
                         if(order.charge)//can charge now? All model can fight in melee combat, if they don't have ccw, use basic profile(S:user; AP:-)
                         {
+                            if(who.deck != whom.deck)
+                            {
+                                let chargeDistance=Math.floor(Math.random()*(6-1+1))+1;//2D6 on charge by default, by my rules only 1D6
+                                let resultPF=PathFinder.FindPath(model.row,model.column,target.row,target.column,battle.BS);
+                                //Overwatch?
+                                if(WalkDistance(order,model)+chargeDistance>=resultPF.route.length-1)//usually successful charge
+                                {
+
+                                }
+                                else
+                                {
+                                    //move to last point of walk
+                                    return "You unsuccessfully try to charge on "+(WalkDistance(order,model)+chargeDistance)+", but distance is "+(resultPF.route.length-1);
+                                }
+
+                            }
+                            else
+                            {
+                                return 'You can\'t charge your model';
+                            }
 
                         }
                         else
