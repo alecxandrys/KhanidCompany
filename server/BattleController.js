@@ -150,6 +150,7 @@ Meteor.methods({
                                                 BS[who.deck][who.index]=model;
                                                 BS[whom.deck][whom.index]=target;
                                                 battles.update(id,{$set:{'BS':BS}});
+                                                //check the end of battle
                                                 return "Success"
                                             }
                                         }
@@ -187,11 +188,11 @@ Meteor.methods({
                                 let moveTo;
                                 //Overwatch?
                                 moveTo=Meteor.call("MoveTo",model,resultPF.route[WalkDistance(order,model)]);
+                                let overwatch=Meteor.call('ActionOn',target,model,'range',true);
                                 model=BS[who.deck][who.index];//update data
                                 target=BS[whom.deck][whom.index];
                                 if (model.isPlaced)
                                 {
-                                    let overwatch=Meteor.call('ActionOn',target,model,'range',true);
                                     if(WalkDistance(order,model)+chargeDistance>=resultPF.route.length-1)//usually successful charge
                                     {
                                         moveTo=Meteor.call("MoveTo",model,resultPF.route[resultPF.route.length-2]);//move to cell before last (target whither stay target
@@ -203,7 +204,7 @@ Meteor.methods({
                                             return "You weapon too weak to wounded target"
                                         }
 
-                                        let result=attackSignature(model,target,order,'melee');
+                                        let result=attackSignature(model,target,order,'melee');//only one side
                                         /**
                                          * this is right all this transfer to attackSignature
                                          */
@@ -213,13 +214,14 @@ Meteor.methods({
                                         BS.orderLine=RunCircle(BS.orderLine);
                                         if(result.sucesses == false)
                                         {
-                                            return "Shooting did not bring results"
+                                            return "Charge did not bring results"
                                         }
                                         else
                                         {
                                             BS[who.deck][who.index]=model;
                                             BS[whom.deck][whom.index]=target;
                                             battles.update(id,{$set:{'BS':BS}});
+                                            //check the end of battle
                                             return "Success"
                                         }
 
@@ -240,6 +242,7 @@ Meteor.methods({
                                 }
                                 else
                                 {
+                                    //check the end of battle
                                     return 'You model was killed by overwatch'
                                 }
 
