@@ -318,7 +318,7 @@ battleState.prototype={
             },{
                 deck:model.deck,
                 index:model.index
-            },state.type,function(error,result)
+            },state.type,false,function(error,result)
             {
                 if(!error)
                 {
@@ -327,7 +327,7 @@ battleState.prototype={
                         log.push(result);
                         if(result == "Success")
                         {
-                            log.push("Model successfully shoot");
+                            log.push("Model successfully action");
                         }
                     }
                     else

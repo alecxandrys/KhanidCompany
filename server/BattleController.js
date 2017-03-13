@@ -93,8 +93,9 @@ Meteor.methods({
     /**
      * @return {string}
      */
-    ActionOn:function(who,whom,type)
+    ActionOn:function(who,whom,type,overwatch)
     {
+        //Array.isArray(obj)-is this object array or mot
         var userID=Meteor.userId();//use id from caller, so used to understand who
         var battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
         var id=battle._id;
@@ -102,7 +103,7 @@ Meteor.methods({
         if(BS != null || BS != undefined)
         {
             var order=BS.orderLine[0];//possibility
-            if(order.deck == who.deck && order.index == who.index)//check order line
+            if(order.deck == who.deck && order.index == who.index || overwatch)//check order line
             {
                 var model=BS[who.deck][who.index];
                 var target=BS[whom.deck][whom.index];
@@ -183,15 +184,63 @@ Meteor.methods({
                             {
                                 let chargeDistance=Math.floor(Math.random()*(6-1+1))+1;//2D6 on charge by default, by my rules only 1D6
                                 let resultPF=PathFinder.FindPath(model.row,model.column,target.row,target.column,battle.BS);
+                                let moveTo;
                                 //Overwatch?
-                                if(WalkDistance(order,model)+chargeDistance>=resultPF.route.length-1)//usually successful charge
+                                moveTo=Meteor.call("MoveTo",model,resultPF.route[WalkDistance(order,model)]);
+                                model=BS[who.deck][who.index];//update data
+                                target=BS[whom.deck][whom.index];
+                                if (model.isPlaced)
                                 {
+                                    let overwatch=Meteor.call('ActionOn',target,model,'range',true);
+                                    if(WalkDistance(order,model)+chargeDistance>=resultPF.route.length-1)//usually successful charge
+                                    {
+                                        moveTo=Meteor.call("MoveTo",model,resultPF.route[resultPF.route.length-2]);//move to cell before last (target whither stay target
 
+                                        let rules=[];
+
+                                        if((target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
+                                        {
+                                            return "You weapon too weak to wounded target"
+                                        }
+
+                                        let result=attackSignature(model,target,order,'melee');
+                                        /**
+                                         * this is right all this transfer to attackSignature
+                                         */
+                                        order.move=false;
+                                        order.curATB=0;
+                                        BS.orderLine[0]=order;
+                                        BS.orderLine=RunCircle(BS.orderLine);
+                                        if(result.sucesses == false)
+                                        {
+                                            return "Shooting did not bring results"
+                                        }
+                                        else
+                                        {
+                                            BS[who.deck][who.index]=model;
+                                            BS[whom.deck][whom.index]=target;
+                                            battles.update(id,{$set:{'BS':BS}});
+                                            return "Success"
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        //move to last point of walk
+                                        if(moveTo)
+                                        {
+                                            order.curATB=0;//new curATB
+                                            BS.orderLine[0]=order;
+                                            BS.orderLine=RunCircle(BS.orderLine);
+                                            BS[who.deck][who.index]=model;
+                                            battles.update(id,{$set:{'BS':BS}});
+                                        }
+                                        return "You unsuccessfully try to charge on "+(WalkDistance(order,model)+chargeDistance)+", but distance is "+(resultPF.route.length-1);
+                                    }
                                 }
                                 else
                                 {
-                                    //move to last point of walk
-                                    return "You unsuccessfully try to charge on "+(WalkDistance(order,model)+chargeDistance)+", but distance is "+(resultPF.route.length-1);
+                                    return 'You model was killed by overwatch'
                                 }
 
                             }
