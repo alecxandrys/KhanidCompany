@@ -187,13 +187,14 @@ Meteor.methods({
                                 let resultPF=PathFinder.FindPath(model.row,model.column,target.row,target.column,battle.BS);
                                 let moveTo;
                                 //Overwatch?
-                                moveTo=Meteor.call("MoveTo",model,resultPF.route[WalkDistance(order,model)]);
+                                //impossible to make it (BS was changed and saved in MoveTo
+                                moveTo=Meteor.call("MoveTo",model,resultPF.route[order.walkDistance]);
                                 let overwatch=Meteor.call('ActionOn',target,model,'range',true);
                                 model=BS[who.deck][who.index];//update data
                                 target=BS[whom.deck][whom.index];
                                 if (model.isPlaced)
                                 {
-                                    if(WalkDistance(order,model)+chargeDistance>=resultPF.route.length-1)//usually successful charge
+                                    if(order.walkDistance+chargeDistance>=resultPF.route.length-1)//usually successful charge
                                     {
                                         moveTo=Meteor.call("MoveTo",model,resultPF.route[resultPF.route.length-2]);//move to cell before last (target whither stay target
 
@@ -237,7 +238,7 @@ Meteor.methods({
                                             BS[who.deck][who.index]=model;
                                             battles.update(id,{$set:{'BS':BS}});
                                         }
-                                        return "You unsuccessfully try to charge on "+(WalkDistance(order,model)+chargeDistance)+", but distance is "+(resultPF.route.length-1);
+                                        return "You unsuccessfully try to charge on "+(order.walkDistance+chargeDistance)+", but distance is "+(resultPF.route.length-1);
                                     }
                                 }
                                 else
@@ -279,32 +280,32 @@ Meteor.methods({
      */
     MoveTo:function(who,whither)
     {
-        var userID=Meteor.userId();//use id from caller, so used to understand who
-        var battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
-        var id=battle._id;
-        var BS=battle.BS;//check battle
+        let userID=Meteor.userId();//use id from caller, so used to understand who
+        let battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
+        let id=battle._id;
+        let BS=battle.BS;//check battle
         if(BS != null || BS != undefined)
         {
-            var order=BS.orderLine[0];//possibility
+            let order=BS.orderLine[0];//possibility
             if(order.deck == who.deck && order.index == who.index)//check order line
             {
                 if(!order.canMove)//stationary
                 {
                     throw new Meteor.Error('immovable','This model can\'t move');
                 }
-                var model=BS[who.deck][who.index];
-                var resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);//work fine, can see PathFinder in lib
+                let model=BS[who.deck][who.index];
+                let resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);//work fine, can see PathFinder in lib
                 if(resultPF.success)//unreachable
                 {
                     if(resultPF.route.length == 1)
                     {
                         return "You already in final point";
                     }
-                    else if(resultPF.route.length<=WalkDistance(order,model))//walk/run distance check
+                    else if(resultPF.route.length<=order.walkDistance+1)//walk/run distance check
                     {
                         order.snapshoot=false;
                     }
-                    else if(resultPF.route.length<=RunDistance(order,model))
+                    else if(resultPF.route.length<=(order.walkDistance+order.runDistance+1))
                     {
                         order.snapshoot=true;
                         order.charge=false;
@@ -415,22 +416,7 @@ Meteor.methods({
         return true;
     }
 });
-/**
- * very hard realisation
- * @return {number}
- */
-function WalkDistance(order,model)
-{
-    return 6*order.move+1;//1 by start point in path
-}
-/**
- * very hard realisation
- * @return {number}
- */
-function RunDistance(order,model)
-{
-    return 6*order.move+6*order.canRun+1;//1 by start point in path
-}
+
 /**
  * Because need in MoveTo and ActionOn this is outside function to reuse code
  * @param order
