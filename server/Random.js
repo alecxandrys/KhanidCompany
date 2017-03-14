@@ -2,16 +2,7 @@
  * Created by Alecxandrys on 08.05.2016.
  */
 /**
- let options={
-attackCount:model.rangeWeapon.attackCount,
-skill:model.ballisticSkill,
-toWound:toWound(),
-coverSave:coverSave(),
-armorSave:armorSave(),
-afterEffect:afterEffect(),
-rules:[]
-};
- * attackCount,toHit,toWound,coverSave,armorSave,remainingWound,afterEffect,rules
+ * always have CCW for melee in profile
  * @return {{}}
  */
 attackSignature=function(model,target,order,type)
@@ -39,7 +30,7 @@ attackSignature=function(model,target,order,type)
             options.armorSave=target.armorSave;
         }
         else {
-            options.armorSave=7;
+            options.armorSave=model.invulnerable;
         }
     }
     else
@@ -57,7 +48,7 @@ attackSignature=function(model,target,order,type)
             options.armorSave=target.armorSave;
         }
         else {
-            options.armorSave=7;
+            options.armorSave=model.invulnerable;
         }
     }
     //FNP,protocol and other, which add save or work after unsaved wound

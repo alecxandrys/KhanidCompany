@@ -52,6 +52,7 @@ var Deck={
 var Card={
     _card:null,
     _cardDepend:new Tracker.Dependency(),
+    _defaultMeleeWeapon:{},
     getCard:function()
     {
         this._cardDepend.depend();
@@ -59,6 +60,7 @@ var Card={
     },
     setCard:function(Unit)
     {
+        this._defaultMeleeWeapon=Unit.meleeWeapon;
         this._card=Unit;
         this._cardDepend.changed();
     },
@@ -81,11 +83,11 @@ var Card={
     },
     addRangeWeapon:function(id)
     {
-        if(Card._card.availableWeapon[id].oneHanded == true && (Card._card.meleeWeapon == null || Card._card.meleeWeapon.oneHanded == true))
+        if(Card._card.availableWeapon[id].oneHanded == true && (Card._card.meleeWeapon == null || Card._card.meleeWeapon.oneHanded == true ))
         {
             Card._card.rangeWeapon=Card._card.availableWeapon[id];
         }
-        else if(Card._card.availableWeapon[id].oneHanded == false && Card._card.meleeWeapon == null)
+        else if(Card._card.availableWeapon[id].oneHanded == false && (Card._card.meleeWeapon == null || Card._card.meleeWeapon.name =='Close combat weapon (battle knife)'))
         {
             Card._card.rangeWeapon=Card._card.availableWeapon[id];
         }
@@ -93,12 +95,12 @@ var Card={
     },
     removeMeleeWeapon:function()
     {
-        Card._card.meleeWeapon=null
+        Card._card.meleeWeapon=this._defaultMeleeWeapon;//return CCW
         this._cardDepend.changed();
     },
     removeRangeWeapon:function()
     {
-        Card._card.rangeWeapon=null
+        Card._card.rangeWeapon=null;
         this._cardDepend.changed();
     },
     getCost:function()
