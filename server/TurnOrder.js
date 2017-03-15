@@ -14,10 +14,10 @@ export {TurnOrderInit,RunCircle}
  */
 function TurnOrderInit(deck1,deck2)
 {
-    var orderLine=[];
+    let orderLine=[];
     deck1.forEach(function(item,index)
     {
-        var elem=new Element({
+        let elem=new Element({
             deck:'deck1',
             index:index,
             speed:item.speed,
@@ -31,7 +31,7 @@ function TurnOrderInit(deck1,deck2)
     });
     deck2.forEach(function(item,index)
     {
-        var elem=new Element({
+        let elem=new Element({
             deck:'deck2',
             index:index,
             speed:item.speed,
@@ -98,6 +98,7 @@ function Element(options)
     this.canCharge=options.canCharge || false;
     this.charge=false;
     this.rules=options.rules||null;
+    this.lockInCombat=false;
 }
 function ResetState(order)
 {
