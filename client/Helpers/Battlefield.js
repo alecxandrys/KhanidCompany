@@ -314,7 +314,7 @@ battleState.prototype={
             log.push('Another model was selected');
             Meteor.call('ActionOn',{
                 deck:game.chosenCardId.deck,
-                index:game.chosenCardId.deck.index
+                index:game.chosenCardId.index
             },{
                 deck:model.deck,
                 index:model.index
@@ -520,6 +520,7 @@ Template.Battlefield.helpers({
     },
     curOrder:function()
     {
+        _turnDep.depend();
       return battle.BS.orderLine[0];
     },
     curSelect:function()

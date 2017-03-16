@@ -146,11 +146,11 @@ Meteor.methods({
                                     let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);//check LOS
                                     if(resultLOS.message != 'Success')
                                     {
-                                        return "LOS isn't exist, you can't fire";
+                                        return resultLOS.message;
                                     }
                                     else
                                     {
-                                        if(model.rangeWeapon>=(resultLOS.route-1))//check distance (-1 for start point in route). Last check for possibility
+                                        if(model.rangeWeapon.range>=(resultLOS.route.length-1))//check distance (-1 for start point in route). Last check for possibility
                                         {
                                             if((target.toughness-model.rangeWeapon.strength)>3)//weak check
                                             {
@@ -326,7 +326,7 @@ Meteor.methods({
                     {
                         return "You already in final point";
                     }
-                    else if(resultPF.route.length<=order.walkDistance+1)//walk/run distance check
+                    else if(resultPF.route.length<=(order.walkDistance+1))//walk/run distance check
                     {
                         order.snapshoot=false;
                     }
