@@ -312,13 +312,14 @@ battleState.prototype={
         else
         {
             log.push('Another model was selected');
-            Meteor.call('ActionOn',{
+            let arg=[{
                 deck:game.chosenCardId.deck,
                 index:game.chosenCardId.index
             },{
                 deck:model.deck,
                 index:model.index
-            },state.type,false,function(error,result)
+            },state.type,false];
+            Meteor.apply('ActionOn',arg,{ wait: true,noRetry:true },(error,result)=>
             {
                 if(!error)
                 {

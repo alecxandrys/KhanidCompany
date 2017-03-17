@@ -4,10 +4,12 @@
 /**
  * control the correct and ability for turn
  * must return a boolean, or some result of dice
+ * ALL TWICE CALLING MAY BE FIXED BY METEOR.APPLY
+ * when server work over 30s by default client just call method second time, but you can stay in debug
  */
 import {RunCircle} from "./TurnOrder"
 
-function SetPosition(model,whither,BS,who,id)
+function MoveToPosition(model,whither,BS,who,id)
 {
     model.row=whither.row;
     model.column=whither.column;
@@ -121,7 +123,7 @@ Meteor.methods({
      */
     ActionOn:function(who,whom,type,overwatch)
     {
-        //Array.isArray(obj)-is this object array or mot
+        //Array.isArray(obj)-is this object array or not for multiple target
         let userID=Meteor.userId();//use id from caller, so used to understand who
         let battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
         let id=battle._id;
@@ -165,15 +167,16 @@ Meteor.methods({
                                             order.curATB=0;
                                             BS.orderLine[0]=order;
                                             BS.orderLine=RunCircle(BS.orderLine);
+                                            BS[who.deck][who.index]=model;
+                                            BS[whom.deck][whom.index]=target;
+                                            battles.update(id,{$set:{'BS':BS}});
                                             if(result.sucesses == false)
                                             {
                                                 return "Shooting did not bring results"
                                             }
                                             else
                                             {
-                                                BS[who.deck][who.index]=model;
-                                                BS[whom.deck][whom.index]=target;
-                                                battles.update(id,{$set:{'BS':BS}});
+
                                                 CheckEnd(battle);
                                                 return "Success"
                                             }
@@ -211,14 +214,14 @@ Meteor.methods({
                                 let resultPF=PathFinder.FindPath(model.row,model.column,target.row,target.column,battle.BS);
                                 //Overwatch?
                                 //impossible to make it (BS was changed and saved in MoveTo)
-                                let overwatch=Meteor.call('ActionOn',target,model,'range',true);
+                                let overwatch=this.ActionOn(target,model,'range',true);//Guide said that that correct for server side. Meteor.call used only for client side
                                 model=BS[who.deck][who.index];//update data
                                 target=BS[whom.deck][whom.index];
                                 if(model.isPlaced)
                                 {
                                     if(order.walkDistance+chargeDistance>=resultPF.route.length-1)//usually successful charge
                                     {
-                                        SetPosition(model,{
+                                        MoveToPosition(model,{
                                             row:resultPF.route[resultPF.route.length-2].x,
                                             column:resultPF.route[resultPF.route.length-2].y
                                         },BS,who,id);//move to cell before last (target whither stay target
@@ -253,7 +256,7 @@ Meteor.methods({
                                     }
                                     else
                                     {
-                                        SetPosition(model,{
+                                        MoveToPosition(model,{
                                             row:resultPF.route[order.walkDistance+chargeDistance].x,
                                             column:resultPF.route[order.walkDistance+chargeDistance].y
                                         },BS,who,id);//move to cell before last (target whither stay target
@@ -344,7 +347,7 @@ Meteor.methods({
                     BS.orderLine[0]=order;
                     BS.orderLine=RunCircle(BS.orderLine);
                     //Save new position in battle
-                    SetPosition(model,whither,BS,who,id);
+                    MoveToPosition(model,whither,BS,who,id);
                     return "Successes"
                 }
                 else

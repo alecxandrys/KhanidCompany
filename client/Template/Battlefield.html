@@ -18,17 +18,7 @@
                     Walk:{{curOrder.walkDistance}} Run:{{curOrder.runDistance}}<br>
             ">
                     <div class="page-title">Turn order:</div>
-                    <div class="panel-body">
-                        {{curATB.name}}
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary active">
-                                <input type="radio" name="options" id="optionCharge" autocomplete="off" > Charge
-                            </label>
-                            <label class="btn btn-primary">
-                                <input type="radio" name="options" id="optionFire" autocomplete="off" checked> Range
-                            </label>
-                        </div>
-                    </div>
+                    {{curATB.name}}
                 </div>
             {{/if}}
             {{#if simulation}}
@@ -48,6 +38,16 @@
                     <div class="page-title"> {{curSelect.name}} </div>
                     <div class="panel-body">
                         {{curSelect.row}} {{curSelect.column}}
+                        <div class="panel-body">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary active">
+                                    <input type="radio" name="options" id="optionFire" autocomplete="off" checked> Range
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" id="optionCharge" autocomplete="off" > Charge
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {{/if}}
