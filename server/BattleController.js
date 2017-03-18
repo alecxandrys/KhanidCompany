@@ -34,9 +34,12 @@ function CheckCircle(battle)
     {
         Meteor.call("LeaveBattle",battle._id,battle.ID2);
     }
-    if(true)
+    if(battle.BS.orderLine[0].lockInCombat.length!=0)//check XtX combat for next unit
     {
-
+        battle.BS.orderLine[0].move=false;
+        battle.BS.orderLine[0].shoot=false;
+        battle.BS.orderLine[0].charge=false;
+        battles.update(battle._id,{$set:{'BS':battle.BS}});//set update
     }
 }
 Meteor.methods({
@@ -180,7 +183,6 @@ Meteor.methods({
                                             }
                                             else
                                             {
-
                                                 CheckCircle(battle);
                                                 return "Success"
                                             }
@@ -236,18 +238,19 @@ Meteor.methods({
                                         }
                                         /**
                                          * check initiative
+                                         * check raise up model and data update from method
                                          */
                                         let result=attackSignature(model,target,order,'melee');//only one side
 
                                         order.move=false;
                                         order.curATB=0;
-                                        if(result.sucesses == false)
+                                        if(result.sucesses == false)//no result
                                         {
                                             BS.orderLine[0]=order;
                                             BS.orderLine=RunCircle(BS.orderLine);
                                             return "Charge did not bring results"
                                         }
-                                        else if(target.isPlaced)
+                                        else if(target.isPlaced)//survive
                                         {
                                             order.lockInCombat.push(whom);//model lock in combat with target now
                                             BS.orderLine[BS.orderLine.find((elem,index) =>
@@ -255,8 +258,15 @@ Meteor.methods({
                                                 if(elem.deck == whom.deck && elem.index == whom.index)
                                                 {return index}
                                             })].lockInCombat.push(who);//target lock in combat with model now
+                                            BS.orderLine[0]=order;
                                         }
-                                        BS.orderLine[0]=order;
+                                        else//killed
+                                        {
+                                            //remove who from each lockInCombat
+
+                                            BS.orderLine.shift();//remove
+                                        }
+
                                         BS.orderLine=RunCircle(BS.orderLine);
                                         BS[who.deck][who.index]=model;
                                         BS[whom.deck][whom.index]=target;
@@ -270,7 +280,6 @@ Meteor.methods({
                                             row:resultPF.route[order.walkDistance+chargeDistance].x,
                                             column:resultPF.route[order.walkDistance+chargeDistance].y
                                         },BS,who,id);//move to cell before last (target whither stay target
-                                        //move to last point of walk
                                         order.curATB=0;//new curATB
                                         BS.orderLine[0]=order;
                                         BS.orderLine=RunCircle(BS.orderLine);
@@ -281,6 +290,8 @@ Meteor.methods({
                                 }
                                 else
                                 {
+                                    BS.orderLine[0].shift();//remove dead element from orderLine
+                                    battles.update(id,{$set:{'BS':BS}});
                                     CheckCircle(battle);
                                     return 'You model was killed by overwatch'
                                 }
