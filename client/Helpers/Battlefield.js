@@ -441,7 +441,8 @@ Template.Battlefield.onCreated(function()
     game=new Phaser.Game(1200,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
     game.global={}, game.state.add('boot',bootState), game.state.add('preload',preloadState), game.state.add('reconnaissance',reconnaissanceState), game.state.add('battle',battleState);
     game.state.start('boot');
-    state.type='range'//attack type by default
+    state.actionType='range';//attack type by default
+    //state.moveType='walk';//move type by default
 
     if(Meteor.user().username == battle.name1)
     {
@@ -556,14 +557,14 @@ Template.Battlefield.events({
     {
         event.preventDefault();
         log.push("Select melee mode");
-        state.type='charge';
+        state.actionType='charge';
         _logDep.changed();
     },
     "change #optionFire":function(event)
     {
         event.preventDefault();
         log.push("Select range mode");
-        state.type='range';
+        state.actionType='range';
         _logDep.changed();
     },
     "click .leave":function(event)

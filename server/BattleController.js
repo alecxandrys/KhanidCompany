@@ -304,6 +304,7 @@ Meteor.methods({
         }
     },
     /**
+     * LOS-check distance
      * @return {string}
      */
     MoveTo:function(who,whither)
@@ -323,26 +324,43 @@ Meteor.methods({
                 }
                 let model=BS[who.deck][who.index];
                 let resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);//work fine, can see PathFinder in lib
+                let resultLOS=PathFinder.LOS(model.row,model.column,whither.row,whither.column,BS);//to check shortest way
                 if(resultPF.success)//unreachable
                 {
-                    if(resultPF.route.length == 1)
+                    if(resultLOS.route.length == 1)
                     {
                         return "You already in final point";
                     }
-                    else if(resultPF.route.length<=(order.walkDistance+1))//walk/run distance check
+                    else if(resultLOS.route.length<=(order.walkDistance+1))//walk/run distance check
                     {
                         order.snapshoot=false;
+                        if(resultPF.route.length>(order.walkDistance+1))
+                        {
+                            order.curATB=order.curATB-resultLOS.cost;//new curATB
+                        }
+                        else
+                        {
+                            order.curATB=order.curATB-resultPF.cost;
+                        }
                     }
-                    else if(resultPF.route.length<=(order.walkDistance+order.runDistance+1))
+                    else if(resultLOS.route.length<=(order.walkDistance+order.runDistance+1))
                     {
                         order.snapshoot=true;
                         order.charge=false;
+                        if(resultPF.route.length>(order.walkDistance+order.runDistance+1))
+                        {
+                            order.curATB=order.curATB-resultLOS.cost;//new curATB
+                        }
+                        else
+                        {
+                            order.curATB=order.curATB-resultPF.cost;
+                        }
                     }
                     else
                     {
                         return "Distance too long";
                     }
-                    order.curATB=order.curATB-resultPF.cost;//new curATB
+
                     order.move=false;
                     BS.orderLine[0]=order;
                     BS.orderLine=RunCircle(BS.orderLine);
