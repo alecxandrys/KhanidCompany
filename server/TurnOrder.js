@@ -98,7 +98,7 @@ function Element(options)
     this.canCharge=options.canCharge || false;
     this.charge=false;
     this.rules=options.rules||null;
-    this.lockInCombat=false;
+    this.lockInCombat=[];
 }
 function ResetState(order)
 {

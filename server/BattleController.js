@@ -16,7 +16,7 @@ function MoveToPosition(model,whither,BS,who,id)
     BS[who.deck][who.index]=model;
     battles.update(id,{$set:{'BS':BS}});
 }
-function CheckEnd(battle)
+function CheckCircle(battle)
 {
     let test=battle.BS.deck1.some(function(elem)
     {
@@ -33,6 +33,10 @@ function CheckEnd(battle)
     if(test)//in first deck all dead
     {
         Meteor.call("LeaveBattle",battle._id,battle.ID2);
+    }
+    if(true)
+    {
+
     }
 }
 Meteor.methods({
@@ -177,7 +181,7 @@ Meteor.methods({
                                             else
                                             {
 
-                                                CheckEnd(battle);
+                                                CheckCircle(battle);
                                                 return "Success"
                                             }
                                         }
@@ -224,35 +228,41 @@ Meteor.methods({
                                         MoveToPosition(model,{
                                             row:resultPF.route[resultPF.route.length-2].x,
                                             column:resultPF.route[resultPF.route.length-2].y
-                                        },BS,who,id);//move to cell before last (target whither stay target
+                                        },BS,who,id);//move to cell before last (target whither stay target)
 
                                         if((target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
                                         {
                                             return "You weapon too weak to wounded target"
                                         }
-
-                                        let result=attackSignature(model,target,order,'melee');//only one side
                                         /**
-                                         * this is right all this transfer to attackSignature
+                                         * check initiative
                                          */
+                                        let result=attackSignature(model,target,order,'melee');//only one side
+
                                         order.move=false;
-                                        order.lockInCombat=true;
                                         order.curATB=0;
-                                        BS.orderLine[0]=order;
-                                        BS.orderLine=RunCircle(BS.orderLine);
                                         if(result.sucesses == false)
                                         {
+                                            BS.orderLine[0]=order;
+                                            BS.orderLine=RunCircle(BS.orderLine);
                                             return "Charge did not bring results"
                                         }
-                                        else
+                                        else if(target.isPlaced)
                                         {
-                                            BS[who.deck][who.index]=model;
-                                            BS[whom.deck][whom.index]=target;
-                                            battles.update(id,{$set:{'BS':BS}});
-                                            CheckEnd(battle);
-                                            return "Success"
+                                            order.lockInCombat.push(whom);//model lock in combat with target now
+                                            BS.orderLine[BS.orderLine.find((elem,index) =>
+                                            {
+                                                if(elem.deck == whom.deck && elem.index == whom.index)
+                                                {return index}
+                                            })].lockInCombat.push(who);//target lock in combat with model now
                                         }
-
+                                        BS.orderLine[0]=order;
+                                        BS.orderLine=RunCircle(BS.orderLine);
+                                        BS[who.deck][who.index]=model;
+                                        BS[whom.deck][whom.index]=target;
+                                        battles.update(id,{$set:{'BS':BS}});
+                                        CheckCircle(battle);
+                                        return "Success"
                                     }
                                     else
                                     {
@@ -271,7 +281,7 @@ Meteor.methods({
                                 }
                                 else
                                 {
-                                    CheckEnd(battle);
+                                    CheckCircle(battle);
                                     return 'You model was killed by overwatch'
                                 }
 
@@ -459,10 +469,3 @@ Meteor.methods({
         return true;
     }
 });
-
-/**
- * Because need in MoveTo and ActionOn this is outside function to reuse code
- * @param order
- * @returns {*}
- * @constructor
- */
