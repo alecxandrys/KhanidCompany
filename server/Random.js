@@ -100,13 +100,13 @@ attackSignature=function(model,target,order,type)
         if(instanceDeath)
         {
             result.remainingWound--;
-            target.isPlaced=false;//target destroyed instantly
+            target.placed=false;//target destroyed instantly
         }
         else
         {
             if(target.wound<=result.remainingWound)
             {
-                target.isPlaced=false;
+                target.placed=false;
                 result.remainingWound=result.remainingWound-target.wound;
             }
             else

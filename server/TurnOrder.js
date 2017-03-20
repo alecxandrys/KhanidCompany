@@ -46,14 +46,13 @@ function TurnOrderInit(deck1,deck2)
     return orderLine;
 }
 /**
- *
+ * TODO fix double possible turn (flag)
  * @param orderLine
  * @returns {*}
  * @constructor
  */
 function RunCircle(orderLine)
 {
-
     while(true)
     {
         //if at least one reach end of circle
