@@ -352,6 +352,10 @@ battleState.prototype={
                 {
                     log.push("This type of action isn't supported");
                 }
+                else if(error.error="Charge_too_far")
+                {
+                    log.push("You target more than you maximum charge distance");
+                }
                 else
                 {
                     log.push("Unidentified error rise from server");
