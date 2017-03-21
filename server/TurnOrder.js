@@ -46,7 +46,6 @@ function TurnOrderInit(deck1,deck2)
     return orderLine;
 }
 /**
- * TODO fix double possible turn (flag)
  * @param orderLine
  * @returns {*}
  * @constructor
@@ -58,16 +57,25 @@ function RunCircle(orderLine)
         //if at least one reach end of circle
         if(orderLine[0].curATB>=100)
         {
-            orderLine[0]=ResetState(orderLine[0]);
-            orderLine[0].walkDistance=6;
-            orderLine[0].runDistance=Math.floor(Math.random() * 5)+1;
-            break;
+            if (!orderLine[0].twiceTurnFlag)
+            {
+                orderLine[0]=ResetState(orderLine[0]);
+                orderLine[0].twiceTurnFlag=true;
+                orderLine.forEach(function(item)//very dirty
+                {
+                    item.twiceTurnFlag=false;
+                });
+                break;
+            }
+            else
+            {
+                orderLine[0].curATB=orderLine[0].curATB-orderLine[0].speed;//stand and wait another model
+            }
         }
         orderLine.forEach(function(item)
         {
             item.curATB=item.curATB+item.speed;
         });
-
         orderLine.sort(function(a,b)
         {
             if(a.curATB>=b.curATB)
@@ -85,7 +93,7 @@ function RunCircle(orderLine)
 function Element(options)
 {
     this.deck=options.deck || 'deck0';
-    this.index=options.index == null? -1 :  options.index;// if default was -1 or less make -1 for each zero index because 0==false
+    this.index=options.index == null ? -1 : options.index;// if default was -1 or less make -1 for each zero index because 0==false
     this.speed=options.speed || 0;
     this.curATB=options.curATB || 0;
     this.canMove=options.canMove || false;//
@@ -96,8 +104,9 @@ function Element(options)
     this.shoot=false;
     this.canCharge=options.canCharge || false;
     this.charge=false;
-    this.rules=options.rules||null;
+    this.rules=options.rules || null;
     this.lockInCombat=[];
+    this.twiceTurnFlag=false;
 }
 function ResetState(order)
 {
@@ -113,5 +122,13 @@ function ResetState(order)
     {
         order.charge=true;
     }
+    if(order.lockInCombat.length != 0)//check XtX combat for current unit
+    {
+        order.move=false;
+        order.shoot=false;
+        order.charge=false;
+    }
+    order.walkDistance=6;
+    order.runDistance=Math.floor(Math.random()*5)+1;
     return order;
 }

@@ -35,47 +35,50 @@ function CheckCircle(battle)
     {
         Meteor.call("LeaveBattle",battle._id,battle.ID2);
     }
-    if(battle.BS.orderLine[0].lockInCombat.length != 0)//check XtX combat for next unit
-    {
-        battle.BS.orderLine[0].move=false;
-        battle.BS.orderLine[0].shoot=false;
-        battle.BS.orderLine[0].charge=false;
-        battles.update(battle._id,{$set:{'BS':battle.BS}});//set update
-    }
 }
 /**
- * TODO save result, check if section
  * @return {string}
  */
-function CalculateResult(who,model,whom,target,order,BS)
+function CalculateMelee(who,model,whom,target,order,BS)
 {
-    let result=attackSignature(model,target,order,'melee');//only one side
-    order.move=false;
-    order.curATB=0;
-    if(result.sucesses == false)//no result
+    let mess='';
+    let result;
+    let answer;
+    //initiative order in melee combat
+    if(model.initiative>=target.initiative)
     {
-        order.lockInCombat.push(whom);//model lock in combat with target now
-        BS.orderLine[BS.orderLine.find((elem,index) =>
+        result=attackSignature(model,target,order,'melee');
+        if(target.placed)
         {
-            if(elem.deck == whom.deck && elem.index == whom.index)
-            {return index}
-        })].lockInCombat.push(who);//target lock in combat with model now
-
-        BS.orderLine[0]=order;
-        BS.orderLine=RunCircle(BS.orderLine);
-        return "Charge did not bring results"
+            answer=attackSignature(target,model,order,'melee');
+        }
     }
-    else if(target.placed)//survive
+    else
     {
-        order.lockInCombat.push(whom);//model lock in combat with target now
-        BS.orderLine[BS.orderLine.find((elem,index) =>
+        answer=attackSignature(target,model,order,'melee');
+        if(model.placed)
         {
-            if(elem.deck == whom.deck && elem.index == whom.index)
-            {return index}
-        })].lockInCombat.push(who);//target lock in combat with model now
-        BS.orderLine[0]=order;
+            result=attackSignature(model,target,order,'melee');
+        }
     }
-    else//target killed
+    if(!model.placed)//model killed in attack
+    {
+        mess='You was killed by enemy, which attack first';
+        BS.orderLine.shift();
+        BS[whom.deck][whom.index]=target;
+        battles.update(id,{$set:{'BS':BS}});
+        CheckCircle(battle);
+        return mess;
+    }
+    if(answer.sucesses == true)//model injured in attack
+    {
+        mess=mess+"You was injured by enemy. ";
+    }
+    if(result.sucesses == false)//target unaffected in defence
+    {
+        mess=mess+"Attack didn't bring results. ";
+    }
+    else if(!target.placed)//target killed in defence
     {
         BS.orderLine.splice(BS.orderLine.find((elem,index) =>
         {
@@ -89,14 +92,26 @@ function CalculateResult(who,model,whom,target,order,BS)
                 if(elem.deck == whom.deck && elem.index == whom.index)
                 {array[index].splice(ind,1)}
             });
-        })
+        });
+        mess=mess+"Target killed. ";
     }
+    else //target survive in defence
+    {
+        order.lockInCombat.push(whom);//model lock in combat with target now
+        BS.orderLine[BS.orderLine.find((elem,index) =>
+        {
+            if(elem.deck == whom.deck && elem.index == whom.index)
+            {return index}
+        })].lockInCombat.push(who);//target lock in combat with model now
+        mess=mess+"Target injured. ";
+    }
+    BS.orderLine[0]=order;
     BS.orderLine=RunCircle(BS.orderLine);
     BS[who.deck][who.index]=model;
     BS[whom.deck][whom.index]=target;
     battles.update(id,{$set:{'BS':BS}});
     CheckCircle(battle);
-    return "Success"
+    return mess;
 }
 Meteor.methods({
     /**
@@ -225,7 +240,6 @@ Meteor.methods({
                                             /**
                                              * this is right all this transfer to attackSignature
                                              */
-                                            order.move=false;
                                             order.curATB=0;
                                             BS.orderLine[0]=order;
                                             BS.orderLine=RunCircle(BS.orderLine);
@@ -239,7 +253,7 @@ Meteor.methods({
                                             else if(target.placed)//survive
                                             {
                                                 CheckCircle(battle);
-                                                return "Success"
+                                                return "Target injured"
                                             }
                                             else//killed
                                             {
@@ -249,7 +263,7 @@ Meteor.methods({
                                                     {return index}
                                                 }),1);//remove target
                                                 CheckCircle(battle);
-                                                return "Success"
+                                                return "Target killed"
                                             }
                                         }
                                         else
@@ -285,7 +299,7 @@ Meteor.methods({
                                 let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);
                                 if(resultLOS.route.length-1>12)
                                 {
-                                    throw new Meteor.Error("Charge_too_far",'');
+                                    throw new Meteor.Error("Charge_too_far",'just too far');
                                 }
                                 //Overwatch?
                                 //impossible to make it (BS was changed and saved in MoveTo)
@@ -309,7 +323,8 @@ Meteor.methods({
                                          * check initiative
                                          * check raise up model and data update from method
                                          */
-                                        let res=CalculateResult(who,model,whom,target,order,BS);
+                                        order.curATB=0-resultLOS.cost;
+                                        let res=CalculateMelee(who,model,whom,target,order,BS);
                                         return res;
                                     }
                                     else
@@ -348,7 +363,8 @@ Meteor.methods({
                             });
                             if(enemyIndex != undefined)//model continue the fight with target already locked in this combat
                             {
-                                let res=CalculateResult(who,model,whom,target,order,BS);
+                                order.curATB=0;
+                                let res=CalculateMelee(who,model,whom,target,order,BS);
                                 return res;
                             }
                             else

@@ -319,17 +319,13 @@ battleState.prototype={
                 deck:model.deck,
                 index:model.index
             },state.actionType,false];
-            Meteor.apply('ActionOn',arg,{ wait: true,noRetry:true },(error,result)=>
+            Meteor.apply('ActionOn',arg,{wait:true,noRetry:true},(error,result) =>
             {
                 if(!error)
                 {
                     if(result)
                     {
                         log.push(result);
-                        if(result == "Success")
-                        {
-                            log.push("Model successfully action");
-                        }
                     }
                     else
                     {
@@ -370,7 +366,7 @@ battleState.prototype={
     },
     selectCell:function(cell)
     {
-        if(!game.chosenCell || game.chosenCell==null)
+        if(!game.chosenCell || game.chosenCell == null)
         {
             game.chosenCell=cell;
         }
@@ -382,7 +378,7 @@ battleState.prototype={
             log.push(resultLOS.message+' between point start point:'+tempCell.row+', column:'+tempCell.column+' and final point row:'+game.chosenCell.row+', column:'+game.chosenCell.column);
             var resultPF=PathFinder.FindPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
             log.push(resultPF.message+' with difficulty:'+resultPF.cost+' in '+resultPF.route.length+' step');
-           game.chosenCell=null;
+            game.chosenCell=null;
         }
         if(game.chosenCardId != undefined || game.chosenCardId != null)
         {
@@ -400,10 +396,6 @@ battleState.prototype={
                     if(result)
                     {
                         log.push(result);
-                        if(result == "Successes")
-                        {
-                            log.push("Model was moved");
-                        }
                     }
                     else
                     {
@@ -527,7 +519,7 @@ Template.Battlefield.helpers({
     curOrder:function()
     {
         _turnDep.depend();
-      return battle.BS.orderLine[0];
+        return battle.BS.orderLine[0];
     },
     curSelect:function()
     {
@@ -537,7 +529,7 @@ Template.Battlefield.helpers({
     simulation:function()
     {
         _turnDep.depend();
-        var cloneOfA = JSON.parse(JSON.stringify(battle.BS.orderLine));//full independence clone object's clone
+        var cloneOfA=JSON.parse(JSON.stringify(battle.BS.orderLine));//full independence clone object's clone
         var line=SimulationRun(cloneOfA);
         var simulation=[];
         line.forEach(function(elem)
