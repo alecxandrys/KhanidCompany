@@ -318,7 +318,7 @@ battleState.prototype={
             },{
                 deck:model.deck,
                 index:model.index
-            },state.actionType,false];
+            },state.actionType];
             Meteor.apply('ActionOn',arg,{wait:true,noRetry:true},(error,result) =>
             {
                 if(!error)

@@ -57,7 +57,7 @@ function RunCircle(orderLine)
         //if at least one reach end of circle
         if(orderLine[0].curATB>=100)
         {
-            if (!orderLine[0].twiceTurnFlag)
+            if(!orderLine[0].twiceTurnFlag)
             {
                 orderLine[0]=ResetState(orderLine[0]);
                 orderLine[0].twiceTurnFlag=true;
@@ -107,9 +107,22 @@ function Element(options)
     this.rules=options.rules || null;
     this.lockInCombat=[];
     this.twiceTurnFlag=false;
+    this.prevMove=false;
+    this.prevRun=false;
 }
 function ResetState(order)
 {
+    if(order.prevRun)
+    {
+        order.snapshot=true;
+        order.prevRun=false;
+    }
+    if(!order.prevMove)
+    {
+        order.snapshot=false;
+    }
+    order.prevMove=false;
+    order.prevMove=false;
     if(order.canMove)
     {
         order.move=true;

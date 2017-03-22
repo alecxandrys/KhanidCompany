@@ -5,8 +5,10 @@
  * always have CCW for melee in profile
  * @return {{}}
  */
-attackSignature=function(model,target,order,type)
+attackSignature=function(model,target,order,type,a)
 {
+    a++;
+    b++;
     let result={skill:[],toWound:[],coverSave:[],armorSave:[],remainingWound:0,afterEffect:[]};
     let options={};
     let instanceDeath=model.rangeWeapon.strength>=(target.toughness*2);
@@ -15,7 +17,7 @@ attackSignature=function(model,target,order,type)
     if(type == 'range')
     {
         options.attackCount=model.rangeWeapon.attackCount;
-        if(order.snapshoot)
+        if(order.snapshot)
         {
             options.skill=1;
         }
@@ -25,11 +27,12 @@ attackSignature=function(model,target,order,type)
         }
         options.enemySkill=null;
         options.strength=model.rangeWeapon.strength;
-        if (model.rangeWeapon.AP>=target.armorSave)
+        if(model.rangeWeapon.AP>=target.armorSave)
         {
             options.armorSave=target.armorSave;
         }
-        else {
+        else
+        {
             options.armorSave=model.invulnerable;
         }
     }
@@ -43,11 +46,12 @@ attackSignature=function(model,target,order,type)
         {
             options.strength=options.strength+model.meleeWeapon.strength;
         }
-        if (model.meleeWeapon.AP>=target.armorSave)
+        if(model.meleeWeapon.AP>=target.armorSave)
         {
             options.armorSave=target.armorSave;
         }
-        else {
+        else
+        {
             options.armorSave=model.invulnerable;
         }
     }
@@ -57,10 +61,13 @@ attackSignature=function(model,target,order,type)
     for(let i=0; i<options.attackCount; i++)
     {
         let x=Math.floor(Math.random()*(6-1+1))+1;
-        if(x == 1 && options.skill>5)//reroll, if 6 and more in WS or BS skill
+        if(options.skill>5)//if 6 and more in WS or BS skill make no less than 2 in result to hit
         {
-            x=Math.floor(Math.random()*(6-1+1))+1;
             options.skill=options.skill-5;
+            if(x == 1)//reroll if x==1 with skill>5
+            {
+                x=Math.floor(Math.random()*(6-1+1))+1;
+            }
         }
         result.skill.push(x);
         if(x>=toHit(options.skill,options.enemySkill))
@@ -95,7 +102,7 @@ attackSignature=function(model,target,order,type)
         }
     }
     result.sucesses=false;
-    if (result.remainingWound!=0)
+    if(result.remainingWound != 0)
     {
         if(instanceDeath)
         {
@@ -149,18 +156,18 @@ let toWound=(strength,toughness) =>
     }
     else if((strength-toughness)< -1)
     {
-        return 2
+        return 6
     }
     else if((strength-toughness) == -1)
     {
-        return 3
+        return 5
     }
     else if((strength-toughness)>1)
     {
-        return 5
+        return 2
     }
     else if((strength-toughness) == 1)
     {
-        return 6
+        return 3
     }
 };

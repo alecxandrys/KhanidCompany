@@ -199,9 +199,10 @@ Meteor.methods({
     /**
      * @return {string}
      */
-    ActionOn:function(who,whom,type,overwatch)
+    ActionOn:function(who,whom,type)
     {
         //Array.isArray(obj)-is this object array or not for multiple target
+        //throw new Meteor.Error('reason','text');
         let userID=Meteor.userId();//use id from caller, so used to understand who
         let battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
         let id=battle._id;
@@ -209,7 +210,7 @@ Meteor.methods({
         if(BS != null || BS != undefined)
         {
             let order=BS.orderLine[0];//possibility
-            if(order.deck == who.deck && order.index == who.index || overwatch)//check order line
+            if(order.deck == who.deck && order.index == who.index)//check order line
             {
                 let model=BS[who.deck][who.index];
                 let target=BS[whom.deck][whom.index];
@@ -223,55 +224,59 @@ Meteor.methods({
                             {
                                 if(model.rangeWeapon)//have weapon?
                                 {
-                                    let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);//check LOS
-                                    if(resultLOS.message != 'Success')
+                                    if((target.toughness-model.rangeWeapon.strength)>3)//weak check
                                     {
-                                        return resultLOS.message;
-                                    }
-                                    else
-                                    {
-                                        if(model.rangeWeapon.range>=(resultLOS.route.length-1))//check distance (-1 for start point in route). Last check for possibility
+                                        let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);//check LOS
+                                        if(resultLOS.message != 'Success')
                                         {
-                                            if((target.toughness-model.rangeWeapon.strength)>3)//weak check
-                                            {
-                                                return "You weapon too weak to wounded target"
-                                            }
-                                            let result=attackSignature(model,target,order,'range');
-                                            /**
-                                             * this is right all this transfer to attackSignature
-                                             */
-                                            order.curATB=0;
-                                            BS.orderLine[0]=order;
-                                            BS.orderLine=RunCircle(BS.orderLine);
-                                            BS[who.deck][who.index]=model;
-                                            BS[whom.deck][whom.index]=target;
-                                            battles.update(id,{$set:{'BS':BS}});
-                                            if(result.sucesses == false)
-                                            {
-                                                return "Shooting did not bring results"
-                                            }
-                                            else if(target.placed)//survive
-                                            {
-                                                CheckCircle(battle);
-                                                return "Target injured"
-                                            }
-                                            else//killed
-                                            {
-                                                BS.orderLine.splice(BS.orderLine.find((elem,index) =>
-                                                {
-                                                    if(elem.deck == whom.deck && elem.index == whom.index)
-                                                    {return index}
-                                                }),1);//remove target
-                                                CheckCircle(battle);
-                                                return "Target killed"
-                                            }
+                                            return resultLOS.message;
                                         }
                                         else
                                         {
-                                            return "Target too far for you weapon";
+                                            if(model.rangeWeapon.range>=(resultLOS.route.length-1))//check distance (-1 for start point in route). Last check for possibility
+                                            {
+                                                let a=5;
+                                                let b=10;
+                                                let result=attackSignature(model,target,order,'range',a);
+                                                /**
+                                                 * this is right all this transfer to attackSignature
+                                                 */
+                                                order.curATB=0;
+                                                BS.orderLine[0]=order;
+                                                BS.orderLine=RunCircle(BS.orderLine);
+                                                BS[who.deck][who.index]=model;
+                                                BS[whom.deck][whom.index]=target;
+                                                battles.update(id,{$set:{'BS':BS}});
+                                                if(result.sucesses == false)
+                                                {
+                                                    return "Shooting did not bring results"
+                                                }
+                                                else if(target.placed)//survive
+                                                {
+                                                    CheckCircle(battle);
+                                                    return "Target injured"
+                                                }
+                                                else//killed
+                                                {
+                                                    BS.orderLine.splice(BS.orderLine.find((elem,index) =>
+                                                    {
+                                                        if(elem.deck == whom.deck && elem.index == whom.index)
+                                                        {return index}
+                                                    }),1);//remove target
+                                                    CheckCircle(battle);
+                                                    return "Target killed"
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return "Target too far for you weapon";
+                                            }
                                         }
                                     }
-
+                                    else
+                                    {
+                                        return "You weapon too weak to wounded target"
+                                    }
                                 }
                                 else
                                 {
@@ -295,58 +300,59 @@ Meteor.methods({
                         {
                             if(who.deck != whom.deck)
                             {
-                                let chargeDistance=Math.floor(Math.random()*(6-1+1))+1;//2D6 on charge by default, by my rules only 1D6
-                                let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);
-                                if(resultLOS.route.length-1>12)
+                                if((target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
                                 {
-                                    throw new Meteor.Error("Charge_too_far",'just too far');
-                                }
-                                //Overwatch?
-                                //impossible to make it (BS was changed and saved in MoveTo)
-                                //let overwatch=this.ActionOn(target,model,'range',true);//Guide said that that correct for server side. Meteor.call used only for client side
-                                model=BS[who.deck][who.index];//update data
-                                target=BS[whom.deck][whom.index];
-                                if(model.placed)
-                                {
-                                    if(order.walkDistance+chargeDistance>=resultLOS.route.length-1)//usually successful charge
+                                    let chargeDistance=Math.floor(Math.random()*(6-1+1))+1;//2D6 on charge by default, by my rules only 1D6
+                                    let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);
+                                    if(resultLOS.route.length-1>12)
                                     {
-                                        MoveToPosition(model,{
-                                            row:resultLOS.route[resultLOS.route.length-2].x,
-                                            column:resultLOS.route[resultLOS.route.length-2].y
-                                        },BS,who,id);//move to cell before last (target whither stay target)
-
-                                        if((target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
+                                        throw new Meteor.Error("Charge_too_far",'just too far');
+                                    }
+                                    //Overwatch?
+                                    //impossible to make it (BS was changed and saved in MoveTo)
+                                    let overwatch=attackSignature(target,model,order,'range',5);//Guide said that that correct for server side. Meteor.call used only for client side
+                                    //update and check data
+                                    if(model.placed)
+                                    {
+                                        order.prevMove=true;
+                                        if(order.walkDistance+chargeDistance>=resultLOS.route.length-1)//usually successful charge
                                         {
-                                            return "You weapon too weak to wounded target"
+                                            MoveToPosition(model,{
+                                                row:resultLOS.route[resultLOS.route.length-2].x,
+                                                column:resultLOS.route[resultLOS.route.length-2].y
+                                            },BS,who,id);//move to cell before last (target whither stay target)
+                                            /**
+                                             * check raise up model and data update from method
+                                             */
+                                            order.curATB=0-resultLOS.cost;
+                                            order.prevRun=true;
+                                            let res=CalculateMelee(who,model,whom,target,order,BS);
+                                            return res;
                                         }
-                                        /**
-                                         * check initiative
-                                         * check raise up model and data update from method
-                                         */
-                                        order.curATB=0-resultLOS.cost;
-                                        let res=CalculateMelee(who,model,whom,target,order,BS);
-                                        return res;
+                                        else
+                                        {
+                                            order.curATB=0;//new curATB
+                                            BS.orderLine[0]=order;
+                                            BS.orderLine=RunCircle(BS.orderLine);
+                                            BS[who.deck][who.index]=model;
+                                            MoveToPosition(model,{
+                                                row:resultLOS.route[order.walkDistance].x,
+                                                column:resultLOS.route[order.walkDistance].y
+                                            },BS,who,id);//move to cell before last (target whither stay target)
+                                            return "You unsuccessfully try to charge on "+(order.walkDistance+chargeDistance)+", but distance is "+(resultLOS.route.length-1);
+                                        }
                                     }
                                     else
                                     {
-                                        MoveToPosition(model,{
-                                            row:resultLOS.route[order.walkDistance].x,
-                                            column:resultLOS.route[order.walkDistance].y
-                                        },BS,who,id);//move to cell before last (target whither stay target
-                                        order.curATB=0;//new curATB
-                                        BS.orderLine[0]=order;
-                                        BS.orderLine=RunCircle(BS.orderLine);
-                                        BS[who.deck][who.index]=model;
+                                        BS.orderLine.shift();//remove model from orderLine
                                         battles.update(id,{$set:{'BS':BS}});
-                                        return "You unsuccessfully try to charge on "+(order.walkDistance+chargeDistance)+", but distance is "+(resultLOS.route.length-1);
+                                        CheckCircle(battle);
+                                        return 'You model was killed by overwatch'
                                     }
                                 }
                                 else
                                 {
-                                    BS.orderLine.shift();//remove model from orderLine
-                                    battles.update(id,{$set:{'BS':BS}});
-                                    CheckCircle(battle);
-                                    return 'You model was killed by overwatch'
+                                    return "You weapon too weak to wounded target";
                                 }
                             }
                             else
@@ -363,6 +369,7 @@ Meteor.methods({
                             });
                             if(enemyIndex != undefined)//model continue the fight with target already locked in this combat
                             {
+                                order.prevMove=true;
                                 order.curATB=0;
                                 let res=CalculateMelee(who,model,whom,target,order,BS);
                                 return res;
@@ -423,7 +430,7 @@ Meteor.methods({
                     }
                     else if(resultLOS.route.length<=(order.walkDistance+1))//walk/run distance check
                     {
-                        order.snapshoot=false;
+                        order.prevMove=true;
                         if(resultPF.route.length>(order.walkDistance+1))
                         {
                             order.curATB=order.curATB-resultLOS.cost;//new curATB
@@ -435,8 +442,8 @@ Meteor.methods({
                     }
                     else if(resultLOS.route.length<=(order.walkDistance+order.runDistance+1))
                     {
-                        order.snapshoot=true;
-                        order.charge=false;
+                        order.prevMove=true;
+                        order.prevRun=true;
                         if(resultPF.route.length>(order.walkDistance+order.runDistance+1))
                         {
                             order.curATB=order.curATB-resultLOS.cost;//new curATB
@@ -451,7 +458,6 @@ Meteor.methods({
                         return "Distance too long";
                     }
 
-                    order.move=false;
                     BS.orderLine[0]=order;
                     BS.orderLine=RunCircle(BS.orderLine);
                     //Save new position in battle
