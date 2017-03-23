@@ -4,14 +4,14 @@
  */
 game={};//this is local variable, which consist graphic (like sprite)
 battle={};//this is variable which rewrite always when change BattleState
-state={}//this is local variable, which consist param and state exclude graphic
+state={};//this is local variable, which consist param and state exclude graphic
 
 log=[];
 
-var _logDep=new Deps.Dependency();
-var _turnDep=new Deps.Dependency();
-var _posDep=new Deps.Dependency();
-var _selectDep=new Deps.Dependency();
+let _logDep=new Deps.Dependency();
+let _turnDep=new Deps.Dependency();
+let _posDep=new Deps.Dependency();
+let _selectDep=new Deps.Dependency();
 /**
  * Basic image height=80
  * Basic image width=60
@@ -30,7 +30,7 @@ bootState.prototype={
      */
     create:function()
     {
-        var field=$('field');
+        let field=$('field');
         this.scale.maxWidth=field.width;
         this.scale.maxHeight=field.height;
         this.scale.scaleMode=Phaser.ScaleManager.SHOW_ALL;
@@ -97,11 +97,11 @@ reconnaissanceState.prototype={
                 state='state2';
                 break;
         }
-        if(battle[state] == 'battle')
+        if(battle[state] === 'battle')
         {
             game.state.start('battle');
         }
-        else if(battle[state] == 'reconnaissance')
+        else if(battle[state] === 'reconnaissance')
         {
             game.curState='reconnaissance';
         }
@@ -125,7 +125,7 @@ reconnaissanceState.prototype={
                     game.deck1[index].index=index;
                     game.squads.add(game.deck1[index]);
                 }
-                else if(game.deck1[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                else if(game.deck1[index].position.x !== battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1[index].position.y !== battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
                     game.deck1[index].position.x=game.map[squad.row][squad.column].xCoordinate;
                     game.deck1[index].position.y=game.map[squad.row][squad.column].yCoordinate;
@@ -142,7 +142,7 @@ reconnaissanceState.prototype={
                     game.deck2[index].index=index;
                     game.squads.add(game.deck2[index]);
                 }
-                else if(game.deck2[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                else if(game.deck2[index].position.x !== battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2[index].position.y !== battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
                     game.deck2[index].position.x=game.map[squad.row][squad.column].xCoordinate;
                     game.deck2[index].position.y=game.map[squad.row][squad.column].yCoordinate;
@@ -172,9 +172,9 @@ reconnaissanceState.prototype={
     {
         game.chosenCell=cell;
         _posDep.changed();
-        if(game.chosenCardId != undefined || game.chosenCardId != null)
+        if(game.chosenCardId !== undefined || game.chosenCardId !== null)
         {
-            if(game.curState == 'reconnaissance')
+            if(game.curState === 'reconnaissance')
             {
                 Meteor.call('SetPosition',battle._id,game.side,game.chosenCardId,cell.column,cell.row,function(error,result)
                 {
@@ -235,7 +235,7 @@ battleState.prototype={
         {
             if(squad.placed)
             {
-                if(game.deck1[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                if(game.deck1[index].position.x !== battle.BS.map[squad.row][squad.column].xCoordinate || game.deck1[index].position.y !== battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
                     game.deck1[index].position.x=game.map[squad.row][squad.column].xCoordinate;
                     game.deck1[index].position.y=game.map[squad.row][squad.column].yCoordinate;
@@ -246,7 +246,7 @@ battleState.prototype={
         {
             if(squad.placed)
             {
-                if(game.deck2[index].position.x != battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2[index].position.y != battle.BS.map[squad.row][squad.column].yCoordinate)
+                if(game.deck2[index].position.x !== battle.BS.map[squad.row][squad.column].xCoordinate || game.deck2[index].position.y !== battle.BS.map[squad.row][squad.column].yCoordinate)
                 {
                     game.deck2[index].position.x=game.map[squad.row][squad.column].xCoordinate;
                     game.deck2[index].position.y=game.map[squad.row][squad.column].yCoordinate;
@@ -296,9 +296,9 @@ battleState.prototype={
     selectUnit:function(model)
     {
         log.push('Click on model');
-        if(game.chosenCardId == undefined || game.chosenCardId == null)
+        if(game.chosenCardId === undefined || game.chosenCardId === null)
         {
-            if(model.deck == ('deck'+game.side))
+            if(model.deck === ('deck'+game.side))
             {
                 game.chosenCardId=model;
                 log.push('Model was selected');
@@ -332,23 +332,23 @@ battleState.prototype={
                         log.push("Status of shooting unknown");
                     }
                 }
-                else if(error.error == "battle_exist_error")
+                else if(error.error === "battle_exist_error")
                 {
                     log.push("ID check unsuccesfull");
                 }
-                else if(error.error == 'order_error')
+                else if(error.error === 'order_error')
                 {
                     log.push("This model can't turning now, because another have priority");
                 }
-                else if(error.error == 'immovable')
+                else if(error.error === 'immovable')
                 {
                     log.push("Model is immovable");
                 }
-                else if(error.error == 'type_unidentified')
+                else if(error.error === 'type_unidentified')
                 {
                     log.push("This type of action isn't supported");
                 }
-                else if(error.error="Charge_too_far")
+                else if(error.error ==="Charge_too_far")
                 {
                     log.push("You target more than you maximum charge distance");
                 }
@@ -366,21 +366,21 @@ battleState.prototype={
     },
     selectCell:function(cell)
     {
-        if(!game.chosenCell || game.chosenCell == null)
+        if(!game.chosenCell || game.chosenCell === null)
         {
             game.chosenCell=cell;
         }
         else if(cell)
         {
-            var tempCell=game.chosenCell;//this need because position depend from game.chosenCell, so it must show actual cell
+            let tempCell=game.chosenCell;//this need because position depend from game.chosenCell, so it must show actual cell
             game.chosenCell=cell;//so now game.chosenCell show last clicked cell
-            var resultLOS=PathFinder.LOS(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
+            let resultLOS=PathFinder.LOS(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
             log.push(resultLOS.message+' between point start point:'+tempCell.row+', column:'+tempCell.column+' and final point row:'+game.chosenCell.row+', column:'+game.chosenCell.column);
-            var resultPF=PathFinder.FindPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
+            let resultPF=PathFinder.FindPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
             log.push(resultPF.message+' with difficulty:'+resultPF.cost+' in '+resultPF.route.length+' step');
             game.chosenCell=null;
         }
-        if(game.chosenCardId != undefined || game.chosenCardId != null)
+        if(game.chosenCardId !== undefined || game.chosenCardId !== null)
         {
             log.push('Trying to move unit');
             Meteor.call('MoveTo',{
@@ -402,15 +402,15 @@ battleState.prototype={
                         log.push("You movement is invalid");
                     }
                 }
-                else if(error.error == "battle_exist_error")
+                else if(error.error === "battle_exist_error")
                 {
                     log.push("ID check unsuccesfull");
                 }
-                else if(error.error == 'order_error')
+                else if(error.error === 'order_error')
                 {
                     log.push("This model can't turning now, because another have priority");
                 }
-                else if(error.error == 'immovable')
+                else if(error.error === 'immovable')
                 {
                     log.push("Model is immovable");
                 }
@@ -435,16 +435,17 @@ battleState.prototype={
 Template.Battlefield.onCreated(function()
 {
     game=new Phaser.Game(1200,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
-    game.global={}, game.state.add('boot',bootState), game.state.add('preload',preloadState), game.state.add('reconnaissance',reconnaissanceState), game.state.add('battle',battleState);
+    game.state.add('boot',bootState);
+    game.state.add('preload',preloadState);
+    game.state.add('reconnaissance',reconnaissanceState);
+    game.state.add('battle',battleState);
     game.state.start('boot');
     state.actionType='range';//attack type by default
-    //state.moveType='walk';//move type by default
-
-    if(Meteor.user().username == battle.name1)
+    if(Meteor.user().username === battle.name1)
     {
         game.side=1;
     }
-    else if(Meteor.user().username == battle.name2)
+    else if(Meteor.user().username === battle.name2)
     {
         game.side=2;
     }
@@ -452,23 +453,22 @@ Template.Battlefield.onCreated(function()
     {
         alert("You name doesn't consist in battlestate");
     }
-
     game.map=[];
-    for(var i=0; i<battle.BS.xSize; i++)
+    for(let i=0; i<battle.BS.xSize; i++)
     {
         game.map[i]=[];
-        for(var j=0; j<(battle.BS.ySize+battle.BS.xSize/2); j++)
+        for(let j=0; j<(battle.BS.ySize+battle.BS.xSize/2); j++)
         {
             game.map[i][j]={};
         }
     }
     game.deck1=[];
-    for(i=0; i<battle.BS.deck1.length; i++)
+    for(let i=0; i<battle.BS.deck1.length; i++)
     {
         game.deck1[i]=null;
     }
     game.deck2=[];
-    for(i=0; i<battle.BS.deck2.length; i++)
+    for(let i=0; i<battle.BS.deck2.length; i++)
     {
         game.deck2[i]=null;
     }
@@ -486,7 +486,7 @@ Template.Battlefield.helpers({
     cards:function()
     {
         _turnDep.depend();
-        if(game.side == 1)
+        if(game.side === 1)
         {
             return battle.BS.deck1;
         }
@@ -529,9 +529,9 @@ Template.Battlefield.helpers({
     simulation:function()
     {
         _turnDep.depend();
-        var cloneOfA=JSON.parse(JSON.stringify(battle.BS.orderLine));//full independence clone object's clone
-        var line=SimulationRun(cloneOfA);
-        var simulation=[];
+        let cloneOfA=JSON.parse(JSON.stringify(battle.BS.orderLine));//full independence clone object's clone
+        let line=SimulationRun(cloneOfA);
+        let simulation=[];
         line.forEach(function(elem)
         {
             simulation.push(battle.BS[elem.deck][elem.index]);
@@ -623,9 +623,9 @@ Template.Battlefield.events({
 function RenderField(addPart)
 {
     var context={};
-    for(var x=(battle.BS.xSize-1); x>=0; x--)
+    for(let x=(battle.BS.xSize-1); x>=0; x--)
     {
-        for(var y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
+        for(let y=((battle.BS.ySize+battle.BS.xSize/2)-1); y>=0; y--)
         {
             if(OffsetOut(battle.BS.xSize,x,battle.BS.ySize,y))
             {
@@ -638,7 +638,7 @@ function RenderField(addPart)
                 //for changeable field and different first shift
                 //this part from lab, where A* pathfinder was realised
                 //only removed horisontal offset (have no idea why) and add vertical shift
-                if(battle.BS.xSize%2 == 1)
+                if(battle.BS.xSize%2 === 1)
                 {
                     xCoordinate=game.yLineSize*(y-(battle.BS.xSize-1-x)/2);
                     yCoordinate=game.xLineSize*x*0.75;
@@ -709,13 +709,13 @@ Deps.autorun(function()
                 game.curState=battle.state2;
                 break;
         }
-        if(battle.state1 == "ready" && battle.state2 == "ready")
+        if(battle.state1 === "ready" && battle.state2 === "ready")
         {
             // try to fix Chrome (in they push battle first
             //reconnaissanceState.RenderSquad();//this is NOT A FUNCTION!
             //location.reload();//eternal circle
             //after it all dead, so we need fully render again
-            log.push("Now your are in battle now")
+            log.push("Now your are in battle now");
             game.state.start('battle');
             game.curState='battle';
             _logDep.changed();

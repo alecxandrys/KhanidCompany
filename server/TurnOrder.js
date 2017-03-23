@@ -93,7 +93,7 @@ function RunCircle(orderLine)
 function Element(options)
 {
     this.deck=options.deck || 'deck0';
-    this.index=options.index == null ? -1 : options.index;// if default was -1 or less make -1 for each zero index because 0==false
+    this.index=options.index === null ? -1 : options.index;// if default was -1 or less make -1 for each zero index because 0==false
     this.speed=options.speed || 0;
     this.curATB=options.curATB || 0;
     this.canMove=options.canMove || false;//
@@ -135,7 +135,7 @@ function ResetState(order)
     {
         order.charge=true;
     }
-    if(order.lockInCombat.length != 0)//check XtX combat for current unit
+    if(order.lockInCombat.length !== 0)//check XtX combat for current unit
     {
         order.move=false;
         order.shoot=false;

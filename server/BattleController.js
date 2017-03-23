@@ -21,7 +21,7 @@ function CheckCircle(battle)
 {
     let test=battle.BS.deck1.some(function(elem)
     {
-        return elem.placed == true
+        return elem.placed === true
     });
     if(test)//in first deck all dead
     {
@@ -29,7 +29,7 @@ function CheckCircle(battle)
     }
     test=battle.BS.deck2.some(function(elem)
     {
-        return elem.placed == true
+        return elem.placed === true
     });
     if(test)//in first deck all dead
     {
@@ -70,11 +70,11 @@ function CalculateMelee(who,model,whom,target,order,BS)
         CheckCircle(battle);
         return mess;
     }
-    if(answer.sucesses == true)//model injured in attack
+    if(answer.sucesses === true)//model injured in attack
     {
         mess=mess+"You was injured by enemy. ";
     }
-    if(result.sucesses == false)//target unaffected in defence
+    if(result.sucesses === false)//target unaffected in defence
     {
         mess=mess+"Attack didn't bring results. ";
     }
@@ -82,14 +82,14 @@ function CalculateMelee(who,model,whom,target,order,BS)
     {
         BS.orderLine.splice(BS.orderLine.find((elem,index) =>
         {
-            if(elem.deck == whom.deck && elem.index == whom.index)
+            if(elem.deck === whom.deck && elem.index === whom.index)
             {return index}
         }),1);//remove target
         BS.orderLine.forEach((elem,index,array) =>
         {
             elem.find((elem,ind) =>
             {
-                if(elem.deck == whom.deck && elem.index == whom.index)
+                if(elem.deck === whom.deck && elem.index === whom.index)
                 {array[index].splice(ind,1)}
             });
         });
@@ -100,7 +100,7 @@ function CalculateMelee(who,model,whom,target,order,BS)
         order.lockInCombat.push(whom);//model lock in combat with target now
         BS.orderLine[BS.orderLine.find((elem,index) =>
         {
-            if(elem.deck == whom.deck && elem.index == whom.index)
+            if(elem.deck === whom.deck && elem.index === whom.index)
             {return index}
         })].lockInCombat.push(who);//target lock in combat with model now
         mess=mess+"Target injured. ";
@@ -137,7 +137,7 @@ Meteor.methods({
         let deckName;
         let BS=battles.findOne({_id:id}).BS;
 
-        if(player == 1)
+        if(player === 1)
         {
             deckName='deck1';
             if(row>1)
@@ -154,7 +154,7 @@ Meteor.methods({
         deck[card].column=column;
         deck[card].row=row;
         deck[card].placed=true;
-        if(player == 1)
+        if(player === 1)
         {
             battles.update(id,{$set:{'BS.deck1':deck}});
             return true;
@@ -187,7 +187,7 @@ Meteor.methods({
         }
         let battle=battles.findOne({_id:_id});
 
-        if(battle.state1 == "ready" && battle.state2 == "ready")
+        if(battle.state1 === "ready" && battle.state2 === "ready")
         {
             let orderLine=RunCircle(battle.BS.orderLine);//start ATB-circle
             battles.update(_id,{$set:{'BS.orderLine':orderLine}});
@@ -207,10 +207,10 @@ Meteor.methods({
         let battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
         let id=battle._id;
         let BS=battle.BS;//check battle
-        if(BS != null || BS != undefined)
+        if(BS !== null || BS !== undefined)
         {
             let order=BS.orderLine[0];//possibility
-            if(order.deck == who.deck && order.index == who.index)//check order line
+            if(order.deck === who.deck && order.index === who.index)//check order line
             {
                 let model=BS[who.deck][who.index];
                 let target=BS[whom.deck][whom.index];
@@ -218,7 +218,7 @@ Meteor.methods({
                 {
                     case 'range':
                     {
-                        if(who.deck != whom.deck)
+                        if(who.deck !== whom.deck)
                         {
                             if(order.shoot)//can shot now?
                             {
@@ -227,7 +227,7 @@ Meteor.methods({
                                     if((target.toughness-model.rangeWeapon.strength)>3)//weak check
                                     {
                                         let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);//check LOS
-                                        if(resultLOS.message != 'Success')
+                                        if(resultLOS.message !== 'Success')
                                         {
                                             return resultLOS.message;
                                         }
@@ -247,7 +247,7 @@ Meteor.methods({
                                                 BS[who.deck][who.index]=model;
                                                 BS[whom.deck][whom.index]=target;
                                                 battles.update(id,{$set:{'BS':BS}});
-                                                if(result.sucesses == false)
+                                                if(result.sucesses === false)
                                                 {
                                                     return "Shooting did not bring results"
                                                 }
@@ -260,7 +260,7 @@ Meteor.methods({
                                                 {
                                                     BS.orderLine.splice(BS.orderLine.find((elem,index) =>
                                                     {
-                                                        if(elem.deck == whom.deck && elem.index == whom.index)
+                                                        if(elem.deck === whom.deck && elem.index === whom.index)
                                                         {return index}
                                                     }),1);//remove target
                                                     CheckCircle(battle);
@@ -298,7 +298,7 @@ Meteor.methods({
                     {
                         if(order.charge)//can charge now? All model can fight in melee combat, if they don't have ccw, use basic profile(S:user; AP:-)
                         {
-                            if(who.deck != whom.deck)
+                            if(who.deck !== whom.deck)
                             {
                                 if((target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
                                 {
@@ -360,14 +360,14 @@ Meteor.methods({
                                 return 'You can\'t charge your model';
                             }
                         }
-                        else if(order.lockInCombat != 0)//another round of XtX combat
+                        else if(order.lockInCombat !== 0)//another round of XtX combat
                         {
                             let enemyIndex=order.lockInCombat.find((elem,index) =>
                             {
-                                if(elem.deck == whom.deck && elem.index == whom.index)
+                                if(elem.deck === whom.deck && elem.index === whom.index)
                                 {return index}
                             });
-                            if(enemyIndex != undefined)//model continue the fight with target already locked in this combat
+                            if(enemyIndex !== undefined)//model continue the fight with target already locked in this combat
                             {
                                 order.prevMove=true;
                                 order.curATB=0;
@@ -410,10 +410,10 @@ Meteor.methods({
         let battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
         let id=battle._id;
         let BS=battle.BS;//check battle
-        if(BS != null || BS != undefined)
+        if(BS !== null || BS !== undefined)
         {
             let order=BS.orderLine[0];//possibility
-            if(order.deck == who.deck && order.index == who.index)//check order line
+            if(order.deck === who.deck && order.index === who.index)//check order line
             {
                 if(!order.canMove)//stationary
                 {
@@ -424,7 +424,7 @@ Meteor.methods({
                 let resultLOS=PathFinder.LOS(model.row,model.column,whither.row,whither.column,BS);//to check shortest way
                 if(resultPF.success)//unreachable
                 {
-                    if(resultLOS.route.length == 1)
+                    if(resultLOS.route.length === 1)
                     {
                         return "You already in final point";
                     }
@@ -487,7 +487,7 @@ Meteor.methods({
     {
         let BS=battles.findOne({_id:id}).BS;
         let deckName;
-        if(player == 1)
+        if(player === 1)
         {
             deckName='deck1';
         }
