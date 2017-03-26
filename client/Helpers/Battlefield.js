@@ -356,6 +356,7 @@ battleState.prototype={
                 {
                     log.push("Unidentified error rise from server");
                 }
+                game.chosenCardId=null;
                 _logDep.changed();
                 _turnDep.changed();
             });
@@ -595,9 +596,9 @@ Template.Battlefield.events({
         {
             if(!error)
             {
-                if(result)
+                if(result===true)
                 {
-                    if(game.curState != 'ready')
+                    if(game.curState !== 'ready')
                     {
                         log.push("Your are ready now");
                         game.curState='ready';
@@ -605,7 +606,7 @@ Template.Battlefield.events({
                     }
                     else
                     {
-                        log.push("Your are alredy waiting opponent");
+                        log.push("Your are already waiting opponent");
 
                     }
                 }

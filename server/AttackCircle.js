@@ -5,16 +5,14 @@
  * always have CCW for melee in profile
  * @return {{}}
  */
-attackSignature=function(model,target,order,type,a)
+attackSignature=function(model,target,order,type)
 {
-    a++;
-    b++;
     let result={skill:[],toWound:[],coverSave:[],armorSave:[],remainingWound:0,afterEffect:[]};
     let options={};
-    let instanceDeath=model.rangeWeapon.strength>=(target.toughness*2);
+    let instanceDeath;
 
     options.coverSave=7;
-    if(type == 'range')
+    if(type === 'range')
     {
         options.attackCount=model.rangeWeapon.attackCount;
         if(order.snapshot)
@@ -35,6 +33,7 @@ attackSignature=function(model,target,order,type,a)
         {
             options.armorSave=model.invulnerable;
         }
+        instanceDeath=options.strength>=(target.toughness*2);
     }
     else
     {
@@ -54,6 +53,7 @@ attackSignature=function(model,target,order,type,a)
         {
             options.armorSave=model.invulnerable;
         }
+        instanceDeath=options.strength>=(target.toughness*2);
     }
     //FNP,protocol and other, which add save or work after unsaved wound
     options.afterEffect=7;//not implemented yet
@@ -64,7 +64,7 @@ attackSignature=function(model,target,order,type,a)
         if(options.skill>5)//if 6 and more in WS or BS skill make no less than 2 in result to hit
         {
             options.skill=options.skill-5;
-            if(x == 1)//reroll if x==1 with skill>5
+            if(x === 1)//reroll if x==1 with skill>5
             {
                 x=Math.floor(Math.random()*(6-1+1))+1;
             }
@@ -77,21 +77,21 @@ attackSignature=function(model,target,order,type,a)
             if(x>=toWound(options.strength,target.toughness))//penetrate, now use saves
             {
                 x=Math.floor(Math.random()*(6-1+1))+1;
-                if(options.coverSave != 7)//not in cover
+                if(options.coverSave !== 7)//not in cover
                 {
                     result.coverSave.push(x);
                 }
-                if(x<options.coverSave || options.coverSave == 7)//cover
+                if(x<options.coverSave || options.coverSave === 7)//cover
                 {
                     x=Math.floor(Math.random()*(6-1+1))+1;
-                    if(options.armorSave != 7)//dont have armor or invul save
+                    if(options.armorSave !== 7)//dont have armor or invul save
                     {
                         result.armorSave.push(x);
                     }
-                    if(x<options.armorSave || options.armorSave == 7)
+                    if(x<options.armorSave || options.armorSave === 7)
                     {
                         x=Math.floor(Math.random()*(6-1+1))+1;
-                        if(options.afterEffect != 7)
+                        if(options.afterEffect !== 7)
                         {
                             result.afterEffect.push(x);
                         }
@@ -102,7 +102,7 @@ attackSignature=function(model,target,order,type,a)
         }
     }
     result.sucesses=false;
-    if(result.remainingWound != 0)
+    if(result.remainingWound !== 0)
     {
         if(instanceDeath)
         {
@@ -127,13 +127,13 @@ attackSignature=function(model,target,order,type,a)
 };
 let toHit=(skill,enemySkill) =>
 {
-    if(enemySkill == null)//range attack
+    if(enemySkill === null)//range attack
     {
         return 7-skill
     }
     else //melee attack
     {
-        if(skill == enemySkill || skill == (enemySkill+1))
+        if(skill === enemySkill || skill === (enemySkill+1))
         {
             return 4;
         }
@@ -150,7 +150,7 @@ let toHit=(skill,enemySkill) =>
 };
 let toWound=(strength,toughness) =>
 {
-    if(strength == toughness)
+    if(strength === toughness)
     {
         return 4;
     }
@@ -158,7 +158,7 @@ let toWound=(strength,toughness) =>
     {
         return 6
     }
-    else if((strength-toughness) == -1)
+    else if((strength-toughness) === -1)
     {
         return 5
     }
@@ -166,7 +166,7 @@ let toWound=(strength,toughness) =>
     {
         return 2
     }
-    else if((strength-toughness) == 1)
+    else if((strength-toughness) === 1)
     {
         return 3
     }

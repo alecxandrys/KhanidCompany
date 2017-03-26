@@ -33,7 +33,7 @@ Meteor.publish('battles',function()
 {
     if(this.userId)
     {
-        var x=Meteor.users.findOne({});
+        let x=Meteor.users.findOne({});
         return battles.find({$or:[{name1:x.username},{name2:x.username}]},{
             fields:{
                 name1:1,state1:1,name2:1,state2:1,BS:1
@@ -60,4 +60,7 @@ Accounts.onCreateUser(function(options,user)
         user.gameWinCount=0;
     }
     return user;
+});
+Meteor.users.deny({
+    update() { return true; }
 });

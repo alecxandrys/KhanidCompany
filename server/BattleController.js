@@ -39,7 +39,7 @@ function CheckCircle(battle)
 /**
  * @return {string}
  */
-function CalculateMelee(who,model,whom,target,order,BS)
+function CalculateMelee(who,model,whom,target,order,BS,battle)
 {
     let mess='';
     let result;
@@ -66,7 +66,7 @@ function CalculateMelee(who,model,whom,target,order,BS)
         mess='You was killed by enemy, which attack first';
         BS.orderLine.shift();
         BS[whom.deck][whom.index]=target;
-        battles.update(id,{$set:{'BS':BS}});
+        battles.update(battle._id,{$set:{'BS':BS}});
         CheckCircle(battle);
         return mess;
     }
@@ -109,7 +109,7 @@ function CalculateMelee(who,model,whom,target,order,BS)
     BS.orderLine=RunCircle(BS.orderLine);
     BS[who.deck][who.index]=model;
     BS[whom.deck][whom.index]=target;
-    battles.update(id,{$set:{'BS':BS}});
+    battles.update(battle._id,{$set:{'BS':BS}});
     CheckCircle(battle);
     return mess;
 }
@@ -224,7 +224,7 @@ Meteor.methods({
                             {
                                 if(model.rangeWeapon)//have weapon?
                                 {
-                                    if((target.toughness-model.rangeWeapon.strength)>3)//weak check
+                                    if(!(target.toughness-model.rangeWeapon.strength)>3)//weak check
                                     {
                                         let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);//check LOS
                                         if(resultLOS.message !== 'Success')
@@ -235,9 +235,7 @@ Meteor.methods({
                                         {
                                             if(model.rangeWeapon.range>=(resultLOS.route.length-1))//check distance (-1 for start point in route). Last check for possibility
                                             {
-                                                let a=5;
-                                                let b=10;
-                                                let result=attackSignature(model,target,order,'range',a);
+                                                let result=attackSignature(model,target,order,'range');
                                                 /**
                                                  * this is right all this transfer to attackSignature
                                                  */
@@ -300,7 +298,7 @@ Meteor.methods({
                         {
                             if(who.deck !== whom.deck)
                             {
-                                if((target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
+                                if(!(target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
                                 {
                                     let chargeDistance=Math.floor(Math.random()*(6-1+1))+1;//2D6 on charge by default, by my rules only 1D6
                                     let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);
@@ -310,7 +308,7 @@ Meteor.methods({
                                     }
                                     //Overwatch?
                                     //impossible to make it (BS was changed and saved in MoveTo)
-                                    let overwatch=attackSignature(target,model,order,'range',5);//Guide said that that correct for server side. Meteor.call used only for client side
+                                    //let overwatch=attackSignature(target,model,order,'range',5);//Guide said that that correct for server side. Meteor.call used only for client side
                                     //update and check data
                                     if(model.placed)
                                     {
@@ -326,8 +324,7 @@ Meteor.methods({
                                              */
                                             order.curATB=0-resultLOS.cost;
                                             order.prevRun=true;
-                                            let res=CalculateMelee(who,model,whom,target,order,BS);
-                                            return res;
+                                            return CalculateMelee(who,model,whom,target,order,BS,battle);
                                         }
                                         else
                                         {
@@ -371,8 +368,7 @@ Meteor.methods({
                             {
                                 order.prevMove=true;
                                 order.curATB=0;
-                                let res=CalculateMelee(who,model,whom,target,order,BS);
-                                return res;
+                                return CalculateMelee(who,model,whom,target,order,BS,battle);
                             }
                             else
                             {
