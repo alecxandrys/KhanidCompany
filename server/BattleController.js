@@ -308,7 +308,7 @@ Meteor.methods({
                                     }
                                     //Overwatch?
                                     //impossible to make it (BS was changed and saved in MoveTo)
-                                    //let overwatch=attackSignature(target,model,order,'range',5);//Guide said that that correct for server side. Meteor.call used only for client side
+                                    let overwatch=attackSignature(target,model,order,'range');//Guide said that that correct for server side. Meteor.call used only for client side
                                     //update and check data
                                     if(model.placed)
                                     {
