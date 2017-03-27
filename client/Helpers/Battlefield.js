@@ -4,7 +4,7 @@
  */
 game={};//this is local variable, which consist graphic (like sprite)
 battle={};//this is variable which rewrite always when change BattleState
-state={hoveredCell:{row:null,column:null},actionType:"range"};//this is local variable, which consist param and state exclude graphic
+state={hoveredCell:{row:null,column:null},actionType:"range",tweenCurATB:null};//this is local variable, which consist param and state exclude graphic
 
 log=[];
 
@@ -165,6 +165,8 @@ reconnaissanceState.prototype={
         game.map[this.x][this.y].yCoordinate=this.yCoordinate;
 
         this.cell.inputEnabled=true;
+        this.cell.events.onInputOver.add(over,this);
+        this.cell.events.onInputOut.add(out,this);
         this.cell.events.onInputDown.add(reconnaissanceState.prototype.addSquad,this)
     },
     /**
@@ -297,6 +299,7 @@ battleState.prototype={
             }
         });
         game.world.bringToTop(game.squads);
+        TweenCurATB;
     },
     selectUnit:function(model)
     {
@@ -705,8 +708,21 @@ function over(cell)
     _posDep.changed();
 }
 
-function out(cell)
+function out()
 {
     state.hoveredCell={};
     _posDep.changed();
+}
+TweenCurATB=function()
+{
+    _turnDep.depend();
+    if(game.state.current === 'battle')
+    {
+        if(state.tweenCurATB !== null)
+        {
+            state.tweenCurATB.stop();
+        }
+        state.tweenCurATB=game.add.tween(game[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index])
+                              .to({alpha:0},2000,Phaser.Easing.Linear.None,true,0,1000,true);
+    }
 }
