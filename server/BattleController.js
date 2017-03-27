@@ -19,17 +19,17 @@ function MoveToPosition(model,whither,BS,who,id)
 }
 function CheckCircle(battle)
 {
-    let test=battle.BS.deck1.some(function(elem)
+    let test=battle.BS.deck1.every(function(elem)
     {
-        return elem.placed === true
+        return elem.placed === false
     });
     if(test)//in first deck all dead
     {
         Meteor.call("LeaveBattle",battle._id,battle.ID1);
     }
-    test=battle.BS.deck2.some(function(elem)
+    test=battle.BS.deck2.every(function(elem)
     {
-        return elem.placed === true
+        return elem.placed === false
     });
     if(test)//in first deck all dead
     {
@@ -202,7 +202,6 @@ Meteor.methods({
     ActionOn:function(who,whom,type)
     {
         //Array.isArray(obj)-is this object array or not for multiple target
-        //throw new Meteor.Error('reason','text');
         let userID=Meteor.userId();//use id from caller, so used to understand who
         let battle=battles.findOne({$or:[{ID1:userID},{ID2:userID}]});
         let id=battle._id;
@@ -224,7 +223,7 @@ Meteor.methods({
                             {
                                 if(model.rangeWeapon)//have weapon?
                                 {
-                                    if(!(target.toughness-model.rangeWeapon.strength)>3)//weak check
+                                    if(!((target.toughness-model.rangeWeapon.strength)>3))//weak check
                                     {
                                         let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);//check LOS
                                         if(resultLOS.message !== 'Success')
@@ -304,7 +303,7 @@ Meteor.methods({
                                     let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);
                                     if(resultLOS.route.length-1>12)
                                     {
-                                        throw new Meteor.Error("Charge_too_far",'just too far');
+                                        throw new Meteor.Error("Charge_too_far",'Target outside you maximum charge distance');
                                     }
                                     //Overwatch?
                                     //impossible to make it (BS was changed and saved in MoveTo)
@@ -382,7 +381,7 @@ Meteor.methods({
                         break;
                     }
                     default:
-                    {throw new Meteor.Error('type_unidentified','type of activity isn\'t implemented');}
+                    {throw new Meteor.Error('type_unidentified','This type of activity isn\'t implemented');}
                 }
             }
             else
@@ -491,16 +490,10 @@ Meteor.methods({
         {
             deckName='deck2';
         }
-        let placed=true;
-        BS[deckName].every(function(unit)
+        return BS[deckName].every(function(unit)
         {
-            if(!unit.placed)
-            {
-                placed=false;
-                return false;
-            }
+            return unit.placed
         });
-        return placed;
     },
     /**
      * player with this ID lose battle

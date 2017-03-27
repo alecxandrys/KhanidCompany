@@ -332,31 +332,12 @@ battleState.prototype={
                         log.push("Status of shooting unknown");
                     }
                 }
-                else if(error.error === "battle_exist_error")
-                {
-                    log.push("ID check unsuccesfull");
-                }
-                else if(error.error === 'order_error')
-                {
-                    log.push("This model can't turning now, because another have priority");
-                }
-                else if(error.error === 'immovable')
-                {
-                    log.push("Model is immovable");
-                }
-                else if(error.error === 'type_unidentified')
-                {
-                    log.push("This type of action isn't supported");
-                }
-                else if(error.error ==="Charge_too_far")
-                {
-                    log.push("You target more than you maximum charge distance");
-                }
                 else
                 {
-                    log.push("Unidentified error rise from server");
+                    log.push(error.reason);
                 }
                 game.chosenCardId=null;
+                _selectDep.changed();
                 _logDep.changed();
                 _turnDep.changed();
             });
@@ -403,21 +384,9 @@ battleState.prototype={
                         log.push("You movement is invalid");
                     }
                 }
-                else if(error.error === "battle_exist_error")
-                {
-                    log.push("ID check unsuccesfull");
-                }
-                else if(error.error === 'order_error')
-                {
-                    log.push("This model can't turning now, because another have priority");
-                }
-                else if(error.error === 'immovable')
-                {
-                    log.push("Model is immovable");
-                }
                 else
                 {
-                    log.push("Unidentified error rise from server");
+                    log.push(error.reason);
                 }
                 _logDep.changed();
                 _turnDep.changed();

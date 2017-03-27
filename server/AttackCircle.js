@@ -7,7 +7,7 @@
  */
 attackSignature=function(model,target,order,type)
 {
-    let result={skill:[],toWound:[],coverSave:[],armorSave:[],remainingWound:0,afterEffect:[]};
+    let result={toHit:[],toWound:[],coverSave:[],armorSave:[],remainingWound:0,afterEffect:[]};
     let options={};
     let instanceDeath;
 
@@ -69,7 +69,7 @@ attackSignature=function(model,target,order,type)
                 x=Math.floor(Math.random()*(6-1+1))+1;
             }
         }
-        result.skill.push(x);
+        result.toHit.push(x);
         if(x>=toHit(options.skill,options.enemySkill))
         {
             x=Math.floor(Math.random()*(6-1+1))+1;
@@ -115,6 +115,7 @@ attackSignature=function(model,target,order,type)
             {
                 target.placed=false;
                 result.remainingWound=result.remainingWound-target.wound;
+                target.wound=0;
             }
             else
             {
