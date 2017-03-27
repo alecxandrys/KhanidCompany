@@ -4,7 +4,7 @@
  */
 game={};//this is local variable, which consist graphic (like sprite)
 battle={};//this is variable which rewrite always when change BattleState
-state={};//this is local variable, which consist param and state exclude graphic
+state={hoveredCell:{row:null,column:null},actionType:"range"};//this is local variable, which consist param and state exclude graphic
 
 log=[];
 
@@ -62,6 +62,9 @@ preloadState.prototype={
         this.load.image('Devastator','BattleResource/Models/Devastator.svg');
         this.load.image('Scout','BattleResource/Models/Scout.svg');
         this.load.image('Marine','BattleResource/Models/Marine.svg');
+        this.load.image('Devastator_enemy','BattleResource/Models/Devastator_enemy.svg');
+        this.load.image('Scout_enemy','BattleResource/Models/Scout_enemy.svg');
+        this.load.image('Marine_enemy','BattleResource/Models/Marine_enemy.svg');
     },
     create:function()
     {
@@ -121,7 +124,7 @@ reconnaissanceState.prototype={
             {
                 if(game.deck1[index] === null)
                 {
-                    game.deck1[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                    game.deck1[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 1 ? "" : "_enemy"));
                     game.deck1[index].index=index;
                     game.squads.add(game.deck1[index]);
                 }
@@ -138,7 +141,7 @@ reconnaissanceState.prototype={
             {
                 if(game.deck2[index] === null)
                 {
-                    game.deck2[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                    game.deck2[index]=game.add.sprite(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 2 ? "" : "_enemy"));
                     game.deck2[index].index=index;
                     game.squads.add(game.deck2[index]);
                 }
@@ -261,6 +264,8 @@ battleState.prototype={
     AddPart:function()
     {
         this.cell.inputEnabled=true;
+        this.cell.events.onInputOver.add(over,this);
+        this.cell.events.onInputOut.add(out,this);
         this.cell.events.onInputDown.add(battleState.prototype.selectCell,this);
     },
     /**
@@ -273,7 +278,7 @@ battleState.prototype={
         {
             if(squad.placed)
             {
-                game.deck1[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                game.deck1[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 1 ? "" : "_enemy"));
                 game.deck1[index].inputEnabled=true;
                 game.deck1[index].deck='deck1';
                 game.deck1[index].index=index;
@@ -284,7 +289,7 @@ battleState.prototype={
         {
             if(squad.placed)
             {
-                game.deck2[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name);
+                game.deck2[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 2 ? "" : "_enemy"));
                 game.deck2[index].inputEnabled=true;
                 game.deck2[index].deck='deck2';
                 game.deck2[index].index=index;
@@ -362,7 +367,7 @@ battleState.prototype={
             log.push(resultPF.message+' with difficulty:'+resultPF.cost+' in '+resultPF.route.length+' step');
             game.chosenCell=null;
         }
-        if(game.chosenCardId !== undefined || game.chosenCardId !== null)
+        if((game.chosenCardId !== undefined || game.chosenCardId !== null) && game.chosenCardId)
         {
             log.push('Trying to move unit');
             Meteor.call('MoveTo',{
@@ -410,7 +415,7 @@ Template.Battlefield.onCreated(function()
     game.state.add('reconnaissance',reconnaissanceState);
     game.state.add('battle',battleState);
     game.state.start('boot');
-    state.actionType='range';//attack type by default
+    //state.actionType='range';//attack type by default
     if(Meteor.user().username === battle.name1)
     {
         game.side=1;
@@ -471,9 +476,9 @@ Template.Battlefield.helpers({
     position:function()
     {
         _posDep.depend();
-        if(game.chosenCell)
+        if(state.hoveredCell.row)
         {
-            return game.chosenCell.row+' '+game.chosenCell.column;
+            return state.hoveredCell.row+' '+state.hoveredCell.column;
         }
     },
     log:function()
@@ -565,7 +570,7 @@ Template.Battlefield.events({
         {
             if(!error)
             {
-                if(result===true)
+                if(result === true)
                 {
                     if(game.curState !== 'ready')
                     {
@@ -693,3 +698,15 @@ Deps.autorun(function()
     }
     _turnDep.changed();
 });
+function over(cell)
+{
+    state.hoveredCell.row=cell.row;
+    state.hoveredCell.column=cell.column;
+    _posDep.changed();
+}
+
+function out(cell)
+{
+    state.hoveredCell={};
+    _posDep.changed();
+}
