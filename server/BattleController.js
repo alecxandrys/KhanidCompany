@@ -39,12 +39,16 @@ function CheckCircle(battle)
 /**
  * @return {string}
  */
-function CalculateMelee(who,model,whom,target,order,BS,battle)
+function CalculateMelee(who,model,whom,target,order,BS,battle,charge)
 {
     let mess='';
     let result;
     let answer;
     //initiative order in melee combat
+    if (charge)//add attack by charge
+    {
+        model.attackCount++;
+    }
     if(model.initiative>=target.initiative)
     {
         result=attackSignature(model,target,order,'melee');
@@ -60,6 +64,10 @@ function CalculateMelee(who,model,whom,target,order,BS,battle)
         {
             result=attackSignature(model,target,order,'melee');
         }
+    }
+    if (charge)//return to origin count after charge
+    {
+        model.attackCount--;
     }
     if(!model.placed)//model killed in attack
     {
@@ -323,7 +331,7 @@ Meteor.methods({
                                              */
                                             order.curATB=0-resultLOS.cost;
                                             order.prevRun=true;
-                                            return CalculateMelee(who,model,whom,target,order,BS,battle);
+                                            return CalculateMelee(who,model,whom,target,order,BS,battle,true);
                                         }
                                         else
                                         {
@@ -367,7 +375,7 @@ Meteor.methods({
                             {
                                 order.prevMove=true;
                                 order.curATB=0;
-                                return CalculateMelee(who,model,whom,target,order,BS,battle);
+                                return CalculateMelee(who,model,whom,target,order,BS,battle,false);
                             }
                             else
                             {
