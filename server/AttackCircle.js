@@ -12,8 +12,9 @@ attackSignature=function(model,target,order,type)
     let instanceDeath;
 
     options.coverSave=7;
-    if(type === 'range')
+    if(type === 'range' && model.rangeWeapon)//check when overwatch
     {
+
         options.attackCount=model.rangeWeapon.attackCount;
         if(order.snapshot)
         {

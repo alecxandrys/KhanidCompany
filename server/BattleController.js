@@ -311,7 +311,7 @@ Meteor.methods({
                                 if(!(target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
                                 {
                                     let chargeDistance=Math.floor(Math.random()*(6-1+1))+1;//2D6 on charge by default, by my rules only 1D6
-                                    let resultLOS=PathFinder.ShortPath(model.row,model.column,target.row,target.column,battle.BS);
+                                    let resultLOS=PathFinder.ShortPath(model.row,model.column,target.row,target.column,battle.BS);//some time undef return
                                     if(resultLOS.route.length-1>12)
                                     {
                                         throw new Meteor.Error("Charge_too_far",'Target outside you maximum charge distance');
