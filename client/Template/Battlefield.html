@@ -40,11 +40,14 @@
                         {{curSelect.row}} {{curSelect.column}}
                         <div class="panel-body">
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-primary active">
-                                    <input type="radio" name="options" id="optionFire" autocomplete="off" checked> Range
-                                </label>
+                                {{#if curATB.rangeWeapon}}
+                                    <label class="btn btn-primary active">
+                                        <input type="radio" name="options" id="optionFire" autocomplete="off" checked>
+                                        Range
+                                    </label>
+                                {{/if}}
                                 <label class="btn btn-primary">
-                                    <input type="radio" name="options" id="optionCharge" autocomplete="off" > Charge
+                                    <input type="radio" name="options" id="optionCharge" autocomplete="off"> Charge
                                 </label>
                             </div>
                         </div>
@@ -74,7 +77,6 @@
                             <br>Name:{{rangeWeapon.name}}<br>
                             Description:{{rangeWeapon.description}}
                              {{/if}}
-
                         ">
                         <a class="id">{{@index}}</a>
                         <div class="panel-body" id="battlecardview">

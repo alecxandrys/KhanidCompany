@@ -258,6 +258,7 @@ battleState.prototype={
                 }
             }
         });
+        TweenCurATB();
     },
     /**
      * uses with context from RenderField
@@ -299,7 +300,7 @@ battleState.prototype={
             }
         });
         game.world.bringToTop(game.squads);
-        TweenCurATB;
+        TweenCurATB();
     },
     selectUnit:function(model)
     {
@@ -715,14 +716,19 @@ function out()
 }
 TweenCurATB=function()
 {
-    _turnDep.depend();
     if(game.state.current === 'battle')
     {
-        if(state.tweenCurATB !== null)
+        if (state.tweenCurATB===null)
         {
-            state.tweenCurATB.stop();
+            state.tweenCurATB=game.add.tween(game[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index])
+                                  .to({alpha:0},1000,Phaser.Easing.Linear.None,true,0,1000,true);
         }
-        state.tweenCurATB=game.add.tween(game[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index])
-                              .to({alpha:0},2000,Phaser.Easing.Linear.None,true,0,1000,true);
+        else if(state.tweenCurATB.target.deck!== battle.BS.orderLine[0].deck || state.tweenCurATB.target.index!== battle.BS.orderLine[0].index)
+        {
+            state.tweenCurATB.pause();
+            state.tweenCurATB.target.alpha=1;
+            state.tweenCurATB.stop();
+            state.tweenCurATB=null;
+        }
     }
 }
