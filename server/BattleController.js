@@ -45,7 +45,7 @@ function CalculateMelee(who,model,whom,target,order,BS,battle,charge)
     let result;
     let answer;
     //initiative order in melee combat
-    if (charge)//add attack by charge
+    if(charge)//add attack by charge
     {
         model.attackCount++;
     }
@@ -65,7 +65,7 @@ function CalculateMelee(who,model,whom,target,order,BS,battle,charge)
             result=attackSignature(model,target,order,'melee');
         }
     }
-    if (charge)//return to origin count after charge
+    if(charge)//return to origin count after charge
     {
         model.attackCount--;
     }
@@ -129,7 +129,7 @@ Meteor.methods({
      * @param card id of card in player's deck
      * @param column x position
      * @param row y position
-     * @return {boolean}
+     * @return {string}
      */
     SetPosition:function(id,player,card,column,row)
     {
@@ -145,17 +145,21 @@ Meteor.methods({
         let deckName;
         let BS=battles.findOne({_id:id}).BS;
 
+        if(BS.map[row][column].ground<1)
+        {
+            return "You can't placed unit at this unreachable point";
+        }
         if(player === 1)
         {
             deckName='deck1';
             if(row>1)
-            {return false;}
+            {return 'You can place only in two top line';}
         }
         else
         {
             deckName='deck2';
             if(row<(BS.xSize-2))
-            {return false;}
+            {return "You can place only in two bottom line";}
         }
 
         deck=BS[deckName];
@@ -165,12 +169,12 @@ Meteor.methods({
         if(player === 1)
         {
             battles.update(id,{$set:{'BS.deck1':deck}});
-            return true;
+            return "Unit was placed";
         }
         else
         {
             battles.update(id,{$set:{'BS.deck2':deck}});
-            return true;
+            return "Unit was placed";
         }
     },
     Status_ready:function(_id,player)
@@ -202,7 +206,6 @@ Meteor.methods({
             battles.update(_id,{$set:{state1:"battle"}});
             battles.update(_id,{$set:{state2:"battle"}});
         }
-
     },
     /**
      * @return {string}
@@ -233,7 +236,7 @@ Meteor.methods({
                                 {
                                     if(!((target.toughness-model.rangeWeapon.strength)>3))//weak check
                                     {
-                                        let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);//check LOS
+                                        let resultLOS=PathFinder.ShortPath(model.row,model.column,target.row,target.column,battle.BS);//check ShortPath
                                         if(resultLOS.message !== 'Success')
                                         {
                                             return resultLOS.message;
@@ -308,7 +311,7 @@ Meteor.methods({
                                 if(!(target.toughness-(model.meleeWeapon.strength+model.strength)>3))//weak check
                                 {
                                     let chargeDistance=Math.floor(Math.random()*(6-1+1))+1;//2D6 on charge by default, by my rules only 1D6
-                                    let resultLOS=PathFinder.LOS(model.row,model.column,target.row,target.column,battle.BS);
+                                    let resultLOS=PathFinder.ShortPath(model.row,model.column,target.row,target.column,battle.BS);
                                     if(resultLOS.route.length-1>12)
                                     {
                                         throw new Meteor.Error("Charge_too_far",'Target outside you maximum charge distance');
@@ -404,7 +407,7 @@ Meteor.methods({
         }
     },
     /**
-     * LOS-check distance
+     * ShortPath-check distance
      * @return {string}
      */
     MoveTo:function(who,whither)
@@ -423,8 +426,8 @@ Meteor.methods({
                     throw new Meteor.Error('immovable','This model can\'t move');
                 }
                 let model=BS[who.deck][who.index];
-                let resultPF=PathFinder.FindPath(model.row,model.column,whither.row,whither.column,BS);//work fine, can see PathFinder in lib
-                let resultLOS=PathFinder.LOS(model.row,model.column,whither.row,whither.column,BS);//to check shortest way
+                let resultPF=PathFinder.OptimalPath(model.row,model.column,whither.row,whither.column,BS);//work fine, can see PathFinder in lib
+                let resultLOS=PathFinder.ShortPath(model.row,model.column,whither.row,whither.column,BS);//to check shortest way
                 if(resultPF.success)//unreachable
                 {
                     if(resultLOS.route.length === 1)

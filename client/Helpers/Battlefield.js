@@ -185,18 +185,11 @@ reconnaissanceState.prototype={
                 {
                     if(!error)
                     {
-                        if(result)
-                        {
-                            log.push('Unit placed');
-                        }
-                        else
-                        {
-                            log.push('Unit can\'t be placed');
-                        }
+                        log.push(result);
                     }
                     else
                     {
-                        log.push("Server error");
+                        log.push(error.reason);
                     }
                     _logDep.changed();
                 });
@@ -332,14 +325,7 @@ battleState.prototype={
             {
                 if(!error)
                 {
-                    if(result)
-                    {
-                        log.push(result);
-                    }
-                    else
-                    {
-                        log.push("Status of shooting unknown");
-                    }
+                    log.push(result);
                 }
                 else
                 {
@@ -365,9 +351,9 @@ battleState.prototype={
         {
             let tempCell=game.chosenCell;//this need because position depend from game.chosenCell, so it must show actual cell
             game.chosenCell=cell;//so now game.chosenCell show last clicked cell
-            let resultLOS=PathFinder.LOS(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
+            let resultLOS=PathFinder.ShortPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
             log.push(resultLOS.message+' between point start point:'+tempCell.row+', column:'+tempCell.column+' and final point row:'+game.chosenCell.row+', column:'+game.chosenCell.column);
-            let resultPF=PathFinder.FindPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
+            let resultPF=PathFinder.OptimalPath(tempCell.row,tempCell.column,game.chosenCell.row,game.chosenCell.column,battle.BS);
             log.push(resultPF.message+' with difficulty:'+resultPF.cost+' in '+resultPF.route.length+' step');
             game.chosenCell=null;
         }
@@ -384,14 +370,7 @@ battleState.prototype={
             {
                 if(!error)
                 {
-                    if(result)
-                    {
-                        log.push(result);
-                    }
-                    else
-                    {
-                        log.push("You movement is invalid");
-                    }
+                    log.push(result);
                 }
                 else
                 {
@@ -714,16 +693,16 @@ function out()
     state.hoveredCell={};
     _posDep.changed();
 }
-TweenCurATB=function()
+function TweenCurATB()
 {
     if(game.state.current === 'battle')
     {
-        if (state.tweenCurATB===null)
+        if(state.tweenCurATB === null)
         {
             state.tweenCurATB=game.add.tween(game[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index])
                                   .to({alpha:0},1000,Phaser.Easing.Linear.None,true,0,1000,true);
         }
-        else if(state.tweenCurATB.target.deck!== battle.BS.orderLine[0].deck || state.tweenCurATB.target.index!== battle.BS.orderLine[0].index)
+        else if(state.tweenCurATB.target.deck !== battle.BS.orderLine[0].deck || state.tweenCurATB.target.index !== battle.BS.orderLine[0].index)
         {
             state.tweenCurATB.pause();
             state.tweenCurATB.target.alpha=1;
