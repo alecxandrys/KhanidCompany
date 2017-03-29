@@ -9,7 +9,6 @@
  * when server work over 30s by default client just call method second time, but you can stay in debug
  */
 import {RunCircle} from "./TurnOrder"
-
 function MoveToPosition(model,whither,BS,who,id)
 {
     model.row=whither.row;
@@ -71,7 +70,7 @@ function CalculateMelee(who,model,whom,target,order,BS,battle,charge)
     }
     if(!model.placed)//model killed in attack
     {
-        mess='You was killed by enemy, which attack first';
+        mess='You was killed by enemy';
         BS.orderLine.shift();
         BS[whom.deck][whom.index]=target;
         battles.update(battle._id,{$set:{'BS':BS}});
