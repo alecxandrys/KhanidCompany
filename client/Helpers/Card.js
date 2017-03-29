@@ -31,9 +31,9 @@ var Deck={
     getCost:function()
     {
         this._unitDepend.depend();
-        var res=this.getUnit();
-        var cost=0;
-        for(var card of res)
+        let res=this.getUnit();
+        let cost=0;
+        for(let card of res)
         {
             cost=cost+card.cost;
             if(card.meleeWeapon)
@@ -49,7 +49,7 @@ var Deck={
         return cost;
     }
 };
-var Card={
+Card={
     _card:null,
     _cardDepend:new Tracker.Dependency(),
     _defaultMeleeWeapon:{},
@@ -61,7 +61,7 @@ var Card={
     setCard:function(Unit)
     {
         this._defaultMeleeWeapon=Unit.meleeWeapon;
-        this._card=Unit;
+        this._card=JSON.parse(JSON.stringify(Unit));//full copy from force's array
         this._cardDepend.changed();
     },
     erase:function()
@@ -71,11 +71,11 @@ var Card={
     },
     addMeleeWeapon:function(id)
     {
-        if(Card._card.availableWeapon[id].oneHanded == true && (Card._card.rangeWeapon == null || Card._card.rangeWeapon.oneHanded == true))
+        if(Card._card.availableWeapon[id].oneHanded === true && (Card._card.rangeWeapon === null || Card._card.rangeWeapon.oneHanded === true))
         {
             Card._card.meleeWeapon=Card._card.availableWeapon[id];
         }
-        else if(Card._card.availableWeapon[id].oneHanded == false && Card._card.rangeWeapon == null)
+        else if(Card._card.availableWeapon[id].oneHanded === false && Card._card.rangeWeapon === null)
         {
             Card._card.meleeWeapon=Card._card.availableWeapon[id];
         }
@@ -83,11 +83,11 @@ var Card={
     },
     addRangeWeapon:function(id)
     {
-        if(Card._card.availableWeapon[id].oneHanded == true && (Card._card.meleeWeapon == null || Card._card.meleeWeapon.oneHanded == true ))
+        if(Card._card.availableWeapon[id].oneHanded === true && (Card._card.meleeWeapon === null || Card._card.meleeWeapon.oneHanded === true ))
         {
             Card._card.rangeWeapon=Card._card.availableWeapon[id];
         }
-        else if(Card._card.availableWeapon[id].oneHanded == false && (Card._card.meleeWeapon == null || Card._card.meleeWeapon.name =='Close combat weapon (battle knife)'))
+        else if(Card._card.availableWeapon[id].oneHanded === false && (Card._card.meleeWeapon === null || Card._card.meleeWeapon.name ==='Close combat weapon (battle knife)'))
         {
             Card._card.rangeWeapon=Card._card.availableWeapon[id];
         }
@@ -106,7 +106,7 @@ var Card={
     getCost:function()
     {
         this._cardDepend.depend();
-        var cost=this._card.cost;
+        let cost=this._card.cost;
         if(this._card.meleeWeapon)
         {
             cost=cost+this._card.meleeWeapon.cost;
@@ -154,10 +154,10 @@ Template.Card.events({
     "dblclick .availableWeapon":function(event)
     {
         event.preventDefault();
-        var id=parseInt($(event.currentTarget)
+        let id=parseInt($(event.currentTarget)
             .children('a')
             .text());
-        if(this.type == 'Ranged')
+        if(this.type === 'Ranged')
         {
             Card.addRangeWeapon(id);
         }
@@ -169,7 +169,7 @@ Template.Card.events({
     "dblclick .card":function(event)
     {
         event.preventDefault();
-        var id=parseInt($(event.currentTarget)
+        let id=parseInt($(event.currentTarget)
             .children('a')
             .text());
         Card.setCard(SpaceMarineForce[id]);

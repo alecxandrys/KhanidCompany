@@ -10,8 +10,8 @@ log=[];
 
 let _logDep=new Deps.Dependency();
 let _turnDep=new Deps.Dependency();
-let _posDep=new Deps.Dependency();
-let _selectDep=new Deps.Dependency();
+let _posDep=new Deps.Dependency();//current cell selected
+let _selectDep=new Deps.Dependency();//current card selected
 /**
  * Basic image height=80
  * Basic image width=60
@@ -239,6 +239,10 @@ battleState.prototype={
                     game.deck1[index].position.y=game.map[squad.row][squad.column].yCoordinate;
                 }
             }
+            else
+            {
+                game.deck1[index].kill();//remove from field
+            }
         });
         battle.BS.deck2.forEach(function(squad,index)
         {
@@ -249,6 +253,10 @@ battleState.prototype={
                     game.deck2[index].position.x=game.map[squad.row][squad.column].xCoordinate;
                     game.deck2[index].position.y=game.map[squad.row][squad.column].yCoordinate;
                 }
+            }
+            else
+            {
+                game.deck2[index].kill();
             }
         });
         TweenCurATB();
@@ -272,32 +280,36 @@ battleState.prototype={
     {
         battle.BS.deck1.forEach(function(squad,index)
         {
+            game.deck1[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 1 ? "" : "_enemy"));
             if(squad.placed)
             {
-                game.deck1[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 1 ? "" : "_enemy"));
                 game.deck1[index].inputEnabled=true;
                 game.deck1[index].deck='deck1';
                 game.deck1[index].index=index;
                 game.deck1[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
             }
+            else {
+                game.deck1[index].kill();
+            }
         });
         battle.BS.deck2.forEach(function(squad,index)
         {
+            game.deck2[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 2 ? "" : "_enemy"));
             if(squad.placed)
             {
-                game.deck2[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 2 ? "" : "_enemy"));
-                game.deck2[index].inputEnabled=true;
+               game.deck2[index].inputEnabled=true;
                 game.deck2[index].deck='deck2';
                 game.deck2[index].index=index;
                 game.deck2[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
             }
+            else {
+                game.deck2[index].kill();
+            }
         });
         game.world.bringToTop(game.squads);
-        TweenCurATB();
     },
     selectUnit:function(model)
     {
-        log.push('Click on model');
         if(game.chosenCardId === undefined || game.chosenCardId === null)
         {
             if(model.deck === ('deck'+game.side))
@@ -482,7 +494,10 @@ Template.Battlefield.helpers({
     curSelect:function()
     {
         _selectDep.depend();
-        return battle.BS[game.chosenCardId.deck][game.chosenCardId.index];
+        if (game.chosenCardId!==null)
+        {
+            return battle.BS[game.chosenCardId.deck][game.chosenCardId.index];
+        }
     },
     simulation:function()
     {
@@ -514,7 +529,7 @@ Template.Battlefield.events({
         state.actionType='charge';
         _logDep.changed();
     },
-    "change #optionFire":function(event)
+    "change #optionRange":function(event)
     {
         event.preventDefault();
         log.push("Select range mode");
@@ -676,10 +691,28 @@ Deps.autorun(function()
             log.push("Now your are in battle now");
             game.state.start('battle');
             game.curState='battle';
-            _logDep.changed();
         }
+        TweenCurATB();
+        //button reset
+        if(battle.BS[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index].rangeWeapon)
+        {
+            $('#optionRange')
+                .button('toggle');
+            state.actionType='range';
+        }
+        else
+        {
+            $('#optionCharge')
+                .button('toggle');
+            state.actionType='charge';
+        }
+        game.chosenCardId=null;
+        game.chosenCell=null;
+        _posDep.changed();
+        _selectDep.changed();
+        _turnDep.changed();
+        _logDep.changed();
     }
-    _turnDep.changed();
 });
 function over(cell)
 {

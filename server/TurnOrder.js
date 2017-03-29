@@ -60,11 +60,11 @@ function RunCircle(orderLine)
             if(!orderLine[0].twiceTurnFlag)
             {
                 orderLine[0]=ResetState(orderLine[0]);
-                orderLine[0].twiceTurnFlag=true;
                 orderLine.forEach(function(item)//very dirty
                 {
                     item.twiceTurnFlag=false;
                 });
+                orderLine[0].twiceTurnFlag=true;
                 break;
             }
             else
