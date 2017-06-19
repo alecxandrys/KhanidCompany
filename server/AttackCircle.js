@@ -1,3 +1,4 @@
+import {RollD6,Roll2D6,RollD3} from "./D6.js"
 /**
  * Created by Alecxandrys on 08.05.2016.
  */
@@ -58,26 +59,25 @@ attackSignature=function(model,target,order,type)
     }
     //FNP,protocol and other, which add save or work after unsaved wound
     options.afterEffect=7;//not implemented yet
-    //Math.floor(Math.random() * (max - min + 1)) + min
     for(let i=0; i<options.attackCount; i++)
     {
-        let x=Math.floor(Math.random()*(6-1+1))+1;
+        let x=RollD6();
         if(options.skill>5)//if 6 and more in WS or BS skill make no less than 2 in result to hit
         {
             options.skill=options.skill-5;
             if(x === 1)//reroll if x==1 with skill>5
             {
-                x=Math.floor(Math.random()*(6-1+1))+1;
+                x=RollD6();
             }
         }
         result.toHit.push(x);
         if(x>=toHit(options.skill,options.enemySkill))
         {
-            x=Math.floor(Math.random()*(6-1+1))+1;
+            x=RollD6();
             result.toWound.push(x);
             if(x>=toWound(options.strength,target.toughness))//penetrate, now use saves
             {
-                x=Math.floor(Math.random()*(6-1+1))+1;
+                x=RollD6();
                 if(options.coverSave !== 7)//not in cover
                 {
                     result.coverSave.push(x);
@@ -91,7 +91,7 @@ attackSignature=function(model,target,order,type)
                     }
                     if(x<options.armorSave || options.armorSave === 7)
                     {
-                        x=Math.floor(Math.random()*(6-1+1))+1;
+                        x=RollD6();
                         if(options.afterEffect !== 7)
                         {
                             result.afterEffect.push(x);

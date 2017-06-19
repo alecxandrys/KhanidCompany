@@ -1,8 +1,3 @@
-/**
- * Created by Пользователь on 30.05.2016.
- * impossible pass function throw MongoDB (and JSON)
- * Have to create orderLine instantly and make some func, which change state
- */
 export {TurnOrderInit,RunCircle}
 /**
  * init turnorder array
