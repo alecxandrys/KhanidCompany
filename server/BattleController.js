@@ -303,7 +303,7 @@ Meteor.methods({
                     }
                     case 'charge':
                     {
-                        if(order.charge)//can charge now? All model can fight in melee combat, if they don't have ccw, use basic profile(S:user; AP:-)
+                        if(order.charge)//can charge now? All model can fight in melee combat, if they don't have ccw, use basic profile(S:user; rending:-)
                         {
                             if(who.deck !== whom.deck)
                             {

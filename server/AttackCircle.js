@@ -26,7 +26,7 @@ attackSignature=function(model,target,order,type)
         }
         options.enemySkill=null;
         options.strength=model.rangeWeapon.strength;
-        if(model.rangeWeapon.AP>=target.armorSave)
+        if(model.rangeWeapon.rending>=target.armorSave)
         {
             options.armorSave=target.armorSave;
         }
@@ -46,7 +46,7 @@ attackSignature=function(model,target,order,type)
         {
             options.strength=options.strength+model.meleeWeapon.strength;
         }
-        if(model.meleeWeapon.AP>=target.armorSave)
+        if(model.meleeWeapon.rending>=target.armorSave)
         {
             options.armorSave=target.armorSave;
         }
