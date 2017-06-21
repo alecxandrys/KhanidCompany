@@ -8,11 +8,10 @@ import {RollD6,Roll2D6,RollD3} from "./D6.js"
  */
 attackSignature=function(model,target,order,type)
 {
-    let result={toHit:[],toWound:[],coverSave:[],armorSave:[],remainingWound:0,afterEffect:[]};
+    let result={toHit:[],toWound:[],armorSave:[],unresolvedWound:0,afterEffect:[]};
     let options={};
     let instanceDeath;
 
-    options.coverSave=7;
     if(type === 'range' && model.rangeWeapon)//check when overwatch
     {
 
@@ -62,65 +61,44 @@ attackSignature=function(model,target,order,type)
     for(let i=0; i<options.attackCount; i++)
     {
         let x=RollD6();
-        if(options.skill>5)//if 6 and more in WS or BS skill make no less than 2 in result to hit
-        {
-            options.skill=options.skill-5;
-            if(x === 1)//reroll if x==1 with skill>5
-            {
-                x=RollD6();
-            }
-        }
         result.toHit.push(x);
-        if(x>=toHit(options.skill,options.enemySkill))
+        if(x>=toHit(options.skill,options.enemySkill))//ToHit Roll
         {
             x=RollD6();
             result.toWound.push(x);
-            if(x>=toWound(options.strength,target.toughness))//penetrate, now use saves
+            if(x>=toWound(options.strength,target.toughness))//ToWound Roll
             {
                 x=RollD6();
-                if(options.coverSave !== 7)//not in cover
+                result.armorSave.push(x);
+                if(x<options.armorSave || options.armorSave === 7)//Save Roll
                 {
-                    result.coverSave.push(x);
+                    x=RollD6();
+                    result.afterEffect.push(x);
+                    result.unresolvedWound++;
                 }
-                if(x<options.coverSave || options.coverSave === 7)//cover
-                {
-                    x=Math.floor(Math.random()*(6-1+1))+1;
-                    if(options.armorSave !== 7)//dont have armor or invul save
-                    {
-                        result.armorSave.push(x);
-                    }
-                    if(x<options.armorSave || options.armorSave === 7)
-                    {
-                        x=RollD6();
-                        if(options.afterEffect !== 7)
-                        {
-                            result.afterEffect.push(x);
-                        }
-                        result.remainingWound++;
-                    }
-                }
+
             }
         }
     }
     result.sucesses=false;
-    if(result.remainingWound !== 0)
+    if(result.unresolvedWound !== 0)
     {
         if(instanceDeath)
         {
-            result.remainingWound--;
+            result.unresolvedWound--;
             target.placed=false;//target destroyed instantly
         }
         else
         {
-            if(target.wound<=result.remainingWound)
+            if(target.wound<=result.unresolvedWound)
             {
                 target.placed=false;
-                result.remainingWound=result.remainingWound-target.wound;
+                result.unresolvedWound=result.unresolvedWound-target.wound;
                 target.wound=0;
             }
             else
             {
-                target.wound-=result.remainingWound
+                target.wound-=result.unresolvedWound
             }
         }
         result.sucesses=true;

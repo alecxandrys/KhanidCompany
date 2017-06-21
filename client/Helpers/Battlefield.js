@@ -30,11 +30,12 @@ bootState.prototype={
      */
     create:function()
     {
-        let field=$('field');
-        this.scale.maxWidth=field.width;
-        this.scale.maxHeight=field.height;
-        this.scale.scaleMode=Phaser.ScaleManager.SHOW_ALL;
-        this.scale.pageAlignHorizontally=true;
+        //let field=$('field');
+        //this.scale.maxWidth=field.width;
+        //this.scale.maxHeight=field.height;
+        //this.scale.scaleMode=Phaser.ScaleManager.SHOW_ALL;
+        //this.scale.pageAlignHorizontally=true;
+        this.world.setBounds(0,0,2000,2000);
         this.state.start('preload');
     }
 };
@@ -404,7 +405,8 @@ battleState.prototype={
  */
 Template.Battlefield.onCreated(function()
 {
-    game=new Phaser.Game(1200,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
+    let field=$('field');
+    game=new Phaser.Game(field.width,field.height,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
     game.state.add('boot',bootState);
     game.state.add('preload',preloadState);
     game.state.add('reconnaissance',reconnaissanceState);
