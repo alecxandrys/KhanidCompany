@@ -1,7 +1,7 @@
 export {TurnOrderInit,RunCircle}
 /**
  * init turnorder array
- * @elem {deck-which deck (and player), index-place in deck, speed-unit current speed, curATB-current position in line}
+ * @elem {deck-which deck (and player), index-place in deck, initiative-unit current initiative, curATB-current position in line}
  * @param deck1
  * @param deck2
  * @returns {Array}
@@ -15,7 +15,7 @@ function TurnOrderInit(deck1,deck2)
         let elem=new Element({
             deck:'deck1',
             index:index,
-            speed:item.speed,
+            initiative:item.initiative,
             canMove:true,
             canRun:true,
             canShoot:true,
@@ -29,7 +29,7 @@ function TurnOrderInit(deck1,deck2)
         let elem=new Element({
             deck:'deck2',
             index:index,
-            speed:item.speed,
+            initiative:item.initiative,
             canMove:true,
             canRun:true,
             canShoot:true,
@@ -64,12 +64,12 @@ function RunCircle(orderLine)
             }
             else
             {
-                orderLine[0].curATB=orderLine[0].curATB-orderLine[0].speed;//stand and wait another model
+                orderLine[0].curATB=orderLine[0].curATB-orderLine[0].initiative;//stand and wait another model
             }
         }
         orderLine.forEach(function(item)
         {
-            item.curATB=item.curATB+item.speed;
+            item.curATB=item.curATB+item.initiative;
         });
         orderLine.sort(function(a,b)
         {
@@ -89,7 +89,7 @@ function Element(options)
 {
     this.deck=options.deck || 'deck0';
     this.index=options.index === null ? -1 : options.index;// if default was -1 or less make -1 for each zero index because 0==false
-    this.speed=options.speed || 0;
+    this.initiative=options.initiative || 0;
     this.curATB=options.curATB || 0;
     this.canMove=options.canMove || false;//
     this.move=false;
