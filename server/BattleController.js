@@ -46,7 +46,7 @@ function CalculateMelee(who,model,whom,target,order,BS,battle,charge)
     //initiative order in melee combat
     if(charge)//add attack by charge
     {
-        model.attackCount++;
+        model.attack++;
     }
     if(model.initiative>=target.initiative)
     {
@@ -66,7 +66,7 @@ function CalculateMelee(who,model,whom,target,order,BS,battle,charge)
     }
     if(charge)//return to origin count after charge
     {
-        model.attackCount--;
+        model.attack--;
     }
     if(!model.placed)//model killed in attack
     {

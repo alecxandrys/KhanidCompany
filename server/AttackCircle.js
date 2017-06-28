@@ -15,7 +15,7 @@ attackSignature=function(model,target,order,type)
     if(type === 'range' && model.rangeWeapon)//check when overwatch
     {
 
-        options.attackCount=model.rangeWeapon.attackCount;
+        options.attack=model.rangeWeapon.attack;
         if(order.snapshot)
         {
             options.skill=1;
@@ -38,7 +38,7 @@ attackSignature=function(model,target,order,type)
     }
     else
     {
-        options.attackCount=model.attackCount;
+        options.attack=model.attack;
         options.skill=model.weaponSkill;
         options.enemySkill=target.weaponSkill;
         options.strength=model.strength;
@@ -58,7 +58,7 @@ attackSignature=function(model,target,order,type)
     }
     //FNP,protocol and other, which add save or work after unsaved wound
     options.afterEffect=7;//not implemented yet
-    for(let i=0; i<options.attackCount; i++)
+    for(let i=0; i<options.attack; i++)
     {
         let x=RollD6();
         result.toHit.push(x);

@@ -5,7 +5,7 @@
  * Card template
  */
 Meteor.subscribe("userData");
-var Deck={
+Deck={
     _unit:[],
     _unitDepend:new Tracker.Dependency(),
     cost:0,
@@ -52,7 +52,6 @@ var Deck={
 Card={
     _card:null,
     _cardDepend:new Tracker.Dependency(),
-    _defaultMeleeWeapon:{},
     getCard:function()
     {
         this._cardDepend.depend();
@@ -60,8 +59,9 @@ Card={
     },
     setCard:function(Unit)
     {
-        this._defaultMeleeWeapon=Unit.meleeWeapon;
         this._card=JSON.parse(JSON.stringify(Unit));//full copy from force's array
+        this._card.meleeWeapon=this._card.defaultMeleeWeapon;
+        this._card.rangeWeapon=this._card.defaultRangeWeapon;
         this._cardDepend.changed();
     },
     erase:function()
@@ -95,12 +95,12 @@ Card={
     },
     removeMeleeWeapon:function()
     {
-        Card._card.meleeWeapon=this._defaultMeleeWeapon;//return CCW
+        Card._card.meleeWeapon=this._card.defaultMeleeWeapon;//return CCW
         this._cardDepend.changed();
     },
     removeRangeWeapon:function()
     {
-        Card._card.rangeWeapon=null;
+        Card._card.rangeWeapon=this._card.defaultRangeWeapon;
         this._cardDepend.changed();
     },
     getCost:function()
@@ -138,6 +138,20 @@ Template.Card.helpers({
     deckCost:function()
     {
         return Deck.getCost();
+    },
+    /**
+     * @return {boolean}
+     */
+    Infantry:function(type)
+    {
+        return type === 'Infantry';
+    },
+    /**
+     * @return {boolean}
+     */
+    Vehicle:function(type)
+    {
+        return type === 'Vehicle';
     }
 });
 Template.Card.events({
