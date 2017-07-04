@@ -1,7 +1,7 @@
 Meteor.methods({
     addPlayerInQueue:function(Deck)
     {
-        var x=Meteor.user();
+        let x=Meteor.user();
         readyPlayers.insert({userId:x._id,username:x.username,rate:x.rateELO,deck:Deck});
     }
 });
@@ -17,15 +17,15 @@ Meteor.startup(function()
 {
 
     //this is correct timer work with guaranteed Interval, which can be changed if it necessary
-    var tickTime=3000;
-    var timerId=Meteor.setTimeout(function tick()
+    let tickTime=3000;
+    let timerId=Meteor.setTimeout(function tick()
     {
-        var x=readyPlayers.find({},{sort:{rate:1}});
+        let x=readyPlayers.find({},{sort:{rate:1}});
         if(x.count()>1)
         {
             //balancer itself
-            var prevuser;
-            console.log("Enter the block "+x.count());
+            let prevuser;
+            //console.log("Enter the block "+x.count());
             x.forEach(function(user,index)
             {
                 if(index%2 === 1)
@@ -34,7 +34,7 @@ Meteor.startup(function()
                     //need to translate object
                     //need async call for this shit
                     //Will keep in waitingCollection
-                    var BS=new BattleState(12,20,prevuser.deck,user.deck);
+                    let BS=new BattleState(12,20,prevuser.deck,user.deck);
                     battles.insert({
                         ID1:prevuser.userId,
                         name1:prevuser.username,

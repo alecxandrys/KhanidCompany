@@ -20,16 +20,16 @@ Template.wait.helpers({
 Tracker.autorun(function()
 {
     Meteor.subscribe("battles");
-    var x = battles.find({});
-    var y = battles.findOne({});
+    let x=battles.find({});
+    let y=battles.findOne({});
     if(x.count() === 1)
         {
-            var paramstring = "name1=" + y.name1 + "&name2=" + y.name2 + "&battleID=" + y._id;
+            let paramstring="name1="+y.name1+"&name2="+y.name2+"&battleID="+y._id;
             Router.go('battlefield', {}, {query: paramstring});
         }
     else if(x.count() > 1)
         {
-            console.log('Error:Balancer twice push player. Please, wait');
+            //console.log('Error:Balancer twice push player. Please, wait');
             return ("Waiting " + x.count() + " " + readyPlayers.find().count());
         }
 });
