@@ -12,27 +12,31 @@
                     <div class="card panel panel-default br1" data-toggle="tooltip" data-placement=" auto top" data-html="true"
                          title="
                             Commander:<wbr>{{commander}}<br>
+                            MoveDistance:{{move}}<br>
 							Cost:<wbr>{{cost}} <br>
 							Rules:<wbr>{{rules}} <br>
-
 							WeaponSkill:<wbr>{{weaponSkill}}<br>
 							BallisticSkill:<wbr>{{ballisticSkill}}<br>
 							Strength:<wbr>{{strength}}<br>
+							{{#if Infantry type}}
 							Toughness:<wbr>{{toughness}}<br>
+							{{else Vehicle type}}
+                            Front toughness:<wbr>{{toughnessFront}}<br>
+                            Side toughness:<wbr>{{toughnessSide}}<br>
+                            Rear toughness:<wbr>{{toughnessRear}}<br>
+							{{else}}
+                            Type of toughness is not identified
+							{{/if}}
 							Initiative:<wbr>{{initiative}}<br>
-							Speed:<wbr>{{speed}}<br>
 							Wound:<wbr>{{wound}}<br>
-							AttackCount:<wbr>{{attackCount}}<br>
+							AttackCount:<wbr>{{attack}}<br>
 							Leadership:<wbr>{{leadership}}<br>
 							ArmorSave:<wbr>{{armorSave}}<br>
-
-							AvailableWeapon:<wbr>{{#each availableWeapon}}
-                             {{name}}<br>
-                            {{/each}}
                             ">
                         <a class="id">{{@index}}</a>
                         <div class="panel-body">
                             <h3 class="panel-title">{{name}}</h3>
+                            {{type}}
                             {{description}}
                         </div>
                     </div>
@@ -89,7 +93,7 @@
                             Range:{{range}}<br>
                             Strength:{{strength}}<br>
                             AP:{{rending}}<br>
-                            Attack:{{attackCount}}<br>
+                            Attack:{{attack}}<br>
                             One-Handed:{{#if oneHanded}}Yes{{else}}No{{/if}}<br>
                             Type:{{type}}<br>
                             Rules:{{rules}}
