@@ -9,7 +9,8 @@
         <div class="container">
             <div class="left-hand col-md-4">
                 {{#each cards}}
-                    <div class="card panel panel-default br1" data-toggle="tooltip" data-placement=" auto top" data-html="true"
+                    <div class="card panel panel-default br1" data-toggle="tooltip" data-placement=" auto top"
+                         data-html="true"
                          title="
                             Commander:<wbr>{{commander}}<br>
                             MoveDistance:{{move}}<br>
@@ -18,15 +19,13 @@
 							WeaponSkill:<wbr>{{weaponSkill}}<br>
 							BallisticSkill:<wbr>{{ballisticSkill}}<br>
 							Strength:<wbr>{{strength}}<br>
-							{{#if Infantry type}}
+							{{#if toughness}}
 							Toughness:<wbr>{{toughness}}<br>
-							{{else Vehicle type}}
+							{{else}}
                             Front toughness:<wbr>{{toughnessFront}}<br>
                             Side toughness:<wbr>{{toughnessSide}}<br>
                             Rear toughness:<wbr>{{toughnessRear}}<br>
-							{{else}}
-                            Type of toughness is not identified
-							{{/if}}
+                    		{{/if}}
 							Initiative:<wbr>{{initiative}}<br>
 							Wound:<wbr>{{wound}}<br>
 							AttackCount:<wbr>{{attack}}<br>
@@ -42,8 +41,8 @@
                     </div>
                 {{/each}}
             </div>
-                <div class="col-md-4 pre-scrollable container" id="hand">
-                {{#if card}}
+            <div class="col-md-4 pre-scrollable container" id="hand">
+                {{#with card}}
                     <br>
                     <div class="row">
                         <a id="remove" class="btn btn-default col-xs-push-1  col-xs-4">Remove</a>
@@ -52,40 +51,39 @@
                     <h4 id="cost-with-weapon">cost-with-weapon:{{unitCost}}</h4>
                     <div class="panel panel-default br1" id="card-predeck">
                         <div class="panel-body">
-                            Cost:{{card.cost}} <br>
-                            Rules:{{card.rules}} <br>
-                            WeaponSkill:{{card.weaponSkill}}<br>
-                            BallisticSkill:{{card.ballisticSkill}}<br>
-                            Strength:{{card.strength}}<br>
-                            Toughness:{{card.toughness}}<br>
-                            Initiative:{{card.initiative}}<br>
-                            Speed:{{card.speed}}<br>
-                            Wound:{{card.wound}}<br>
-                            AttackCount:{{card.attackCount}}<br>
-                            Leadership:{{card.leadership}}<br>
-                            ArmorSave:{{card.armorSave}}<br>
+                            Cost:{{cost}} <br>
+                            Rules:{{rules}} <br>
+                            WeaponSkill:{{weaponSkill}}<br>
+                            BallisticSkill:{{ballisticSkill}}<br>
+                            Strength:{{strength}}<br>
+                            Toughness:{{toughness}}<br>
+                            Initiative:{{initiative}}<br>
+                            Speed:{{speed}}<br>
+                            Wound:{{wound}}<br>
+                            AttackCount:{{attack}}<br>
+                            Leadership:{{leadership}}<br>
+                            ArmorSave:{{armorSave}}<br>
                             Selected Weapon:
                             <div class="panel panel-default">
                                 <div class="panel-body" id="selected-weapon">
-
-                                    {{#if card.meleeWeapon}}
-                                        <div class="meleeWeapon " id="equiped-weapon">
-                                            Name:{{card.meleeWeapon.name}}<br>
-                                            Description:{{card.meleeWeapon.description}}
-                                        </div>
-                                    {{/if}}
-                                    {{#if card.rangeWeapon}}
-                                        <div class="rangeWeapon " id="equiped-weapon">
-                                            Name:{{card.rangeWeapon.name}}<br>
-                                            Description:{{card.rangeWeapon.description}}
-                                        </div>
-                                    {{/if}}
+                                    {{#each weapon in weapons}}
+                                        <div>Weapon #{{@index}}</div>
+                                        {{#with weapon}}
+                                            <div class="weapon" id="equiped-weapon">
+                                                <a class="id">{{@index}}</a>
+                                                Name:{{name}}<br>
+                                                Description:{{description}}
+                                            </div>
+                                        {{else}}
+                                            <div>Weapon is not selected</div>
+                                        {{/with}}
+                                    {{/each}}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <h4>Available weapons:</h4>
-                    {{#each card.availableWeapon}}
+                    {{#each availableWeapons}}
                         <div class="panel panel-default br1 availableWeapon panel-body">
                             Name:{{name}}<br>
                             Description:{{description}}<br>
@@ -100,28 +98,28 @@
                             <a class="id">{{@index}}</a>
                         </div>
                     {{/each}}
-                {{/if}}
+                {{/with}}
             </div>
 
 
             <div class="right-hand col-md-4 pre-scrollable" id="hand">
 
                 <h4 id="total-cost">total cost:{{deckCost}}</h4>
-                    {{#each deck}}
-                        <div class="added-card panel panel-default br1" >
+                {{#each deck}}
+                    <div class="added-card panel panel-default br1">
 
-                            <a class="id">{{@index}}</a>
+                        <a class="id">{{@index}}</a>
 
 
-                            <div class="panel-body">
-                                <h3 class="panel-title">{{name}}</h3>
-                                {{description}}
-                            </div>
+                        <div class="panel-body">
+                            <h3 class="panel-title">{{name}}</h3>
+                            {{description}}
                         </div>
+                    </div>
 
-                    {{/each}}
-			</div>
-		</div>
+                {{/each}}
+            </div>
+        </div>
 
     </div>
     <!-- Скрипт для инициализации элементов на странице, имеющих атрибут data-toggle="tooltip" -->

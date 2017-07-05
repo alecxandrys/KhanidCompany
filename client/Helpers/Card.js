@@ -60,8 +60,10 @@ Card={
     setCard:function(Unit)
     {
         this._card=JSON.parse(JSON.stringify(Unit));//full copy from force's array
-        this._card.meleeWeapon=this._card.defaultMeleeWeapon;
-        this._card.rangeWeapon=this._card.defaultRangeWeapon;
+        for(let i=this._card.weaponCount; i>=1; i--)
+        {
+            this._card['weapon'+i]=this._card['defaultWeapon'+i];
+        }
         this._cardDepend.changed();
     },
     erase:function()
@@ -69,7 +71,7 @@ Card={
         this._card=null;
         this._cardDepend.changed();
     },
-    addMeleeWeapon:function(id)
+    addWeapon:function(id)
     {
         if(Card._card.availableWeapon[id].oneHanded === true && (Card._card.rangeWeapon === null || Card._card.rangeWeapon.oneHanded === true))
         {
@@ -81,26 +83,9 @@ Card={
         }
         this._cardDepend.changed();
     },
-    addRangeWeapon:function(id)
-    {
-        if(Card._card.availableWeapon[id].oneHanded === true && (Card._card.meleeWeapon === null || Card._card.meleeWeapon.oneHanded === true ))
-        {
-            Card._card.rangeWeapon=Card._card.availableWeapon[id];
-        }
-        else if(Card._card.availableWeapon[id].oneHanded === false && (Card._card.meleeWeapon === null || Card._card.meleeWeapon.name ==='Close combat weapon (battle knife)'))
-        {
-            Card._card.rangeWeapon=Card._card.availableWeapon[id];
-        }
-        this._cardDepend.changed();
-    },
-    removeMeleeWeapon:function()
+    removeWeapon:function()
     {
         Card._card.meleeWeapon=this._card.defaultMeleeWeapon;//return CCW
-        this._cardDepend.changed();
-    },
-    removeRangeWeapon:function()
-    {
-        Card._card.rangeWeapon=this._card.defaultRangeWeapon;
         this._cardDepend.changed();
     },
     getCost:function()
@@ -139,32 +124,17 @@ Template.Card.helpers({
     {
         return Deck.getCost();
     },
-    /**
-     * @return {boolean}
-     */
-    Infantry:function(type)
+    weapons:function()
     {
-        return type === 'Infantry';
-    },
-    /**
-     * @return {boolean}
-     */
-    Vehicle:function(type)
-    {
-        return type === 'Vehicle';
+        let weapon=[];
+        for(let i=Card._card.weaponCount; i>=1; i--)
+        {
+            weapon=weapon.concat(Card._card['weapon'+i]);
+        }
+        return weapon;
     }
 });
 Template.Card.events({
-    "dblclick .meleeWeapon":function(event)
-    {
-        event.preventDefault();
-        Card.removeMeleeWeapon();
-    },
-    "dblclick .rangeWeapon":function(event)
-    {
-        event.preventDefault();
-        Card.removeRangeWeapon();
-    },
     "dblclick .availableWeapon":function(event)
     {
         event.preventDefault();
@@ -177,7 +147,7 @@ Template.Card.events({
         }
         else
         {
-            Card.addMeleeWeapon(id);
+            Card.addWeapon(id);
         }
     },
     "dblclick .card":function(event)
