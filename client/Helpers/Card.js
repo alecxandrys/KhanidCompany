@@ -6,23 +6,23 @@
  */
 Meteor.subscribe("userData");
 Deck={
-    _unit:[],
-    _unitDepend:new Tracker.Dependency(),
+    _deck:[],
+    _deckDepend:new Tracker.Dependency(),
     cost:0,
     getUnit:function()
     {
-        this._unitDepend.depend();
-        return this._unit;
+        this._deckDepend.depend();
+        return this._deck;
     },
     setUnit:function(Unit)
     {
-        this._unit.push(Unit);
-        this._unitDepend.changed();
+        this._deck.push(Unit);
+        this._deckDepend.changed();
     },
     erase:function()
     {
-        this._unit=[];
-        this._unitDepend.changed();
+        this._deck=[];
+        this._deckDepend.changed();
     },
     setCost:function(cost)
     {
@@ -30,19 +30,16 @@ Deck={
     },
     getCost:function()
     {
-        this._unitDepend.depend();
+        this._deckDepend.depend();
         let res=this.getUnit();
         let cost=0;
         for(let card of res)
         {
             cost=cost+card.cost;
-            if(card.meleeWeapon)
+            for(let i=card.weaponCount; i>=1; i--)
             {
-                cost=cost+card.meleeWeapon.cost;
-            }
-            if(card.rangeWeapon)
-            {
-                cost=cost+card.rangeWeapon.cost;
+                if (card['weapon'+i]===null || !card['weapon'+i]) continue;
+                cost=cost+card['weapon'+i].cost;
             }
         }
         this.setCost(cost);
@@ -71,34 +68,38 @@ Card={
         this._card=null;
         this._cardDepend.changed();
     },
-    addWeapon:function(id)
+    addWeapon:function(arrayId,weaponId)
     {
-        if(Card._card.availableWeapon[id].oneHanded === true && (Card._card.rangeWeapon === null || Card._card.rangeWeapon.oneHanded === true))
+        arrayId=this._card.weaponCount-arrayId;////magic for correct order of weaponGroup on page and @index
+        let alreadyTwoHanded=false;
+        for(let i=this._card.weaponCount; i>=1; i--)
         {
-            Card._card.meleeWeapon=Card._card.availableWeapon[id];
+            if (this._card['weapon'+i]===null || !this._card['weapon'+i]) continue;
+            if (this._card['weapon'+i].oneHanded!==true)
+            {
+                alreadyTwoHanded=true;
+            }
         }
-        else if(Card._card.availableWeapon[id].oneHanded === false && Card._card.rangeWeapon === null)
+        if (!alreadyTwoHanded)
         {
-            Card._card.meleeWeapon=Card._card.availableWeapon[id];
+            this._card['weapon'+arrayId]=this._card['availableWeapon'+arrayId][weaponId];
         }
         this._cardDepend.changed();
     },
-    removeWeapon:function()
+    removeWeapon:function(arrayId)
     {
-        Card._card.meleeWeapon=this._card.defaultMeleeWeapon;//return CCW
+        arrayId=this._card.weaponCount-arrayId;//magic for correct order of weaponGroup on page and @index
+        this._card['weapon'+arrayId]=this._card['defaultWeapon'+arrayId];//return CCW
         this._cardDepend.changed();
     },
     getCost:function()
     {
         this._cardDepend.depend();
         let cost=this._card.cost;
-        if(this._card.meleeWeapon)
+        for(let i=this._card.weaponCount; i>=1; i--)
         {
-            cost=cost+this._card.meleeWeapon.cost;
-        }
-        if(this._card.rangeWeapon)
-        {
-            cost=cost+this._card.rangeWeapon.cost;
+            if (this._card['weapon'+i]===null || !this._card['weapon'+i]) continue;
+            cost=cost+this._card['weapon'+i].cost;
         }
         return cost;
     }
@@ -132,23 +133,38 @@ Template.Card.helpers({
             weapon=weapon.concat(Card._card['weapon'+i]);
         }
         return weapon;
+    },
+    availableWeapons:function()
+    {
+        let availableWeapons=[];
+        for(let i=Card._card.weaponCount; i>=1; i--)
+        {
+            availableWeapons.push(Card._card['availableWeapon'+i]);
+        }
+        return availableWeapons;
     }
 });
 Template.Card.events({
     "dblclick .availableWeapon":function(event)
     {
         event.preventDefault();
-        let id=parseInt($(event.currentTarget)
+        let weaponId=parseInt($(event.currentTarget)
             .children('a')
             .text());
-        if(this.type === 'Ranged')
-        {
-            Card.addRangeWeapon(id);
-        }
-        else
-        {
-            Card.addWeapon(id);
-        }
+        let arrayId=parseInt($(event.currentTarget)
+            .parent('.availableList')
+            .children('a')
+            .text());
+        console.log(arrayId,weaponId);
+        Card.addWeapon(arrayId,weaponId);
+    },
+    "dblclick #equipped-weapon":function(event)
+    {
+        let arrayId=parseInt($(event.currentTarget)
+            .children('a')
+            .text());
+        console.log(arrayId);
+        Card.removeWeapon(arrayId);
     },
     "dblclick .card":function(event)
     {
@@ -165,17 +181,17 @@ Template.Card.events({
     },
     "click #ready":function()
     {
-        if(Deck._unit.length === 0)
+        if(Deck._deck.length === 0)
         {
             alert("Deck is empty, you cannot join in battle");
         }
-        else if(Deck._unit.length>20)
+        else if(Deck._deck.length>20)
         {
             alert("deck is too large, erase some squad");
         }
         else
         {
-            Meteor.call("addPlayerInQueue",Deck._unit);
+            Meteor.call("addPlayerInQueue",Deck._deck);
             Router.go('/wait');
         }
     },

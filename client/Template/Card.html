@@ -41,7 +41,7 @@
                     </div>
                 {{/each}}
             </div>
-            <div class="col-md-4 pre-scrollable container" id="hand">
+            <div class="col-md-4 pre-scrollable container central-hand">
                 {{#with card}}
                     <br>
                     <div class="row">
@@ -52,7 +52,7 @@
                     <div class="panel panel-default br1" id="card-predeck">
                         <div class="panel-body">
                             Cost:{{cost}} <br>
-                            Rules:{{rules}} <br>
+                            Rules:{{#if rules}}{{rules}}{{else}}No special rules{{/if}} <br>
                             WeaponSkill:{{weaponSkill}}<br>
                             BallisticSkill:{{ballisticSkill}}<br>
                             Strength:{{strength}}<br>
@@ -69,7 +69,7 @@
                                     {{#each weapon in weapons}}
                                         <div>Weapon #{{@index}}</div>
                                         {{#with weapon}}
-                                            <div class="weapon" id="equiped-weapon">
+                                            <div class="weapon" id="equipped-weapon">
                                                 <a class="id">{{@index}}</a>
                                                 Name:{{name}}<br>
                                                 Description:{{description}}
@@ -83,26 +83,36 @@
                         </div>
                     </div>
                     <h4>Available weapons:</h4>
-                    {{#each availableWeapons}}
-                        <div class="panel panel-default br1 availableWeapon panel-body">
-                            Name:{{name}}<br>
-                            Description:{{description}}<br>
-                            Cost:{{cost}}<br>
-                            Range:{{range}}<br>
-                            Strength:{{strength}}<br>
-                            AP:{{rending}}<br>
-                            Attack:{{attack}}<br>
-                            One-Handed:{{#if oneHanded}}Yes{{else}}No{{/if}}<br>
-                            Type:{{type}}<br>
-                            Rules:{{rules}}
+                    {{#each availableWeapon in availableWeapons}}
+                        <div class="availableList">
                             <a class="id">{{@index}}</a>
+                            <div>Available weapon for group #{{@index}}</div>
+                            {{#with availableWeapon}}
+                                {{#each availableWeapon}}
+                                    <div class="panel panel-default br1 availableWeapon panel-body">
+                                        <a class="id">{{@index}}</a>
+                                        Name:{{name}}<br>
+                                        Description:{{description}}<br>
+                                        Cost:{{cost}}<br>
+                                        Range:{{range}}<br>
+                                        Strength:{{strength}}<br>
+                                        AP:{{rending}}<br>
+                                        Attack:{{attack}}<br>
+                                        One-Handed:{{#if oneHanded}}Yes{{else}}No{{/if}}<br>
+                                        Type:{{type}}<br>
+                                        Rules:{{#if rules}}{{rules}}{{else}}No special rules{{/if}}
+                                    </div>
+                                {{/each}}
+                            {{else}}
+                                <div>This group has not available variant</div>
+                            {{/with}}
                         </div>
                     {{/each}}
                 {{/with}}
             </div>
 
 
-            <div class="right-hand col-md-4 pre-scrollable" id="hand">
+            <div class="right-hand col-md-4 pre-scrollable right-hand">
 
                 <h4 id="total-cost">total cost:{{deckCost}}</h4>
                 {{#each deck}}
