@@ -12,10 +12,9 @@
                     <div class="card panel panel-default br1" data-toggle="tooltip" data-placement=" auto top"
                          data-html="true"
                          title="
-                            Commander:<wbr>{{commander}}<br>
                             MoveDistance:{{move}}<br>
 							Cost:<wbr>{{cost}} <br>
-							Rules:<wbr>{{rules}} <br>
+							Rules:<wbr>{{#if rules}}{{rules}}{{else}}No special rules{{/if}} <br>
 							WeaponSkill:<wbr>{{weaponSkill}}<br>
 							BallisticSkill:<wbr>{{ballisticSkill}}<br>
 							Strength:<wbr>{{strength}}<br>
@@ -51,6 +50,7 @@
                     <h4 id="cost-with-weapon">cost-with-weapon:{{unitCost}}</h4>
                     <div class="panel panel-default br1" id="card-predeck">
                         <div class="panel-body">
+                            MoveDistance:{{move}}
                             Cost:{{cost}} <br>
                             Rules:{{#if rules}}{{rules}}{{else}}No special rules{{/if}} <br>
                             WeaponSkill:{{weaponSkill}}<br>
@@ -58,7 +58,6 @@
                             Strength:{{strength}}<br>
                             Toughness:{{toughness}}<br>
                             Initiative:{{initiative}}<br>
-                            Speed:{{speed}}<br>
                             Wound:{{wound}}<br>
                             AttackCount:{{attack}}<br>
                             Leadership:{{leadership}}<br>
@@ -96,8 +95,9 @@
                                         Cost:{{cost}}<br>
                                         Range:{{range}}<br>
                                         Strength:{{strength}}<br>
-                                        AP:{{rending}}<br>
+                                        Rending:{{rending}}<br>
                                         Attack:{{attack}}<br>
+                                        Damage:{{damage}}<br>
                                         One-Handed:{{#if oneHanded}}Yes{{else}}No{{/if}}<br>
                                         Type:{{type}}<br>
                                         Rules:{{#if rules}}{{rules}}{{else}}No special rules{{/if}}
