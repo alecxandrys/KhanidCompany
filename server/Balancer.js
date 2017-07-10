@@ -2,7 +2,8 @@ Meteor.methods({
     addPlayerInQueue:function(Deck)
     {
         let x=Meteor.user();
-        readyPlayers.insert({userId:x._id,username:x.username,rate:x.rateELO,deck:Deck});
+        let id=readyPlayers.insert({userId:x._id,username:x.username,rate:x.rateELO,deck:Deck});
+        return !!id;
     }
 });
 /**
@@ -30,7 +31,7 @@ Meteor.startup(function()
             {
                 if(index%2 === 1)
                 {
-                    //var path=Random.id();
+                    //var path=Random.id();//_id im MongoDB successfully replace it
                     //need to translate object
                     //need async call for this shit
                     //Will keep in waitingCollection

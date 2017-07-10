@@ -191,8 +191,21 @@ Template.Card.events({
         }
         else
         {
-            Meteor.call("addPlayerInQueue",Deck._deck);
-            Router.go('/wait');
+            Meteor.call("addPlayerInQueue",Deck._deck,(error,result)=>
+            {
+                if(!error)
+                {
+                    if (result)
+                    {
+                        Router.go('/wait');
+                    }
+                }
+                else
+                {
+                    console.log(error.reason);
+                }
+            });
+
         }
     },
     "click #add":function()
