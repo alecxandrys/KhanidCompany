@@ -6,19 +6,19 @@
     <div class="row">
         <div id="field" class="col-xs-10"></div>
         <div class="col-xs-2">
-            {{#if curATB}}
+            {{#if curCard}}
                 <div class="panel panel-info br1 col-xs-12" id="bg-move-now" data-toggle="tooltip"
                      data-placement=" auto bottom" data-html="true"
-                     title=" Row:{{curATB.row}} Column:{{curATB.column}}<br>
+                     title=" Row:{{curCard.row}} Column:{{curCard.column}}<br>
                     Move: {{#if curOrder.move}}Ready{{else}}Immovable{{/if}}<br>
-                    Run: {{#if curOrder.canRun}}Possible{{else}}Can't run{{/if}}<br>
-                    Shoot: {{#if curOrder.shoot}}
-                    Possible-{{#if curOrder.snapshot}}Snapshot{{else}}Full BS{{/if}}{{else}}Impossible{{/if}}<br>
+                    Run: {{#if curOrder.run}}Possible{{else}}Can't run{{/if}}<br>
+                    Attack: {{#if curOrder.attack}}Can attack{{else}}Impossible{{/if}}<br>
+                    Advice:{{#if curOrder.advice}}Ready for advanced command{{else}}Can't use advanced command{{/if}}
                     Charge: {{#if curOrder.charge}}Ready{{else}}Can't charge{{/if}}<br>
                     Walk:{{curOrder.walkDistance}} Run:{{curOrder.runDistance}}<br>
             ">
                     <div class="page-title">Turn order:</div>
-                    {{curATB.name}}
+                    {{curCard.name}}
                 </div>
             {{/if}}
             {{#if simulation}}
@@ -32,15 +32,15 @@
                     {{/each}}
                 </div>
             {{/if}}
-            {{#if curSelect}}
-                <div class="panel panel-info br1 col-xs-12" id="bg-selected-unit">
-                    Currently select:
-                    <div class="page-title"> {{curSelect.name}} </div>
+            {{#if selected}}
+            <div class="panel panel-info br1 col-xs-12" id="bg-selected-unit">
+                Currently select:
+                <div class="page-title"> {{selected.name}} </div>
+                <div class="panel-body">
+                    {{selected.row}} {{selected.column}}
                     <div class="panel-body">
-                        {{curSelect.row}} {{curSelect.column}}
-                        <div class="panel-body">
-                            <div class="btn-group" data-toggle="buttons">
-                                {{#if curATB.rangeWeapon}}
+                        <!--           <div class="btn-group" data-toggle="buttons">
+                                {{#if curCard.rangeWeapon}}
                                     <label class="btn btn-primary active">
                                         <input type="radio" name="options" id="optionRange" autocomplete="off" checked>
                                         Range
@@ -49,65 +49,64 @@
                                 <label class="btn btn-primary">
                                     <input type="radio" name="options" id="optionCharge" autocomplete="off"> Charge
                                 </label>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
             {{/if}}
         </div>
-    </div>
-    <div class="container row" id="bf-bottom-bar">
-        <div class="left-panel col-xs-8">
-            {{#each cards}}
-                <div class="col-sm-4 col-xs-5 col-lg-2 col-md-3">
-                    <div id="bg-card" class="card panel panel-default br1" data-toggle="tooltip"
-                         data-placement=" auto bottom" data-html="true"
-                         title="
+        </div>
+        <div class="container row" id="bf-bottom-bar">
+            <div class="left-panel col-xs-8">
+                {{#each cards}}
+                    <div class="col-sm-4 col-xs-5 col-lg-2 col-md-3">
+                        <div id="bg-card" class="card panel panel-default br1" data-toggle="tooltip"
+                             data-placement=" auto bottom" data-html="true"
+                             title="
                         Wound:<wbr>{{wound}}<br>
                         {{#if placed}}
                             Row:{{row}}
                             Column:{{column}}
-                         {{/if}}<br>
-                        Selected Weapons:
-                        {{#if meleeWeapon}}
-                            <br>Name:<wbr>{{meleeWeapon.name}}<br>
-                            Description:<wbr>{{meleeWeapon.description}}
-                         {{/if}}
-                             {{#if rangeWeapon}}
-                            <br>Name:{{rangeWeapon.name}}<br>
-                            Description:{{rangeWeapon.description}}
-                             {{/if}}
+                             {{/if}}<br>
+                        Available Weapons:<!--How important?-->
+                        {{#each weapon in weapons}}
+                         <div>Weapon #{{@index}}</div>
+                         {{#with weapon}}
+                            <br>Name:<wbr>{{name}}<br>
+                            Description:<wbr>{{description}}
+                             {{/with}}
+                             {{/each}}
                         ">
-                        <a class="id">{{@index}}</a>
-                        <div class="panel-body" id="battlecardview">
-                            {{name}}
+                            <a class="id">{{@index}}</a>
+                            <div class="panel-body" id="battlecardview">
+                                {{name}}
+                            </div>
                         </div>
                     </div>
-                </div>
-            {{/each}}
-        </div>
-        <div class="right-panel col-xs-4">
-            <div class="row" id="bg-bt-row">
-                <a class="ready btn btn-default col-xs-4" id="bg-bt-row">Battle</a>
-                <a class="leave btn btn-default col-xs-4" id="bg-bt-row">Leave</a>
-                <div class="col-xs-4" id="bg-bt-row">{{position}}</div>
+                {{/each}}
             </div>
-            <div class="bg-log-panel panel panel-info pre-scrollable col-xs-12">
-                <div class="panel-body">
-                    Log:
-                    <wbr>
-                    {{#each mess in log}}
-                        {{mess}}<br>
-                    {{/each}}
+            <div class="right-panel col-xs-4">
+                <div class="row" id="bg-bt-row">
+                    <a class="ready btn btn-default col-xs-4" id="bg-bt-row">Battle</a>
+                    <a class="leave btn btn-default col-xs-4" id="bg-bt-row">Leave</a>
+                    <div class="col-xs-4" id="bg-bt-row">{{position}}</div>
+                </div>
+                <div class="bg-log-panel panel panel-info pre-scrollable col-xs-12">
+                    <div class="panel-body">
+                        Log:
+                        <wbr>
+                        {{#each mess in log}}
+                            {{mess}}<br>
+                        {{/each}}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-        $(function()
-        {
-            $("[data-toggle='tooltip']")
-                    .tooltip();
-        });
-    </script>
+        <script>
+            $(function()
+            {
+                $("[data-toggle='tooltip']")
+                        .tooltip();
+            });
+        </script>
 </template>

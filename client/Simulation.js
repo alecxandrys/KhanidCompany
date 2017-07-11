@@ -3,23 +3,23 @@
  */
 SimulationRun=function (orderLine)
 {
-    var simulationLine=[];
+    let simulationLine=[];
     //simulationLine.push(orderLine[0]);
     orderLine.shift();
     while(orderLine.length>0)
     {
-        if(orderLine[0].curATB>=100)
+        if(orderLine[0].curCard>=100)
         {
             simulationLine.push(orderLine[0]);
             orderLine.shift();
         }
         orderLine.forEach(function(item)
         {
-            item.curATB=item.curATB+item.speed;
+            item.curCard=item.curCard+item.speed;
         });
         orderLine.sort(function(a,b)
         {
-            if(a.curATB>=b.curATB)
+            if(a.curCard>=b.curCard)
             {
                 return -1;
             }

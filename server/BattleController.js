@@ -327,7 +327,7 @@ Meteor.methods({
                                             MoveToPosition(model,{
                                                 row:resultLOS.route[resultLOS.route.length-2].x,
                                                 column:resultLOS.route[resultLOS.route.length-2].y
-                                            },BS,who,id);//move to cell before last (target whither stay target)
+                                            },BS,who,id);//moveDistance to cell before last (target whither stay target)
                                             /**
                                              * check raise up model and data update from method
                                              */
@@ -344,7 +344,7 @@ Meteor.methods({
                                             MoveToPosition(model,{
                                                 row:resultLOS.route[order.walkDistance].x,
                                                 column:resultLOS.route[order.walkDistance].y
-                                            },BS,who,id);//move to cell before last (target whither stay target)
+                                            },BS,who,id);//moveDistance to cell before last (target whither stay target)
                                             return "You unsuccessfully try to charge on "+(order.walkDistance+chargeDistance)+", but distance is "+(resultLOS.route.length-1);
                                         }
                                     }
@@ -422,7 +422,7 @@ Meteor.methods({
             {
                 if(!order.canMove)//stationary
                 {
-                    throw new Meteor.Error('immovable','This model can\'t move');
+                    throw new Meteor.Error('immovable','This model can\'t moveDistance');
                 }
                 let model=BS[who.deck][who.index];
                 let resultPF=PathFinder.OptimalPath(model.row,model.column,whither.row,whither.column,BS);//work fine, can see PathFinder in lib

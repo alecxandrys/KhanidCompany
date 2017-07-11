@@ -38,11 +38,11 @@ BattleState = function (xSize, ySize, deck1, deck2) {
  * @returns {Array}
  */
 function createMap(xSize, ySize) {
-    var map = [];
-    for (var x = (xSize - 1); x >= 0; x--) {
+    let map=[];
+    for (let x = (xSize - 1); x >= 0; x--) {
         map[x] = [];
-        for (var y = ((ySize + xSize / 2) - 1); y >= 0; y--) {
-            var cell = {};
+        for (let y = ((ySize + xSize / 2) - 1); y >= 0; y--) {
+            let cell={};
             cell.x=x;
             cell.y=y;
             if (OffsetOut(xSize, x, ySize, y)) {

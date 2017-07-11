@@ -372,7 +372,7 @@ battleState.prototype={
         }
         if((game.chosenCardId !== undefined || game.chosenCardId !== null) && game.chosenCardId)
         {
-            log.push('Trying to move unit');
+            log.push('Trying to moveDistance unit');
             Meteor.call('MoveTo',{
                 deck:game.chosenCardId.deck,
                 index:game.chosenCardId.index
@@ -483,7 +483,7 @@ Template.Battlefield.helpers({
         _logDep.depend();
         return log;
     },
-    curATB:function()
+    curCard:function()
     {
         _turnDep.depend();
         return battle.BS[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index];
@@ -493,7 +493,7 @@ Template.Battlefield.helpers({
         _turnDep.depend();
         return battle.BS.orderLine[0];
     },
-    curSelect:function()
+    selected:function()
     {
         _selectDep.depend();
         if (game.chosenCardId!==null)
