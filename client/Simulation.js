@@ -8,18 +8,18 @@ SimulationRun=function (orderLine)
     orderLine.shift();
     while(orderLine.length>0)
     {
-        if(orderLine[0].curCard>=100)
+        if(orderLine[0].curATB>=100)
         {
             simulationLine.push(orderLine[0]);
             orderLine.shift();
         }
         orderLine.forEach(function(item)
         {
-            item.curCard=item.curCard+item.speed;
+            item.curATB=item.curATB+item.initiative;
         });
         orderLine.sort(function(a,b)
         {
-            if(a.curCard>=b.curCard)
+            if(a.curATB>=b.curATB)
             {
                 return -1;
             }

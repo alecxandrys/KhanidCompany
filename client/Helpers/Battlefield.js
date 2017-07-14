@@ -30,12 +30,12 @@ bootState.prototype={
      */
     create:function()
     {
-        //let field=$('field');
-        //this.scale.maxWidth=field.width;
-        //this.scale.maxHeight=field.height;
-        //this.scale.scaleMode=Phaser.ScaleManager.SHOW_ALL;
+        //this.world.setBounds(0,0,2000,2000);
+        let field=$('#field');
+        this.scale.maxWidth=field.width();
+        this.scale.maxHeight=field.height();
+        this.scale.scaleMode=Phaser.ScaleManager.SHOW_ALL;
         //this.scale.pageAlignHorizontally=true;
-        this.world.setBounds(0,0,2000,2000);
         this.state.start('preload');
     }
 };
@@ -47,6 +47,8 @@ preloadState.prototype={
 
     preload:function()
     {
+        game.xLineSize=80;
+        game.yLineSize=60;
         this.text=this.add.text(this.game.width/2,this.game.height/2,'загрузка',{fill:'#ffffff'});
         this.text.anchor.set(0.5,0.5);
         this.load.onFileComplete.add(this.fileComplete,this);
@@ -58,8 +60,6 @@ preloadState.prototype={
         this.load.image('Unreached','BattleResource/Terrain/Unreached.svg');
         this.load.image('Offset','BattleResource/Terrain/Offset.svg');
         this.load.image('Ruin','BattleResource/Terrain/Ruin.svg');
-        game.xLineSize=80;
-        game.yLineSize=60;
         this.load.image('Devastator','BattleResource/Models/Devastator.svg');
         this.load.image('Scout','BattleResource/Models/Scout.svg');
         this.load.image('Marine','BattleResource/Models/Marine.svg');
@@ -287,7 +287,7 @@ battleState.prototype={
                 game.deck1[index].inputEnabled=true;
                 game.deck1[index].deck='deck1';
                 game.deck1[index].index=index;
-                game.deck1[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
+                game.deck1[index].events.onInputDown.add(battleState.prototype.selectModel,this);
             }
             else {
                 game.deck1[index].kill();
@@ -301,7 +301,7 @@ battleState.prototype={
                game.deck2[index].inputEnabled=true;
                 game.deck2[index].deck='deck2';
                 game.deck2[index].index=index;
-                game.deck2[index].events.onInputDown.add(battleState.prototype.selectUnit,this);
+                game.deck2[index].events.onInputDown.add(battleState.prototype.selectModel,this);
             }
             else {
                 game.deck2[index].kill();
@@ -309,7 +309,7 @@ battleState.prototype={
         });
         game.world.bringToTop(game.squads);
     },
-    selectUnit:function(model)
+    selectModel:function(model)
     {
         if(game.chosenCardId === undefined || game.chosenCardId === null)
         {
@@ -403,10 +403,13 @@ battleState.prototype={
 /**
  * Template always after all other code
  */
-Template.Battlefield.onCreated(function()
+Template.Battlefield.onRendered(function()
 {
-    let field=$('field');
-    game=new Phaser.Game(field.width,field.height,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
+    let field=$("#field");
+    let x=field.width();
+    let y=field.height();
+    //console.log(x,y);
+    game=new Phaser.Game(1280,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
     game.state.add('boot',bootState);
     game.state.add('preload',preloadState);
     game.state.add('reconnaissance',reconnaissanceState);
@@ -512,6 +515,17 @@ Template.Battlefield.helpers({
             simulation.push(battle.BS[elem.deck][elem.index]);
         });
         return simulation;
+    },
+    weapons:function()
+    {
+        _turnDep.depend();
+        let weapon=[];
+        let curCard=battle.BS[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index]
+        for(let i=curCard.weaponCount; i>=1; i--)
+        {
+            weapon=weapon.concat(curCard['weapon'+i]);
+        }
+        return weapon;
     }
 
 });
@@ -524,7 +538,7 @@ Template.Battlefield.events({
             .children('a')
             .text());
     },
-    "change #optionCharge":function(event)
+    /*"change #optionCharge":function(event)
     {
         event.preventDefault();
         log.push("Select melee mode");
@@ -537,7 +551,7 @@ Template.Battlefield.events({
         log.push("Select range mode");
         state.actionType='range';
         _logDep.changed();
-    },
+    },*/
     "click .leave":function(event)
     {
         event.preventDefault();
@@ -730,19 +744,23 @@ function out()
 }
 function TweenCurATB()
 {
-    if(game.state.current === 'battle')
+    if (game.state)
     {
-        if(state.tweenCurATB === null)
+        if(game.state.current === 'battle')
         {
-            state.tweenCurATB=game.add.tween(game[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index])
-                                  .to({alpha:0},1000,Phaser.Easing.Linear.None,true,0,1000,true);
-        }
-        else if(state.tweenCurATB.target.deck !== battle.BS.orderLine[0].deck || state.tweenCurATB.target.index !== battle.BS.orderLine[0].index)
-        {
-            state.tweenCurATB.pause();
-            state.tweenCurATB.target.alpha=1;
-            state.tweenCurATB.stop();
-            state.tweenCurATB=null;
+            if(state.tweenCurATB === null)
+            {
+                state.tweenCurATB=game.add.tween(game[battle.BS.orderLine[0].deck][battle.BS.orderLine[0].index])
+                                      .to({alpha:0},1000,Phaser.Easing.Linear.None,true,0,1000,true);
+            }
+            else if(state.tweenCurATB.target.deck !== battle.BS.orderLine[0].deck || state.tweenCurATB.target.index !== battle.BS.orderLine[0].index)
+            {
+                state.tweenCurATB.pause();
+                state.tweenCurATB.target.alpha=1;
+                state.tweenCurATB.stop();
+                state.tweenCurATB=null;
+            }
         }
     }
+
 }

@@ -39,6 +39,22 @@
                 <div class="panel-body">
                     {{selected.row}} {{selected.column}}
                     <div class="panel-body">
+                        {{#each weapon in weapons}}
+                            <div class="availableList">
+                                <a class="id">{{@index}}</a>
+                                <div>Available weapon for group #{{@index}}</div>
+                                {{#with weapon}}
+                                    {{#each weapon}}
+                                        <div class="panel panel-default br1 availableWeapon panel-body">
+                                            <a class="id">{{@index}}</a>
+                                            Name:{{name}}<br>
+                                        </div>
+                                    {{/each}}
+                                {{else}}
+                                    <div>This group has not available variant</div>
+                                {{/with}}
+                            </div>
+                        {{/each}}
                         <!--           <div class="btn-group" data-toggle="buttons">
                                 {{#if curCard.rangeWeapon}}
                                     <label class="btn btn-primary active">
