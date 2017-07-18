@@ -30,11 +30,14 @@ bootState.prototype={
      */
     create:function()
     {
-        //this.world.setBounds(0,0,2000,2000);
+        game.xLineSize=80;
+        game.yLineSize=60;
+        game.cursors = game.input.keyboard.createCursorKeys();
+        game.world.resize(game.yLineSize*battle.BS.ySize,game.xLineSize*battle.BS.xSize*0.75+ game.xLineSize/4);//first-width,second-height
         let field=$('#field');
-        this.scale.maxWidth=field.width();
-        this.scale.maxHeight=field.height();
-        this.scale.scaleMode=Phaser.ScaleManager.SHOW_ALL;
+        //this.scale.maxWidth=field.width();
+        //this.scale.maxHeight=field.height();
+        //this.scale.scaleMode=Phaser.ScaleManager.SHOW_ALL;
         //this.scale.pageAlignHorizontally=true;
         this.state.start('preload');
     }
@@ -47,8 +50,6 @@ preloadState.prototype={
 
     preload:function()
     {
-        game.xLineSize=80;
-        game.yLineSize=60;
         this.text=this.add.text(this.game.width/2,this.game.height/2,'загрузка',{fill:'#ffffff'});
         this.text.anchor.set(0.5,0.5);
         this.load.onFileComplete.add(this.fileComplete,this);
@@ -119,6 +120,7 @@ reconnaissanceState.prototype={
     },
     update:function()
     {
+        MoveField();
         battle.BS.deck1.forEach(function(squad,index)
         {
             if(squad.placed)
@@ -154,6 +156,7 @@ reconnaissanceState.prototype={
             }
         });
         game.world.bringToTop(game.squads);
+
     },
     /**
      * Render ground, may be refactor because use twice in next state?
@@ -408,8 +411,7 @@ Template.Battlefield.onRendered(function()
     let field=$("#field");
     let x=field.width();
     let y=field.height();
-    //console.log(x,y);
-    game=new Phaser.Game(1280,740,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic
+    game=new Phaser.Game(x,y,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic. x and y -size of camera view by start
     game.state.add('boot',bootState);
     game.state.add('preload',preloadState);
     game.state.add('reconnaissance',reconnaissanceState);
@@ -732,6 +734,7 @@ Deps.autorun(function()
 });
 function over(cell)
 {
+    state.hoveredCell={};
     state.hoveredCell.row=cell.row;
     state.hoveredCell.column=cell.column;
     _posDep.changed();
@@ -739,7 +742,7 @@ function over(cell)
 
 function out()
 {
-    state.hoveredCell={};
+    state.hoveredCell=undefined;
     _posDep.changed();
 }
 function TweenCurATB()
@@ -763,4 +766,26 @@ function TweenCurATB()
         }
     }
 
+}
+
+function MoveField()
+{
+    if (game.cursors.up.isDown)
+    {
+        game.camera.y -= 20;
+    }
+    else if (game.cursors.down.isDown)
+    {
+        game.camera.y += 20;
+    }
+
+    if (game.cursors.left.isDown)
+    {
+        game.camera.x -= 20;
+    }
+    else if (game.cursors.right.isDown)
+    {
+        game.camera.x += 20;
+    }
+    game.debug.cameraInfo(game.camera, 32, 32);
 }
