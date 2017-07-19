@@ -4,7 +4,7 @@
  */
 game={};//this is local variable, which consist graphic (like sprite)
 battle={};//this is variable which rewrite always when change BattleState
-state={hoveredCell:{row:null,column:null},actionType:"range",tweenCurATB:null};//this is local variable, which consist param and state exclude graphic
+state={hoveredCell:{row:null,column:null},actionType:"range",tweenCurATB:null,dragFlag:false};//this is local variable, which consist param and state exclude graphic
 
 log=[];
 
@@ -32,8 +32,8 @@ bootState.prototype={
     {
         game.xLineSize=80;
         game.yLineSize=60;
-        game.cursors = game.input.keyboard.createCursorKeys();
-        game.world.resize(game.yLineSize*battle.BS.ySize,game.xLineSize*battle.BS.xSize*0.75+ game.xLineSize/4);//first-width,second-height
+        game.cursors=game.input.keyboard.createCursorKeys();
+        game.world.resize(game.yLineSize*battle.BS.ySize,game.xLineSize*battle.BS.xSize*0.75+game.xLineSize/4);//first-width,second-height
         let field=$('#field');
         //this.scale.maxWidth=field.width();
         //this.scale.maxHeight=field.height();
@@ -93,6 +93,9 @@ reconnaissanceState.prototype={
     {
         //when page was refreshed and game was reborn (and start from begin)
         var state;
+        game.input.onDown.add(Click,this);
+        game.input.addMoveCallback(Move,this);
+        game.input.onUp.add(Up,this);
         switch(game.side)
         {
             case 1:
@@ -291,8 +294,10 @@ battleState.prototype={
                 game.deck1[index].deck='deck1';
                 game.deck1[index].index=index;
                 game.deck1[index].events.onInputDown.add(battleState.prototype.selectModel,this);
+                game.deck1[index].input.useHandCursor=true;
             }
-            else {
+            else
+            {
                 game.deck1[index].kill();
             }
         });
@@ -301,12 +306,14 @@ battleState.prototype={
             game.deck2[index]=game.squads.create(game.map[squad.row][squad.column].xCoordinate,game.map[squad.row][squad.column].yCoordinate,squad.name+(game.side === 2 ? "" : "_enemy"));
             if(squad.placed)
             {
-               game.deck2[index].inputEnabled=true;
+                game.deck2[index].inputEnabled=true;
                 game.deck2[index].deck='deck2';
                 game.deck2[index].index=index;
                 game.deck2[index].events.onInputDown.add(battleState.prototype.selectModel,this);
+                game.deck2[index].input.useHandCursor=true;
             }
-            else {
+            else
+            {
                 game.deck2[index].kill();
             }
         });
@@ -411,7 +418,7 @@ Template.Battlefield.onRendered(function()
     let field=$("#field");
     let x=field.width();
     let y=field.height();
-    game=new Phaser.Game(x,y,Phaser.AUTO,'field');//1280(60*20.5)*740(80*9.25) basic. x and y -size of camera view by start
+    game=new Phaser.Game(x,y,Phaser.AUTO,'field');// x and y -size of camera view by start
     game.state.add('boot',bootState);
     game.state.add('preload',preloadState);
     game.state.add('reconnaissance',reconnaissanceState);
@@ -501,7 +508,7 @@ Template.Battlefield.helpers({
     selected:function()
     {
         _selectDep.depend();
-        if (game.chosenCardId!==null)
+        if(game.chosenCardId !== null)
         {
             return battle.BS[game.chosenCardId.deck][game.chosenCardId.index];
         }
@@ -541,19 +548,19 @@ Template.Battlefield.events({
             .text());
     },
     /*"change #optionCharge":function(event)
-    {
-        event.preventDefault();
-        log.push("Select melee mode");
-        state.actionType='charge';
-        _logDep.changed();
-    },
-    "change #optionRange":function(event)
-    {
-        event.preventDefault();
-        log.push("Select range mode");
-        state.actionType='range';
-        _logDep.changed();
-    },*/
+     {
+     event.preventDefault();
+     log.push("Select melee mode");
+     state.actionType='charge';
+     _logDep.changed();
+     },
+     "change #optionRange":function(event)
+     {
+     event.preventDefault();
+     log.push("Select range mode");
+     state.actionType='range';
+     _logDep.changed();
+     },*/
     "click .leave":function(event)
     {
         event.preventDefault();
@@ -747,7 +754,7 @@ function out()
 }
 function TweenCurATB()
 {
-    if (game.state)
+    if(game.state)
     {
         if(game.state.current === 'battle')
         {
@@ -767,25 +774,77 @@ function TweenCurATB()
     }
 
 }
-
+/**
+ * functions to move field
+ * by buttons or by mouse click and drag
+ */
 function MoveField()
 {
-    if (game.cursors.up.isDown)
+    if(game.cursors.up.isDown)
     {
-        game.camera.y -= 20;
+        game.camera.y-=20;
     }
-    else if (game.cursors.down.isDown)
+    else if(game.cursors.down.isDown)
     {
-        game.camera.y += 20;
+        game.camera.y+=20;
     }
 
-    if (game.cursors.left.isDown)
+    if(game.cursors.left.isDown)
     {
-        game.camera.x -= 20;
+        game.camera.x-=20;
     }
-    else if (game.cursors.right.isDown)
+    else if(game.cursors.right.isDown)
     {
-        game.camera.x += 20;
+        game.camera.x+=20;
     }
-    game.debug.cameraInfo(game.camera, 32, 32);
+    game.debug.cameraInfo(game.camera,32,32);
 }
+function Click(pointer)
+{
+
+}
+function Move(pointer,x,y,isDown)
+{
+    if(isDown)
+    {
+        state.dragFlag=true;
+        state.startX=x;
+        state.startY=y
+    }
+
+}
+function Up(pointer)
+{
+    if (state.dragFlag)
+    {
+        state.dragFlag=false
+        let deltaX=state.startX-pointer.x;
+        let deltaY=state.startY-pointer.y;
+        let newX=game.camera.x+deltaX;
+        let newY=game.camera.y+deltaY;
+        if (newX<0)
+        {
+            newX=0;
+        }
+        if (newX>(game.world.bounds.width-game.camera.width))
+        {
+            newX=game.world.bounds.width-game.camera.width;
+        }
+        if (newY<0)
+        {
+            newY=0;
+        }
+        if (newY>(game.world.bounds.height-game.camera.height))
+        {
+            newY=game.world.bounds.height-game.camera.height;
+        }
+        game.camera.x=newX;
+        game.camera.y=newY;
+        //console.log(state.startX-pointer.x);
+        //console.log(state.startY-pointer.y);
+        //console.log(pointer);
+    }
+}
+/**
+ * end of functions to move field
+ */
