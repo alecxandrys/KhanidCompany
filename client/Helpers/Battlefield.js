@@ -4,7 +4,7 @@
  */
 game={};//this is local variable, which consist graphic (like sprite)
 battle={};//this is variable which rewrite always when change BattleState
-state={hoveredCell:{row:null,column:null},actionType:"range",tweenCurATB:null,dragFlag:false};//this is local variable, which consist param and state exclude graphic
+state={hoveredCell:{row:null,column:null},actionType:"range",tweenCurATB:null,dragFlag:false,worldScale:1};//this is local variable, which consist param and state exclude graphic
 
 log=[];
 
@@ -30,15 +30,12 @@ bootState.prototype={
      */
     create:function()
     {
+        game.time.advancedTiming=true;
         game.xLineSize=80;
         game.yLineSize=60;
         game.cursors=game.input.keyboard.createCursorKeys();
         game.world.resize(game.yLineSize*battle.BS.ySize,game.xLineSize*battle.BS.xSize*0.75+game.xLineSize/4);//first-width,second-height
-        let field=$('#field');
-        //this.scale.maxWidth=field.width();
-        //this.scale.maxHeight=field.height();
-        //this.scale.scaleMode=Phaser.ScaleManager.SHOW_ALL;
-        //this.scale.pageAlignHorizontally=true;
+
         this.state.start('preload');
     }
 };
@@ -61,12 +58,17 @@ preloadState.prototype={
         this.load.image('Unreached','BattleResource/Terrain/Unreached.svg');
         this.load.image('Offset','BattleResource/Terrain/Offset.svg');
         this.load.image('Ruin','BattleResource/Terrain/Ruin.svg');
+
         this.load.image('Devastator','BattleResource/Models/Devastator.svg');
         this.load.image('Scout','BattleResource/Models/Scout.svg');
         this.load.image('Marine','BattleResource/Models/Marine.svg');
+        this.load.image('Assault','BattleResource/Models/Assault.svg');
+        this.load.image('Rhino','BattleResource/Models/Rhino.svg');
         this.load.image('Devastator_enemy','BattleResource/Models/Devastator_enemy.svg');
         this.load.image('Scout_enemy','BattleResource/Models/Scout_enemy.svg');
         this.load.image('Marine_enemy','BattleResource/Models/Marine_enemy.svg');
+        this.load.image('Assault_enemy','BattleResource/Models/Assault_enemy.svg');
+        this.load.image('Rhino_enemy','BattleResource/Models/Rhino_enemy.svg');
     },
     create:function()
     {
@@ -96,6 +98,7 @@ reconnaissanceState.prototype={
         game.input.onDown.add(Click,this);
         game.input.addMoveCallback(Move,this);
         game.input.onUp.add(Up,this);
+        game.input.mouse.mouseWheelCallback=Zoom;
         switch(game.side)
         {
             case 1:
@@ -774,6 +777,27 @@ function TweenCurATB()
     }
 
 }
+function VisibleCheck()
+{
+    state.worldScale=Phaser.Math.clamp(state.worldScale,0.5,1);
+    game.world.scale.set(state.worldScale);
+    let viewRect=new Phaser.Rectangle(game.camera.x-game.xLineSize,game.camera.y-game.yLineSize,game.camera.x+game.width,game.camera.y+game.height)
+    game.tiles.forEachExists(function(element)
+    {
+
+        let boundsPoint=new Phaser.Point(game.map[element.row][element.column].xCoordinate*game.world.scale.x,game.map[element.row][element.column].yCoordinate*game.world.scale.y);
+        if(Phaser.Rectangle.containsPoint(viewRect,boundsPoint))
+        {
+            //we can see this object, so show it
+            element.visible=true;
+        }
+        else
+        {
+            // we can't see this object, so hide it
+            element.visible=false;
+        }
+    });
+}
 /**
  * functions to move field
  * by buttons or by mouse click and drag
@@ -797,7 +821,24 @@ function MoveField()
     {
         game.camera.x+=20;
     }
+    /**
+     * scale and zoom
+     */
+    if(game.input.keyboard.isDown(Phaser.Keyboard.Q))
+    {
+        state.worldScale+=0.05;
+    }
+    else if(game.input.keyboard.isDown(Phaser.Keyboard.A))
+    {
+        state.worldScale-=0.05;
+    }
+
+    /**
+     * debug info
+     */
     game.debug.cameraInfo(game.camera,32,32);
+    game.debug.text(game.time.fps || '--',2,14,"#00ff00");
+    VisibleCheck();
 }
 function Click(pointer)
 {
@@ -815,35 +856,43 @@ function Move(pointer,x,y,isDown)
 }
 function Up(pointer)
 {
-    if (state.dragFlag)
+    if(state.dragFlag)
     {
         state.dragFlag=false
         let deltaX=state.startX-pointer.x;
         let deltaY=state.startY-pointer.y;
         let newX=game.camera.x+deltaX;
         let newY=game.camera.y+deltaY;
-        if (newX<0)
+        if(newX<0)
         {
             newX=0;
         }
-        if (newX>(game.world.bounds.width-game.camera.width))
+        if(newX>(game.world.bounds.width-game.camera.width))
         {
             newX=game.world.bounds.width-game.camera.width;
         }
-        if (newY<0)
+        if(newY<0)
         {
             newY=0;
         }
-        if (newY>(game.world.bounds.height-game.camera.height))
+        if(newY>(game.world.bounds.height-game.camera.height))
         {
             newY=game.world.bounds.height-game.camera.height;
         }
-        game.camera.x=newX;
-        game.camera.y=newY;
-        //console.log(state.startX-pointer.x);
-        //console.log(state.startY-pointer.y);
-        //console.log(pointer);
+        game.camera.setPosition(newX,newY);
     }
+}
+function Zoom(event)
+{
+    if (event.deltaY>0)
+    {
+        state.worldScale+=0.05;
+    }
+    else
+    {
+        state.worldScale-=0.05;
+    }
+    VisibleCheck();
 }
 /**
  * end of functions to move field
