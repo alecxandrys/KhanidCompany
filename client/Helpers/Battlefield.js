@@ -4,7 +4,15 @@
  */
 game={};//this is local variable, which consist graphic (like sprite)
 battle={};//this is variable which rewrite always when change BattleState
-state={hoveredCell:{row:null,column:null},actionType:"range",tweenCurATB:null,dragFlag:false,worldScale:1};//this is local variable, which consist param and state exclude graphic
+state={
+    hoveredCell:{row:null,column:null},
+    actionType:"range",
+    tweenCurATB:null,
+    dragFlag:false,
+    worldScale:1,
+    minimap:null,
+    state:''
+};//this is local variable, which consist param and state exclude graphic
 
 log=[];
 
@@ -93,26 +101,32 @@ reconnaissanceState.prototype={
     },
     create:function()
     {
-        //when page was refreshed and game was reborn (and start from begin)
-        var state;
         game.input.onDown.add(Click,this);
         game.input.addMoveCallback(Move,this);
         game.input.onUp.add(Up,this);
         game.input.mouse.mouseWheelCallback=Zoom;
+        let minimap=new Phaser.Polygon(new Phaser.Point(0,0),new Phaser.Point(0,100),new Phaser.Point(100,100),new Phaser.Point(100,0));
+        state.minimap=game.add.graphics(0,0);
+        state.minimap.beginFill(0xFF33ff,0.5);
+        state.minimap.drawPolygon(minimap.points);
+        state.minimap.endFill();
+        state.minimap.fixedToCamera=true;
+
+        //when page was refreshed and game was reborn (and start from begin)
         switch(game.side)
         {
             case 1:
-                state='state1';
+                state.state='state1';
                 break;
             case 2:
-                state='state2';
+                state.state='state2';
                 break;
         }
-        if(battle[state] === 'battle')
+        if(battle[state.state] === 'battle')
         {
             game.state.start('battle');
         }
-        else if(battle[state] === 'reconnaissance')
+        else if(battle[state.state] === 'reconnaissance')
         {
             game.curState='reconnaissance';
         }
@@ -162,7 +176,12 @@ reconnaissanceState.prototype={
             }
         });
         game.world.bringToTop(game.squads);
-
+        let x=100*game.camera.x/game.world.bounds.width;
+        let y=100*game.camera.y/game.world.bounds.height;
+        let minimap=new Phaser.Polygon(new Phaser.Point(x,y),new Phaser.Point(x,y+10),new Phaser.Point(x+10,y+10),new Phaser.Point(x+10,y));
+        state.minimap.beginFill(0xFFFFFF,0.5);
+        state.minimap.drawPolygon(minimap.points);
+        state.minimap.endFill();
     },
     /**
      * Render ground, may be refactor because use twice in next state?
@@ -673,6 +692,7 @@ function RenderField(addPart)
                         cell=game.tiles.create(xCoordinate,yCoordinate,'Offset');
                         break;
                 }
+                game.world.bringToTop(state.minimap);
                 cell.row=x;
                 cell.column=y;
 
@@ -781,7 +801,7 @@ function VisibleCheck()
 {
     state.worldScale=Phaser.Math.clamp(state.worldScale,0.5,1);
     game.world.scale.set(state.worldScale);
-    let viewRect=new Phaser.Rectangle(game.camera.x-game.xLineSize,game.camera.y-game.yLineSize,game.camera.x+game.width,game.camera.y+game.height)
+    let viewRect=new Phaser.Rectangle(game.camera.x-game.xLineSize/2,game.camera.y-game.yLineSize/2,game.camera.x+game.width,game.camera.y+game.height)
     game.tiles.forEachExists(function(element)
     {
 
@@ -826,17 +846,17 @@ function MoveField()
      */
     if(game.input.keyboard.isDown(Phaser.Keyboard.Q))
     {
-        state.worldScale+=0.05;
+        state.worldScale-=0.05;
     }
     else if(game.input.keyboard.isDown(Phaser.Keyboard.A))
     {
-        state.worldScale-=0.05;
+        state.worldScale+=0.05;
     }
 
     /**
      * debug info
      */
-    game.debug.cameraInfo(game.camera,32,32);
+    //game.debug.cameraInfo(game.camera,32,32);
     game.debug.text(game.time.fps || '--',2,14,"#00ff00");
     VisibleCheck();
 }
@@ -884,7 +904,7 @@ function Up(pointer)
 }
 function Zoom(event)
 {
-    if (event.deltaY>0)
+    if(event.deltaY>0)
     {
         state.worldScale+=0.05;
     }

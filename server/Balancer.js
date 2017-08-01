@@ -1,3 +1,4 @@
+import {BattleState} from "./BattleState"
 Meteor.methods({
     addPlayerInQueue:function(Deck)
     {

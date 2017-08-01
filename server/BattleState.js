@@ -15,15 +15,16 @@
  * @param deck1
  * @param deck2
  */
+export {BattleState};
 import {TurnOrderInit} from "./TurnOrder"
-BattleState = function (xSize, ySize, deck1, deck2) {
+function BattleState(xSize, ySize, deck1, deck2) {
     this.xSize=xSize;
     this.ySize=ySize;
     this.map = createMap(xSize, ySize);
     this.deck1 = deck1;
     this.deck2 = deck2;
     this.orderLine=TurnOrderInit(deck1,deck2)
-};
+}
 /**
  *generate a massive (in object) of object, that consist state all of cells
  * 1-Grass
